@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Status {
+  id        Int         @id @default(autoincrement())
+  name      String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now())
+  users     Users[]
+  Products  Products[]
+  Categoies Categoies[]
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  url_image String
+  status    Status   @relation(fields: [statusId], references: [id])
+  statusId  Int
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  Stores    Stores[]
+}
+
+model Stores {
+  id        Int        @id @default(autoincrement())
+  name      String
+  address   String
+  city      String
+  state     String
+  zip       String
+  phone     String
+  email     String
+  User      Users?     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+  products  Products[]
+  Brands    Brands[]
+}
+
+model Brands {
+  id        Int        @id @default(autoincrement())
+  name      String
+  url_image String
+  Store     Stores     @relation(fields: [storeId], references: [id])
+  storeId   Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+  products  Products[]
+}
+
+model Categoies {
+  id        Int        @id @default(autoincrement())
+  name      String
+  url_image String
+  status    Status     @relation(fields: [statusId], references: [id])
+  statusId  Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+  products  Products[]
+}
+
+model Products {
+  id            Int             @id @default(autoincrement())
+  name          String
+  price         Float
+  store         Stores          @relation(fields: [storeId], references: [id])
+  storeId       Int
+  Brands        Brands?         @relation(fields: [brandId], references: [id])
+  brandId       Int?
+  Status        Status          @relation(fields: [statusId], references: [id])
+  statusId      Int
+  Categories    Categoies       @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  ProductImages ProductImages[]
+}
+
+model ProductImages {
+  id        Int      @id @default(autoincrement())
+  url_image String
+  product   Products @relation(fields: [productId], references: [id])
+  productId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
