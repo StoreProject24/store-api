@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import { handleSuccess } from "@config/helpers/handleResponse";
+import { handleSuccess } from "@config/helpers/response/response";
 
 export const healthCheck = (
   req: Request,
