@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import * as _ from "lodash";
+import { AppError, createToken } from "@config/helpers";
 import {
 	changePassword,
 	create,
@@ -8,45 +9,44 @@ import {
 } from "../repository/auth.repository";
 import { User, UserCreate } from "../types/auth.types";
 import { AuthRepository } from "./auth.interface";
-import { createToken } from "@config/helpers";
 
 export class AuthDomain implements AuthRepository {
 	async createUser(body: UserCreate) {
 		const existUser = await findUserByEmail(body.email);
 		if (existUser) {
-			throw new Error("User already exists");
+			throw new AppError(409, "User already exists");
 		}
 		const newPassword = bcrypt.hashSync(body.password, 10);
 		const user = await create({
 			...body,
 			password: newPassword,
 		});
-		const token = createToken({...user});
+		const token = createToken({ ...user });
 		return token;
 	}
 	async loginUser(email: string, password: string) {
 		const existUser = await findUserByEmail(email);
 		if (!existUser) {
-			throw new Error("User not found");
+			throw new AppError(404, "User not found");
 		}
 		const comparePassword = bcrypt.compareSync(password, existUser.password);
 		if (!comparePassword) {
-			throw new Error("Invalid user or password");
+			throw new AppError(409, "Invalid user or password");
 		}
-		const token = createToken({ 
+		const token = createToken({
 			id: existUser.id,
 			email: existUser.email,
 			name: existUser.name,
 			role: existUser.role,
 			statusId: existUser.statusId,
-		 });
+		});
 		return token;
 	}
 
 	async forgotPasswordUser(email: string) {
 		const existUser = await findUserByEmail(email);
 		if (!existUser) {
-			throw new Error("User not found");
+			throw new AppError(404, "User not found");
 		}
 		const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
 		// TODO:: send email with otp code
@@ -56,20 +56,20 @@ export class AuthDomain implements AuthRepository {
 	async verifyOtpCodeUser(email: string, otpCode: string) {
 		const existUser = await findUserByEmail(email);
 		if (!existUser) {
-			throw new Error("User not found");
+			throw new AppError(404, "User not found");
 		}
 		if (existUser.otpCode !== otpCode) {
-			throw new Error("Invalid otp code");
+			throw new AppError(409, "Invalid otp code");
 		}
 	}
 
 	async changePasswordUser(email: string, password: string, otpCode: string) {
 		const existUser = await findUserByEmail(email);
 		if (!existUser) {
-			throw new Error("User not found");
+			throw new AppError(404, "User not found");
 		}
 		if (existUser.otpCode !== otpCode) {
-			throw new Error("Invalid otp code");
+			throw new AppError(409, "Invalid otp code");
 		}
 		const newPassword = bcrypt.hashSync(password, 10);
 		await changePassword(email, newPassword);

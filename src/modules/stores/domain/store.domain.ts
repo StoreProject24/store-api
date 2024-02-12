@@ -1,4 +1,4 @@
-import { create, update } from "../repository/store.repository";
+import { create, getById, update } from "../repository/store.repository";
 import { StoreCreate, StoreUpdate } from "../types/store.types";
 import { StoreRepository } from "./store.interface";
 
@@ -13,6 +13,11 @@ export class StoreDomain implements StoreRepository {
 	}
 
 	async deleteStore(id: number) {
-		await update(id, { statusId: 2 });
+		const store = await getById(id);
+		if (!store) {
+			throw new Error("Store not found");
+		}
+		const newStatusId = store.statusId === 2 ? 1 : 2;
+		await update(id, { statusId: newStatusId });
 	}
 }

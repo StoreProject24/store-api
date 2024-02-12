@@ -80,25 +80,42 @@ model Categoies {
 }
 
 model Products {
-  id            Int             @id @default(autoincrement())
-  name          String
-  price         Float
-  store         Stores          @relation(fields: [storeId], references: [id])
-  storeId       Int
-  Brands        Brands?         @relation(fields: [brandId], references: [id])
-  brandId       Int?
-  Status        Status          @relation(fields: [statusId], references: [id])
-  statusId      Int
-  Categories    Categoies       @relation(fields: [categoryId], references: [id])
-  categoryId    Int
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @default(now())
-  ProductImages ProductImages[]
+  id              Int               @id @default(autoincrement())
+  name            String
+  price           Float
+  sku             String
+  quantity        Int
+  description     String
+  pricePublic     Float
+  store           Stores            @relation(fields: [storeId], references: [id])
+  storeId         Int
+  Brands          Brands?           @relation(fields: [brandId], references: [id])
+  brandId         Int?
+  Status          Status            @relation(fields: [statusId], references: [id])
+  statusId        Int               @default(1)
+  Categories      Categoies?        @relation(fields: [categoryId], references: [id])
+  categoryId      Int
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
+  ProductImages   ProductImages[]
+  ProductVariants ProductVariants[]
 }
 
 model ProductImages {
   id        Int      @id @default(autoincrement())
   urlImage  String
+  product   Products @relation(fields: [productId], references: [id])
+  productId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model ProductVariants {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Float
+  sku       String
+  quantity  Int
   product   Products @relation(fields: [productId], references: [id])
   productId Int
   createdAt DateTime @default(now())

@@ -18,6 +18,14 @@ export const create = async (body: StoreCreate) => {
 	});
 };
 
+export const getById = async (id: number) => {
+	return await prisma.stores.findUnique({
+		where: {
+			id,
+		},
+	});
+};
+
 export const update = async (id: number, body: StoreUpdate) => {
 	return await prisma.stores.update({
 		where: {

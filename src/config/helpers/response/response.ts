@@ -24,11 +24,9 @@ export const handleValidator = (req: Request, res: Response, next: NextFunction)
 
 export class AppError<T> extends Error {
   status: number;
-  data: T;
 
-  constructor(status: number, message: string, data: T) {
+  constructor(status: number, message: string) {
     super(message);
     this.status = status;
-    this.data = data;
   }
 }

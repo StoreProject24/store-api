@@ -1,5 +1,5 @@
 import { handleValidator } from "@config/helpers";
-import { check } from "express-validator";
+import { check, param } from "express-validator";
 
 export const validatioCreateStore = [
 	check("name").isString().withMessage("name is required"),
@@ -22,5 +22,10 @@ export const validatioUpdateStore = [
 	check("zip").optional().isString().withMessage("zip is required"),
 	check("userId").isNumeric().withMessage("userId is required"),
 	check("statusId").isNumeric().withMessage("statusId is required"),
+	handleValidator,
+];
+
+export const validatioDeleteStore = [
+	param("id").isNumeric().withMessage("id is required"),
 	handleValidator,
 ];
