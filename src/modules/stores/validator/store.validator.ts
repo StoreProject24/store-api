@@ -9,6 +9,8 @@ export const validatioCreateStore = [
 	check("email").isEmail().withMessage("email is required"),
 	check("city").isString().withMessage("city is required"),
 	check("zip").isString().withMessage("zip is required"),
+	check("bannerUrl").isString().withMessage("bannerUrl is required"),
+	check("logoUrl").isString().withMessage("logoUrl is required"),
 	check("userId").isNumeric().withMessage("userId is required"),
 	handleValidator,
 ];

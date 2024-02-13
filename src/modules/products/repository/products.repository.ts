@@ -6,7 +6,7 @@ import {
 } from "../types/products.types";
 
 export const create = async (body: ProductCreate) => {
-	return await prisma.products.create({
+	const product = await prisma.products.create({
 		data: {
 			storeId: body.storeId,
 			name: body.name,
@@ -20,10 +20,12 @@ export const create = async (body: ProductCreate) => {
 			statusId: 1,
 		},
 	});
+	await prisma.$disconnect();
+	return product;
 };
 
 export const getProducts = async (body: ProductsGet) => {
-	return await prisma.products.findMany({
+	const products = await prisma.products.findMany({
 		skip: (body.page - 1) * body.limit,
 		take: body.limit,
 		where: {
@@ -34,27 +36,22 @@ export const getProducts = async (body: ProductsGet) => {
 			id: true,
 			name: true,
 			pricePublic: true,
-			ProductImages: true,
+			productImages: true,
 			quantity: true,
-			ProductVariants: true,
+			productVariants: true,
 			sku: true,
 			description: true,
-			Brands: true,
-			_count: true,
-			Categories: {
-				select: {
-					id: true,
-					name: true,
-				},
-			},
+			brands: true,
 		},
 	});
+	await prisma.$disconnect();
+	return products;
 };
 
 export const getProductsByCategoryId = async (
 	body: ProductsGetByCategoryId
 ) => {
-	return await prisma.products.findMany({
+	const products = await prisma.products.findMany({
 		skip: (body.page - 1) * body.limit,
 		take: body.limit,
 		where: {
@@ -66,13 +63,13 @@ export const getProductsByCategoryId = async (
 			id: true,
 			name: true,
 			pricePublic: true,
-			ProductImages: true,
+			productImages: true,
 			quantity: true,
-			ProductVariants: true,
+			productVariants: true,
 			sku: true,
 			description: true,
-			Brands: true,
-			Categories: {
+			brands: true,
+			categories: {
 				select: {
 					id: true,
 					name: true,
@@ -80,10 +77,12 @@ export const getProductsByCategoryId = async (
 			},
 		},
 	});
+	await prisma.$disconnect();
+	return products;
 };
 
 export const getProductById = async (storeId: number, id: number) => {
-	return await prisma.products.findUnique({
+	const product = prisma.products.findUnique({
 		where: {
 			storeId,
 			id,
@@ -93,13 +92,13 @@ export const getProductById = async (storeId: number, id: number) => {
 			id: true,
 			name: true,
 			pricePublic: true,
-			ProductImages: true,
+			productImages: true,
 			quantity: true,
-			ProductVariants: true,
+			productVariants: true,
 			sku: true,
 			description: true,
-			Brands: true,
-			Categories: {
+			brands: true,
+			categories: {
 				select: {
 					id: true,
 					name: true,
@@ -107,4 +106,50 @@ export const getProductById = async (storeId: number, id: number) => {
 			},
 		},
 	});
+	await prisma.$disconnect();
+	return product;
+};
+
+export const update = async (id: number, body: ProductCreate) => {
+	const product = await prisma.products.update({
+		where: {
+			id,
+		},
+		data: {
+			name: body.name,
+			description: body.description,
+			price: body.price,
+			quantity: body.quantity,
+			categoryId: body.categoryId,
+			sku: body.sku,
+			pricePublic: body.pricePublic,
+			brandId: body.brandId,
+			updatedAt: new Date(),
+		},
+	});
+	await prisma.$disconnect();
+	return product;
+};
+
+export const updateStatusProduct = async (id: number, status: number) => {
+	const product = await prisma.products.update({
+		where: {
+			id,
+		},
+		data: {
+			statusId: status,
+			updatedAt: new Date(),
+		},
+	});
+	await prisma.$disconnect();
+	return product;
+};
+
+export const deleteProduct = async (id: number) => {
+	await prisma.products.delete({
+		where: {
+			id,
+		},
+	});
+	await prisma.$disconnect();
 };

@@ -10,3 +10,7 @@ export enum HttpCode {
 	INTERNAL_SERVER_ERROR = 500,
 	SERVICE_UNAVAILABLE = 503,
 }
+
+export interface IData<T> {
+	data: T;
+}

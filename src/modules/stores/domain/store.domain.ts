@@ -7,6 +7,7 @@ export class StoreDomain implements StoreRepository {
 		const store = await create(data);
 		return store;
 	}
+	
 	async updateStore(id: number, data: StoreUpdate) {
 		const store = await update(id, data);
 		return store;
@@ -19,5 +20,13 @@ export class StoreDomain implements StoreRepository {
 		}
 		const newStatusId = store.statusId === 2 ? 1 : 2;
 		await update(id, { statusId: newStatusId });
+	}
+
+	async getStoreById(id: number) {
+		const store = await getById(id);
+		if (!store) {
+			throw new Error("Store not found");
+		}
+		return store;
 	}
 }

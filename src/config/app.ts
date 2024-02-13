@@ -10,6 +10,8 @@ import helmet from "helmet";
 import { healthCheck } from "@config/healthCheck/healthCheck";
 import { brandsRouter } from "@modules/brands/router";
 import { authRouter } from "@modules/auth/router";
+import { storesRouter } from "@modules/stores/router";
+import { productsRouter } from "@modules/products/router";
 
 app.use(
 	morgan("dev", {
@@ -29,5 +31,7 @@ const apiPrefix = "/api";
 app.use("/healthCheck", healthCheck);
 app.use(apiPrefix + "/brands", brandsRouter);
 app.use(apiPrefix + "/auth", authRouter);
+app.use(apiPrefix + "/stores", storesRouter);
+app.use(apiPrefix + "/products", productsRouter);
 
 export default app;

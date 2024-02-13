@@ -3,6 +3,8 @@ import {
 	getProductById,
 	getProducts,
 	getProductsByCategoryId,
+	update,
+	updateStatusProduct,
 } from "../repository/products.repository";
 import {
 	ProductCreate,
@@ -27,5 +29,13 @@ export class ProductsDomain implements ProductsRepository {
 
 	async getProductsByCategoryId(body: ProductsGetByCategoryId) {
 		return await getProductsByCategoryId(body);
+	}
+
+	async updateProduct(id: number, product: ProductCreate) {
+		return await update(id, product);
+	}
+
+	async changeStatusProduct(id: number, status: number) {
+		return await updateStatusProduct(id, status);
 	}
 }

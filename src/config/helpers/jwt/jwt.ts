@@ -19,7 +19,7 @@ export const createToken = (data: any): string => {
  * @param token string con el token encriptado
  * @return información decodificada del token
  * */
-export const verifyToken = (token: string): any => {
+export const verifyToken = (token: string) => {
 	const decoded = jwt.verify(token, JWT_SECRET);
 	return decoded;
 };

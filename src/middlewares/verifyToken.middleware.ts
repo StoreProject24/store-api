@@ -22,9 +22,9 @@ export const verifytoken = (
 			return;
 		}
 		req.user = {
-			id: tokenDecoded.id,
-			rol: tokenDecoded.rol,
-			storeId: tokenDecoded.storeId,
+			id: tokenDecoded.user.id,
+			rol: tokenDecoded.user.rol,
+			storeId: tokenDecoded.user.storeId,
 		};
 		next();
 	} else {

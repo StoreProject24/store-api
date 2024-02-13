@@ -40,6 +40,20 @@ AuthController.post(
 );
 
 AuthController.post(
+	"/loginAdmin",
+	validateLogin,
+	async (req: Request, res: Response) => {
+		try {
+			const authDomain = new AuthDomain();
+			const token = await authDomain.loginAdmin(req.body.email, req.body.password);
+			handleSuccess(res, 200, { token });
+		} catch (error: any) {
+			handleError(res, 500, error.message);
+		}
+	}
+);
+
+AuthController.post(
 	"/forgot-password",
 	validateForgotPassword,
 	async (req: Request, res: Response) => {
