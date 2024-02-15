@@ -3,15 +3,18 @@ import {
 	PutObjectCommand,
 	DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
+import { lowWeightImage } from "@utils/lowWeightImage";
 import { Request } from "express";
 import formidable from "formidable";
 import fs from "fs/promises";
 
 const s3 = new S3Client({
+	endpoint: process.env.AWS_ENDPOINT,
 	region: process.env.AWS_REGION,
+	forcePathStyle: true,
 	credentials: {
-		accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+		accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
 	},
 });
 
@@ -22,41 +25,31 @@ const uploadImages = async (req: Request, storeId: number, dirname: string) => {
 	const images = [];
 	const [_, files] = await form.parse(req);
 	for (const file of files.file!) {
-		const fileExt = file.filepath.split(".").pop();
+		const fileExt = file.originalFilename?.split(".").pop();
 		const fileName = `${storeId}_${Date.now()}.${fileExt}`;
 		const fileContent = await fs.readFile(file.filepath);
-		const params = {
-			Bucket: bucketName,
-			Key: `${dirname}/${fileName}`,
-			Body: fileContent,
-			ACL: "public-read",
-		};
+		const fileContentLow = await lowWeightImage(fileContent);
 		await s3.send(
 			new PutObjectCommand({
 				Bucket: bucketName,
 				Key: `${dirname}/${fileName}`,
-				Body: fileContent,
+				Body: fileContentLow,
 			})
 		);
 		images.push(`https://${bucketName}.s3.amazonaws.com/${dirname}/${fileName}`);
 	}
+	return images;
 };
 
 const deleteImages = async (urls: string[]) => {
 	const keys = urls.map((url) => {
-		const key = url.split("/").pop();
-		return { Key: key };
+		return url.split("/").pop();
 	});
 	for (const key of keys) {
-		const params = {
-			Bucket: bucketName,
-			Key: key,
-		};
-
 		await s3.send(
 			new DeleteObjectCommand({
 				Bucket: bucketName,
-				Key: key ?? "",
+				Key: key,
 			})
 		);
 	}

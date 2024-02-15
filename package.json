@@ -45,6 +45,7 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "luxon": "^3.4.4",
+    "sharp": "^0.33.2",
     "winston": "^3.11.0"
   }
 }
