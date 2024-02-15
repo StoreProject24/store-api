@@ -12,22 +12,29 @@ export const verifytoken = (
 ) => {
 	const bearerHeader = req.headers["authorization"];
 	const token = bearerHeader ? bearerHeader.split(" ")[1] : null;
-	if (token) {
-		const tokenDecoded: any = verifyToken(token);
-		const now = DateTime.now();
-		const tokenExpired = DateTime.fromSeconds(tokenDecoded.exp);
-		const diff = tokenExpired.diff(now, "hour").toObject();
-		if (diff?.hours! <= 0) {
-			handleError(res, HttpCode.FORBIDDEN, MessageError.ERROR_TOKEN);
-			return;
+	try {
+		if (token) {
+			const tokenDecoded: any = verifyToken(token);
+			const now = DateTime.now();
+			const tokenExpired = DateTime.fromSeconds(tokenDecoded.exp);
+			const diff = tokenExpired.diff(now, "hour").toObject();
+			if (diff?.hours! <= 0) {
+				handleError(res, HttpCode.FORBIDDEN, MessageError.ERROR_TOKEN);
+				return;
+			}
+			req.user = {
+				id: tokenDecoded.user.id,
+				rol: tokenDecoded.user.rol,
+				storeId: tokenDecoded.user.storeId,
+				email: tokenDecoded.user.email,
+				name: tokenDecoded.user.name,
+				statusId: tokenDecoded.user.statusId,
+			};
+			next();
+		} else {
+			handleError(res, HttpCode.FORBIDDEN, MessageError.ERROR_TOKEN_AUTHORIZATION);
 		}
-		req.user = {
-			id: tokenDecoded.user.id,
-			rol: tokenDecoded.user.rol,
-			storeId: tokenDecoded.user.storeId,
-		};
-		next();
-	} else {
-		handleError(res, HttpCode.FORBIDDEN, MessageError.ERROR_TOKEN_AUTHORIZATION);
+	} catch (error) {
+		handleError(res, HttpCode.UNAUTHORIZED, MessageError.ERROR_TOKEN);
 	}
 };

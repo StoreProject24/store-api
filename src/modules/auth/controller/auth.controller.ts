@@ -8,6 +8,7 @@ import {
 	validateResetPassword,
 	validateVerifyOtp,
 } from "../validator/auth.validator";
+import { verifytoken } from "@middlewares/verifyToken.middleware";
 
 export const AuthController = Router();
 
@@ -90,6 +91,20 @@ AuthController.patch(
 			const { email, password, otpCode } = req.body;
 			await authDomain.changePasswordUser(email, password, otpCode);
 			handleSuccess(res, 200, { message: "Otp code verified" });
+		} catch (error: any) {
+			handleError(res, 500, error.message);
+		}
+	}
+);
+
+AuthController.post(
+	"/refresh-token",
+	verifytoken,
+	async (req: Request, res: Response) => {
+		try {
+			const authDomain = new AuthDomain();
+			const token = await authDomain.refreshToken(req.user);
+			handleSuccess(res, 200, { token });
 		} catch (error: any) {
 			handleError(res, 500, error.message);
 		}

@@ -7,7 +7,7 @@ import {
 	findUserByEmail,
 	saveOtpCode,
 } from "../repository/auth.repository";
-import { User, UserCreate } from "../types/auth.types";
+import { User, UserCreate, UserRefreshToken } from "../types/auth.types";
 import { AuthRepository } from "./auth.interface";
 import { getByUserId } from "@modules/stores/repository/store.repository";
 
@@ -35,7 +35,7 @@ export class AuthDomain implements AuthRepository {
 			throw new AppError(409, "Invalid user or password");
 		}
 		const store = await getByUserId(existUser.id);
-		if (!store.length){
+		if (!store.length) {
 			throw new AppError(404, "Store not found");
 		}
 		const token = createToken({
@@ -98,5 +98,22 @@ export class AuthDomain implements AuthRepository {
 		}
 		const newPassword = bcrypt.hashSync(password, 10);
 		await changePassword(email, newPassword);
+	}
+
+	async refreshToken(data: UserRefreshToken) {
+		const store = await getByUserId(data.id);
+		if (!store.length) {
+			throw new AppError(404, "Store not found");
+		}
+		console.log('data', data)
+		const token = createToken({
+			id: data.id,
+			email: data.email,
+			name: data.name,
+			rol: data.rol,
+			statusId: data.statusId,
+			storeId: store[0].id,
+		});
+		return token;
 	}
 }

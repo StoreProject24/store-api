@@ -3,15 +3,15 @@ import { handleError, handleSuccess } from "@config/helpers";
 import { verifyTokenAdminStore } from "@middlewares/verifyAdminStore.middleware";
 import { StoreDomain } from "../domain/store.domain";
 import {
-	validatioCreateStore,
-	validatioDeleteStore,
-	validatioUpdateStore,
+	validationCreateStore,
+	validationDeleteStore,
+	validationUpdateStore,
 } from "../validator/store.validator";
-import { verifyTokenAdmin } from "@middlewares/verifyAdmin.middleware";
+import { verifytoken } from "@middlewares/verifyToken.middleware";
 
 export const StoreController = Router();
 
-StoreController.get("/:idStore", async (req: Request, res: Response) => {
+StoreController.get("/:idStore", verifyTokenAdminStore,async (req: Request, res: Response) => {
 	try {
 		const storeDomain = new StoreDomain();
 		const idStore = Number(req.params.idStore);
@@ -24,11 +24,12 @@ StoreController.get("/:idStore", async (req: Request, res: Response) => {
 
 StoreController.post(
 	"/",
-	[verifyTokenAdmin, ...validatioCreateStore],
+	[verifytoken, ...validationCreateStore],
 	async (req: Request, res: Response) => {
 		try {
 			const storeDomain = new StoreDomain();
-			const store = await storeDomain.createStore(req.body);
+			const userId = req.user.id;
+			const store = await storeDomain.createStore({ ...req.body, userId });
 			handleSuccess(res, 201, store);
 		} catch (error: any) {
 			handleError(res, 404, error);
@@ -38,7 +39,7 @@ StoreController.post(
 
 StoreController.put(
 	"/",
-	[verifyTokenAdminStore, ...validatioUpdateStore],
+	[verifytoken, ...validationUpdateStore],
 	async (req: Request, res: Response) => {
 		try {
 			const storeDomain = new StoreDomain();
@@ -52,7 +53,7 @@ StoreController.put(
 
 StoreController.patch(
 	"/:id",
-	[verifyTokenAdminStore, ...validatioDeleteStore],
+	[verifyTokenAdminStore, ...validationDeleteStore],
 	async (req: Request, res: Response) => {
 		try {
 			const storeDomain = new StoreDomain();

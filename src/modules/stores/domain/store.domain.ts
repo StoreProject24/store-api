@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { create, getById, update } from "../repository/store.repository";
 import { StoreCreate, StoreUpdate } from "../types/store.types";
 import { StoreRepository } from "./store.interface";
@@ -27,6 +28,6 @@ export class StoreDomain implements StoreRepository {
 		if (!store) {
 			throw new Error("Store not found");
 		}
-		return store;
+		return _.omit(store, ["userId"]);;
 	}
 }
