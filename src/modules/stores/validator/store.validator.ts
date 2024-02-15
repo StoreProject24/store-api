@@ -1,5 +1,5 @@
 import { handleValidator } from "@config/helpers";
-import { check, param } from "express-validator";
+import { check, param, query } from "express-validator";
 
 export const validationCreateStore = [
 	check("name").isString().withMessage("name is required"),
@@ -28,5 +28,12 @@ export const validationUpdateStore = [
 
 export const validationDeleteStore = [
 	param("id").isNumeric().withMessage("id is required"),
+	handleValidator,
+];
+
+export const validationChangeImage = [
+	query("field")
+		.matches(/^(bannerUrl|logoUrl)$/)
+		.withMessage("the field must be bannerUrl or logoUrl"),
 	handleValidator,
 ];
