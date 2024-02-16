@@ -27,6 +27,7 @@ export const updateName = async (data: UpdateBrand) => {
 		},
 		data: {
 			name: data.name,
+			updatedAt: new Date(),
 		},
 	});
 	await prisma.$disconnect();
@@ -41,6 +42,7 @@ export const updateImage = async (data: UpdateBrandImage) => {
 		},
 		data: {
 			urlImage: data.urlImage,
+			updatedAt: new Date(),
 		},
 	});
 	await prisma.$disconnect();

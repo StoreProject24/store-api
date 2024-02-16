@@ -17,3 +17,11 @@ export interface UserCreate {
 	password: string;
 	urlImage: string;
 }
+
+export interface UserRefreshToken {
+	id: number;
+	email: string;
+	name: string;
+	rol: string;
+	statusId: number;
+}

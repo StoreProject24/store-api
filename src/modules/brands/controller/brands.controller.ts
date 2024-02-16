@@ -2,6 +2,10 @@ import { Request, Response, Router } from "express";
 import { handleError, handleSuccess } from "@config/helpers/response/response";
 import { verifyTokenAdminStore } from "@middlewares/verifyAdminStore.middleware";
 import { BrandsDomain } from "../domain/brands.domain";
+import {
+	validatorCreateBrand,
+	validatorGetBrand,
+} from "../validator/brans.validator";
 
 export const BrandsController = Router();
 
@@ -14,25 +18,35 @@ export const BrandsController = Router();
  * 5. actualizar la imagen de la marca siendo un adminStore dependiendo la tienda a la que pertenezca
  */
 // 1
-BrandsController.get("/:id", async (req: Request, res: Response) => {
-	try {
-		const brandDomain = new BrandsDomain();
-		const id = parseInt(req.params.id);
-		const response = await brandDomain.getBrands({ storeId: id, statusIds: [1] });
-		return handleSuccess(res, 201, response);
-	} catch (error) {
-		return handleError(res, 201, "BrandsController");
-	}
-});
-
-BrandsController.post(
-	"/",
-	verifyTokenAdminStore,
+BrandsController.get(
+	"/:idStore",
+	validatorGetBrand,
 	async (req: Request, res: Response) => {
 		try {
 			const brandDomain = new BrandsDomain();
-			const response = await brandDomain.createBrand(req.body);
-			return handleSuccess(res, 201, response);
+			const idStore = parseInt(req.params.idStore);
+			const brands = await brandDomain.getBrands({
+				storeId: idStore,
+				statusIds: [1],
+			});
+			return handleSuccess(res, 201, { brands });
+		} catch (error) {
+			return handleError(res, 201, "BrandsController");
+		}
+	}
+);
+
+BrandsController.post(
+	"/",
+	[verifyTokenAdminStore, ...validatorCreateBrand],
+	async (req: Request, res: Response) => {
+		try {
+			const brandDomain = new BrandsDomain();
+			const brands = await brandDomain.createBrand({
+				...req.body,
+				storeId: req.user.storeId,
+			});
+			return handleSuccess(res, 201, { brands });
 		} catch (error) {
 			return handleError(res, 201, "BrandsController");
 		}
@@ -46,12 +60,12 @@ BrandsController.patch(
 		try {
 			const brandDomain = new BrandsDomain();
 			const id = parseInt(req.params.id);
-			const response = await brandDomain.updateNameBrand({
+			const brands = await brandDomain.updateNameBrand({
 				id,
 				name: req.body.name,
 				storeId: req.user.storeId,
 			});
-			return handleSuccess(res, 201, response);
+			return handleSuccess(res, 201, { brands });
 		} catch (error) {
 			return handleError(res, 201, "BrandsController");
 		}
@@ -66,7 +80,7 @@ BrandsController.delete(
 			const brandDomain = new BrandsDomain();
 			const id = parseInt(req.params.id);
 			const response = await brandDomain.deleteBrand(id, req.user.storeId);
-			return handleSuccess(res, 201, response);
+			return handleSuccess(res, 201, {});
 		} catch (error) {
 			return handleError(res, 201, "BrandsController");
 		}

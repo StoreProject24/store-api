@@ -13,9 +13,9 @@ model Status {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @default(now())
   users     Users[]
-  Products  Products[]
-  Categoies Categoies[]
-  Brands    Brands[]
+  products  Products[]
+  categories Categories[]
+  brands    Brands[]
   Stores    Stores[]
 }
 
@@ -31,7 +31,7 @@ model Users {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  Stores    Stores[]
+  stores    Stores[]
 }
 
 model Stores {
@@ -59,16 +59,16 @@ model Brands {
   id        Int        @id @default(autoincrement())
   name      String
   urlImage  String
-  Store     Stores     @relation(fields: [storeId], references: [id])
+  store     Stores     @relation(fields: [storeId], references: [id])
   storeId   Int
-  Status    Status     @relation(fields: [statusId], references: [id])
+  status    Status     @relation(fields: [statusId], references: [id])
   statusId  Int        @default(1)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
   products  Products[]
 }
 
-model Categoies {
+model Categories {
   id        Int        @id @default(autoincrement())
   name      String
   urlImage  String
@@ -89,16 +89,16 @@ model Products {
   pricePublic     Float
   store           Stores            @relation(fields: [storeId], references: [id])
   storeId         Int
-  Brands          Brands?           @relation(fields: [brandId], references: [id])
+  brands          Brands?           @relation(fields: [brandId], references: [id])
   brandId         Int?
-  Status          Status            @relation(fields: [statusId], references: [id])
+  status          Status            @relation(fields: [statusId], references: [id])
   statusId        Int               @default(1)
-  Categories      Categoies?        @relation(fields: [categoryId], references: [id])
-  categoryId      Int
+  categories      Categories?        @relation(fields: [categoryId], references: [id])
+  categoryId      Int?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now())
-  ProductImages   ProductImages[]
-  ProductVariants ProductVariants[]
+  productImages   ProductImages[]
+  productVariants ProductVariants[]
 }
 
 model ProductImages {

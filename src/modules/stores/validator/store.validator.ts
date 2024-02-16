@@ -1,7 +1,7 @@
 import { handleValidator } from "@config/helpers";
-import { check, param } from "express-validator";
+import { check, param, query } from "express-validator";
 
-export const validatioCreateStore = [
+export const validationCreateStore = [
 	check("name").isString().withMessage("name is required"),
 	check("address").isString().withMessage("address is required"),
 	check("domain").isString().withMessage("domain is required"),
@@ -9,11 +9,12 @@ export const validatioCreateStore = [
 	check("email").isEmail().withMessage("email is required"),
 	check("city").isString().withMessage("city is required"),
 	check("zip").isString().withMessage("zip is required"),
-	check("userId").isNumeric().withMessage("userId is required"),
+	check("bannerUrl").isString().withMessage("bannerUrl is required"),
+	check("logoUrl").isString().withMessage("logoUrl is required"),
 	handleValidator,
 ];
 
-export const validatioUpdateStore = [
+export const validationUpdateStore = [
 	check("name").optional().isString().withMessage("name is required"),
 	check("address").optional().isString().withMessage("address is required"),
 	check("phone").optional().isString().withMessage("phone is required"),
@@ -25,7 +26,14 @@ export const validatioUpdateStore = [
 	handleValidator,
 ];
 
-export const validatioDeleteStore = [
+export const validationDeleteStore = [
 	param("id").isNumeric().withMessage("id is required"),
+	handleValidator,
+];
+
+export const validationChangeImage = [
+	query("field")
+		.matches(/^(bannerUrl|logoUrl)$/)
+		.withMessage("the field must be bannerUrl or logoUrl"),
 	handleValidator,
 ];

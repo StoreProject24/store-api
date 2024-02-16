@@ -2,7 +2,7 @@ import { prisma } from "@config/prisma/prisma";
 import { StoreCreate, StoreUpdate } from "../types/store.types";
 
 export const create = async (body: StoreCreate) => {
-	return await prisma.stores.create({
+	const store = await prisma.stores.create({
 		data: {
 			bannerUrl: body.bannerUrl,
 			logoUrl: body.logoUrl,
@@ -16,18 +16,32 @@ export const create = async (body: StoreCreate) => {
 			domain: body.domain,
 		},
 	});
+	await prisma.$disconnect();
+	return store;
 };
 
 export const getById = async (id: number) => {
-	return await prisma.stores.findUnique({
+	const store = await prisma.stores.findUnique({
 		where: {
 			id,
 		},
 	});
+	await prisma.$disconnect();
+	return store;
+};
+
+export const getByUserId = async (userId: number) => {
+	const store = await prisma.stores.findMany({
+		where: {
+			userId,
+		},
+	});
+	await prisma.$disconnect();
+	return store;
 };
 
 export const update = async (id: number, body: StoreUpdate) => {
-	return await prisma.stores.update({
+	const store = await prisma.stores.update({
 		where: {
 			id,
 		},
@@ -35,4 +49,6 @@ export const update = async (id: number, body: StoreUpdate) => {
 			...body,
 		},
 	});
+	await prisma.$disconnect();
+	return store;
 };
