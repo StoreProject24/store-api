@@ -12,6 +12,7 @@ import { brandsRouter } from "@modules/brands/router";
 import { authRouter } from "@modules/auth/router";
 import { storesRouter } from "@modules/stores/router";
 import { productsRouter } from "@modules/products/router";
+import { connectMongoDb } from "./mongo/mongo";
 
 app.use(
 	morgan("dev", {
@@ -20,6 +21,8 @@ app.use(
 		},
 	})
 );
+
+connectMongoDb()
 
 app.use(helmet());
 app.use(cors());
