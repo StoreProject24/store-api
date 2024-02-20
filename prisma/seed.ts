@@ -10,7 +10,7 @@ const main = async () => {
 				name: "ACTIVE",
 			},
 			{
-				id: 1,
+				id: 2,
 				name: "INACTIVE",
 			},
 		],

@@ -8,7 +8,7 @@
     "dev": "nodemon"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node -r tsconfig-paths/register prisma/seed.ts"
   },
   "engines": {
     "node": "20.5.1",
