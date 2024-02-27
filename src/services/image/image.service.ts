@@ -3,10 +3,10 @@ import {
 	PutObjectCommand,
 	DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
-import { lowWeightImage } from "@utils/lowWeightImage";
 import { Request } from "express";
 import formidable from "formidable";
 import fs from "fs/promises";
+import { lowWeightImage } from "@utils/lowWeightImage";
 
 const s3 = new S3Client({
 	endpoint: process.env.AWS_ENDPOINT,
@@ -26,24 +26,28 @@ const uploadImages = async (req: Request, storeId: number, dirname: string) => {
 	const [_, files] = await form.parse(req);
 	for (const file of files.file!) {
 		const fileExt = file.originalFilename?.split(".").pop();
-		const fileName = `${storeId}_${Date.now()}.${fileExt}`;
+		const fileName = `${Date.now()}.${fileExt}`;
 		const fileContent = await fs.readFile(file.filepath);
 		const fileContentLow = await lowWeightImage(fileContent);
 		await s3.send(
 			new PutObjectCommand({
 				Bucket: bucketName,
-				Key: `${dirname}/${fileName}`,
+				Key: `${storeId}/${dirname}/${fileName}`,
 				Body: fileContentLow,
 			})
 		);
-		images.push(`https://${bucketName}.s3.amazonaws.com/${dirname}/${fileName}`);
+		images.push(
+			`https://${bucketName}.s3.amazonaws.com/${storeId}/${dirname}/${fileName}`
+		);
 	}
 	return images;
 };
 
 const deleteImages = async (urls: string[]) => {
+	if (!urls.length) return;
 	const keys = urls.map((url) => {
-		return url.split("/").pop();
+		const urlSplit = url.split(".com")[1];
+		return urlSplit.substring(1, urlSplit.length);
 	});
 	for (const key of keys) {
 		await s3.send(

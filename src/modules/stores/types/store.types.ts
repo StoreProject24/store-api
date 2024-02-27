@@ -26,6 +26,10 @@ export interface StoreCreate {
 	userId: number;
 }
 
+export interface FieldStore {
+	field: "bannerUrl" | "logoUrl";
+}
+
 export interface StoreUpdate {
 	name?: string;
 	address?: string;

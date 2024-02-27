@@ -1,5 +1,5 @@
 import salesModel from "@models/sale/sale.model";
-import { CreateSale, SaleStatus } from "../types/sale.types";
+import { CreateSale, SaleStatus, UpdateSale } from "../types/sale.types";
 
 const createSale = async (newSale: CreateSale) => {
 	const sale = await salesModel.create({
@@ -25,7 +25,11 @@ const getLastSaleSequential = async (storeId: number) => {
 	return sale;
 };
 
-const updateSale = async (storeId: number, sequential: number, data: any) => {
+const updateSale = async (
+	storeId: number,
+	sequential: number,
+	data: UpdateSale
+) => {
 	const sale = await salesModel.findOneAndUpdate(
 		{ storeId, sequential },
 		{
@@ -34,6 +38,19 @@ const updateSale = async (storeId: number, sequential: number, data: any) => {
 				updatedAt: new Date(),
 			},
 		},
+		{ new: true }
+	);
+	return sale;
+};
+
+const updateUserSale = async (
+	storeId: number,
+	sequential: number,
+	idUser: number
+) => {
+	const sale = await salesModel.findOneAndUpdate(
+		{ storeId, sequential },
+		{ $set: { idUser, updatedAt: new Date() } },
 		{ new: true }
 	);
 	return sale;
@@ -78,4 +95,5 @@ export default {
 	updateSale,
 	getSalesByStore,
 	changeSaleStatus,
+	updateUserSale,
 };

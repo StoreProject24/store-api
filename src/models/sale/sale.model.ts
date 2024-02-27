@@ -67,6 +67,11 @@ export const saleSchema = new Schema({
 		enum: ["active", "deleted", "completed", "cancelled"],
 		default: "active",
 	},
+	idUser: {
+		type: Number || null,
+		required: false,
+		default: null,
+	},
 	user: userSchema,
 	createdAt: {
 		type: Date,

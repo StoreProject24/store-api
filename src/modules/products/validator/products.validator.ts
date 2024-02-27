@@ -2,6 +2,7 @@ import { handleValidator } from "@config/helpers";
 import { check, param, query } from "express-validator";
 
 export const validationCreateProduct = [
+	check("storeId").isNumeric().withMessage("storeId is required"),
 	check("name").isString().withMessage("name is required"),
 	check("description").isString().withMessage("description is required"),
 	check("price").isNumeric().withMessage("price is required"),
@@ -19,18 +20,19 @@ export const validationCreateProduct = [
 export const validatorGetProducts = [
 	query("limit").isNumeric().withMessage("limit is required"),
 	query("page").isNumeric().withMessage("page is required"),
-	param("idStore").isNumeric().withMessage("idStore is required"),
+	check("storeId").isNumeric().withMessage("storeId is required"),
 	handleValidator,
 ];
 
 export const validatorGetProductById = [
-	param("idStore").isNumeric().withMessage("idStore is required"),
-	param("idProduct").isNumeric().withMessage("idProduct is required"),
+	check("storeId").isNumeric().withMessage("storeId is required"),
+	param("productId").isNumeric().withMessage("productId is required"),
 	handleValidator,
-]
+];
 
 export const validatorUpdateProduct = [
-	param("idProduct").isNumeric().withMessage("idProduct is required"),
+	param("storeId").isNumeric().withMessage("storeId is required"),
+	param("productId").isNumeric().withMessage("productId is required"),
 	check("name").isString().withMessage("name is required"),
 	check("description").isString().withMessage("description is required"),
 	check("price").isNumeric().withMessage("price is required"),
@@ -41,11 +43,21 @@ export const validatorUpdateProduct = [
 		.optional()
 		.isNumeric()
 		.withMessage("categoryId is required"),
-		handleValidator
-]
+	handleValidator,
+];
 
 export const validatorChangeStatusProduct = [
-	param("idProduct").isNumeric().withMessage("idProduct is required"),
+	param("productId").isNumeric().withMessage("productId is required"),
 	check("status").isNumeric().withMessage("status is required"),
+	handleValidator,
+];
+
+export const validatorDeleteImageProduct = [
+	param("imageId").isNumeric().withMessage("imageId is required"),
+	handleValidator,
+];
+
+export const validatonUploadImagesProduct = [
+	param("productId").isNumeric().withMessage("productId is required"),
 	handleValidator,
 ];

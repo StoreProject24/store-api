@@ -4,7 +4,8 @@ export interface Sale {
 	items: SaleItem[];
 	total: number;
 	storeId: number;
-    status: SaleStatus['status'];
+	idUser: number | null;
+	status: SaleStatus["status"];
 }
 
 export interface CreateSale {
@@ -12,6 +13,7 @@ export interface CreateSale {
 	items: SaleItem[];
 	total: number;
 	storeId: number;
+	idUser: number | null;
 }
 
 export interface SaleItem {
@@ -21,6 +23,11 @@ export interface SaleItem {
 	quantity: number;
 	price: number;
 	total: number;
+}
+
+export interface UpdateSale {
+	items?: SaleItem[];
+	total?: number;
 }
 
 export interface SaleStatus {

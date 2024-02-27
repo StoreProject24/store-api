@@ -9,24 +9,15 @@ import {
 
 export const BrandsController = Router();
 
-/**
- * 1 Obtener todas las marcas [1. Si es usuario normal traer todas con status 1,
- *  si es adminStore traer todas] dependiendo la tienda a la que pertenezca
- * 2. Crear una marca siendo un adminStore dependiendo la tienda a la que pertenezca
- * 3. Actualizar una marca siendo un adminStore dependiendo la tienda a la que pertenezca
- * 4. Eliminar una marca siendo un adminStore dependiendo la tienda a la que pertenezca
- * 5. actualizar la imagen de la marca siendo un adminStore dependiendo la tienda a la que pertenezca
- */
-// 1
 BrandsController.get(
-	"/:idStore",
+	"/:storeId",
 	validatorGetBrand,
 	async (req: Request, res: Response) => {
 		try {
 			const brandDomain = new BrandsDomain();
-			const idStore = parseInt(req.params.idStore);
+			const storeId = parseInt(req.params.storeId);
 			const brands = await brandDomain.getBrands({
-				storeId: idStore,
+				storeId,
 				statusIds: [1],
 			});
 			return handleSuccess(res, 201, { brands });
@@ -44,7 +35,6 @@ BrandsController.post(
 			const brandDomain = new BrandsDomain();
 			const brands = await brandDomain.createBrand({
 				...req.body,
-				storeId: req.user.storeId,
 			});
 			return handleSuccess(res, 201, { brands });
 		} catch (error) {
@@ -54,16 +44,17 @@ BrandsController.post(
 );
 
 BrandsController.patch(
-	"/:id",
+	"/:storeId/:id",
 	verifyTokenAdminStore,
 	async (req: Request, res: Response) => {
 		try {
 			const brandDomain = new BrandsDomain();
 			const id = parseInt(req.params.id);
+			const storeId = parseInt(req.params.storeId);
 			const brands = await brandDomain.updateNameBrand({
 				id,
+				storeId,
 				name: req.body.name,
-				storeId: req.user.storeId,
 			});
 			return handleSuccess(res, 201, { brands });
 		} catch (error) {
@@ -73,13 +64,14 @@ BrandsController.patch(
 );
 
 BrandsController.delete(
-	"/:id",
+	"/:storeId/:id",
 	verifyTokenAdminStore,
 	async (req: Request, res: Response) => {
 		try {
 			const brandDomain = new BrandsDomain();
 			const id = parseInt(req.params.id);
-			const response = await brandDomain.deleteBrand(id, req.user.storeId);
+			const storeId = parseInt(req.params.id);
+			await brandDomain.deleteBrand(id, storeId);
 			return handleSuccess(res, 201, {});
 		} catch (error) {
 			return handleError(res, 201, "BrandsController");
@@ -88,17 +80,17 @@ BrandsController.delete(
 );
 
 BrandsController.patch(
-	"/image/:id",
+	"/image/:storeId/:id",
 	verifyTokenAdminStore,
 	async (req: Request, res: Response) => {
 		try {
 			const brandDomain = new BrandsDomain();
 			const id = parseInt(req.params.id);
-			// TODO: subir imagen a s3 y obtener la url [CREAR SERVICIO DE SUBIR IMAGEN]
+			const storeId = parseInt(req.params.storeId);
 			const response = await brandDomain.updateImageBrand({
 				id,
 				urlImage: req.body.urlImage,
-				storeId: req.user.storeId,
+				storeId,
 			});
 			return handleSuccess(res, 201, response);
 		} catch (error) {

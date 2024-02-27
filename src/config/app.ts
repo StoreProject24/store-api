@@ -13,6 +13,7 @@ import { authRouter } from "@modules/auth/router";
 import { storesRouter } from "@modules/stores/router";
 import { productsRouter } from "@modules/products/router";
 import { connectMongoDb } from "./mongo/mongo";
+import redis from './redis/redis'
 
 app.use(
 	morgan("dev", {
@@ -23,6 +24,7 @@ app.use(
 );
 
 connectMongoDb()
+redis();
 
 app.use(helmet());
 app.use(cors());
