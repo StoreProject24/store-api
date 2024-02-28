@@ -83,13 +83,19 @@ StoreController.patch(
 );
 
 StoreController.post(
-	"/image",
+	"/:storeId/image",
 	[verifyTokenAdminStore, ...validationUploadImageStore],
 	async (req: Request, res: Response) => {
 		try {
 			const storeDomain = new StoreDomain();
 			const field = req.query.field as FieldStore["field"];
-			const store = await storeDomain.uploadImage(req.user.id, field, req);
+			const storeId = parseInt(req.params.storeId);
+			const store = await storeDomain.uploadImage(
+				req.user.id,
+				storeId,
+				field,
+				req
+			);
 			handleSuccess(res, 201, { store });
 		} catch (error: any) {
 			handleError(res, 404, error);

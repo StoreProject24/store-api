@@ -1,9 +1,5 @@
 import { Request, Response, Router } from "express";
-import {
-	AppError,
-	handleError,
-	handleSuccess,
-} from "@config/helpers/response/response";
+import { handleError, handleSuccess } from "@config/helpers/response/response";
 import { verifyTokenAdminStore } from "@middlewares/verifyAdminStore.middleware";
 import { ProductsDomain } from "../domain/products.domain";
 import {
@@ -107,14 +103,20 @@ ProductController.patch(
 );
 
 ProductController.post(
-	"/:productId/images",
+	"/:storeId/:productId/images",
 	[verifyTokenAdminStore, ...validatonUploadImagesProduct],
 	async (req: Request, res: Response) => {
 		try {
 			const productDomain = new ProductsDomain();
 			const productId = parseInt(req.params.productId);
+			const storeId = parseInt(req.params.storeId);
 			const userId = req.user.id;
-			const images = await productDomain.uploadImages(productId, userId, req);
+			const images = await productDomain.uploadImages(
+				productId,
+				storeId,
+				userId,
+				req
+			);
 			handleSuccess(res, 200, { images });
 		} catch (error: any) {
 			handleError(res, error.status, error);

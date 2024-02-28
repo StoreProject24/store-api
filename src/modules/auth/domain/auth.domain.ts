@@ -81,7 +81,6 @@ export class AuthDomain implements AuthRepository {
 		if (!store.length) {
 			throw new AppError(404, "Store not found");
 		}
-		console.log('data', data)
 		const token = createToken({
 			id: data.id,
 			email: data.email,

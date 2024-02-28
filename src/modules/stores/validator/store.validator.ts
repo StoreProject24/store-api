@@ -27,6 +27,7 @@ export const validationUpdateStore = [
 ];
 
 export const validationUploadImageStore = [
+	param("storeId").isNumeric().withMessage("storeId is required"),
 	query("field").isString().withMessage("field is required"),
 ];
 export const validationDeleteStore = [

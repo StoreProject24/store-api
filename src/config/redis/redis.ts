@@ -10,7 +10,7 @@ const createClientRedis = async () => {
 		.connect();
 };
 export const setKeyRedis = async (key: string, value: string) => {
-	await client.set(key, value);
+	await client.set(key, value, { EX: 60 * 60 * 12 });
 };
 
 export const getKeyRedis = async (key: string) => {

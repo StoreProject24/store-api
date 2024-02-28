@@ -1,4 +1,7 @@
 import { Request } from "express";
+import { deleteImages, uploadImages } from "@services/image/image.service";
+import { AppError } from "@config/helpers";
+import { existStoreRedis } from "@modules/stores/utils/storeRedis";
 import {
 	create,
 	createProductImages,
@@ -13,15 +16,11 @@ import {
 } from "../repository/products.repository";
 import {
 	ProductCreate,
-	Product,
 	ProductsGet,
 	ProductsGetByCategoryId,
 	ProductImages,
 } from "../types/products.types";
 import { ProductsRepository } from "./products.interface";
-import { deleteImages, uploadImages } from "@services/image/image.service";
-import { getKeyRedis } from "@config/redis/redis";
-import { Store } from "@modules/stores/types/store.types";
 
 export class ProductsDomain implements ProductsRepository {
 	async createProduct(product: ProductCreate) {
@@ -48,16 +47,19 @@ export class ProductsDomain implements ProductsRepository {
 		return await updateStatusProduct(id, status);
 	}
 
-	async uploadImages(productId: number, userId: number, req: Request) {
-		const existStore: string | null = await getKeyRedis(`user-${userId}`);
-		const store: Store | null =
-			existStore !== null ? JSON.parse(existStore) : null;
-		if (store === null) {
-			throw new Error("Store not found");
+	async uploadImages(
+		productId: number,
+		storeId: number,
+		userId: number,
+		req: Request
+	) {
+		const store = await existStoreRedis(userId, storeId);
+		if (!store) {
+			throw new AppError(409, "Store not found");
 		}
 		const existProduct = await getProductByIdProduct(productId);
-		if (existProduct === null) {
-			throw new Error("Product not found");
+		if (!existProduct) {
+			throw new AppError(404, "Product not found");
 		}
 		const images = await uploadImages(req, store.id, "products");
 		const imagesProduct: ProductImages["images"] = [];
@@ -74,7 +76,7 @@ export class ProductsDomain implements ProductsRepository {
 	async deleteImage(imageId: number) {
 		const image = await getImageProductId(imageId);
 		if (!image) {
-			throw new Error("Image not found");
+			throw new AppError(404, "Image not found");
 		}
 		await deleteImageProduct(imageId);
 		await deleteImages([image.urlImage]);
