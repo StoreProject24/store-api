@@ -1,6 +1,7 @@
 import { prisma } from "@config/prisma/prisma";
 import {
 	ProductCreate,
+	ProductImages,
 	ProductsGet,
 	ProductsGetByCategoryId,
 } from "../types/products.types";
@@ -36,9 +37,23 @@ export const getProducts = async (body: ProductsGet) => {
 			id: true,
 			name: true,
 			pricePublic: true,
-			productImages: true,
+			// productImages: true,
+			productImages: {
+				select: {
+					id: true,
+					urlImage: true,
+				},
+			},
 			quantity: true,
-			productVariants: true,
+			productVariants: {
+				select: {
+					id: true,
+					name: true,
+					price: true,
+					quantity: true,
+					sku: true,
+				},
+			},
 			sku: true,
 			description: true,
 			brands: true,
@@ -63,12 +78,31 @@ export const getProductsByCategoryId = async (
 			id: true,
 			name: true,
 			pricePublic: true,
-			productImages: true,
+			productImages: {
+				select: {
+					id: true,
+					urlImage: true,
+				},
+			},
 			quantity: true,
-			productVariants: true,
+			productVariants: {
+				select: {
+					id: true,
+					name: true,
+					price: true,
+					quantity: true,
+					sku: true,
+				},
+			},
 			sku: true,
 			description: true,
-			brands: true,
+			brands: {
+				select: {
+					id: true,
+					name: true,
+					statusId: true,
+				},
+			},
 			categories: {
 				select: {
 					id: true,
@@ -92,12 +126,31 @@ export const getProductById = async (storeId: number, id: number) => {
 			id: true,
 			name: true,
 			pricePublic: true,
-			productImages: true,
+			productImages: {
+				select: {
+					id: true,
+					urlImage: true,
+				},
+			},
 			quantity: true,
-			productVariants: true,
+			productVariants: {
+				select: {
+					id: true,
+					name: true,
+					price: true,
+					quantity: true,
+					sku: true,
+				},
+			},
 			sku: true,
 			description: true,
-			brands: true,
+			brands: {
+				select: {
+					id: true,
+					name: true,
+					statusId: true,
+				},
+			},
 			categories: {
 				select: {
 					id: true,
@@ -110,10 +163,25 @@ export const getProductById = async (storeId: number, id: number) => {
 	return product;
 };
 
-export const update = async (id: number, body: ProductCreate) => {
+export const getProductByIdProduct = async (id: number) => {
+	const product = prisma.products.findUnique({
+		where: {
+			id,
+		},
+	});
+	await prisma.$disconnect();
+	return product;
+};
+
+export const update = async (
+	id: number,
+	storeId: number,
+	body: ProductCreate
+) => {
 	const product = await prisma.products.update({
 		where: {
 			id,
+			storeId,
 		},
 		data: {
 			name: body.name,
@@ -147,6 +215,33 @@ export const updateStatusProduct = async (id: number, status: number) => {
 
 export const deleteProduct = async (id: number) => {
 	await prisma.products.delete({
+		where: {
+			id,
+		},
+	});
+	await prisma.$disconnect();
+};
+
+export const createProductImages = async (
+	productImages: ProductImages["images"]
+) => {
+	await prisma.productImages.createMany({
+		data: productImages,
+	});
+	await prisma.$disconnect();
+};
+
+export const getImageProductId = async (id: number) => {
+	const image = await prisma.productImages.findUnique({
+		where: {
+			id,
+		},
+	});
+	await prisma.$disconnect();
+	return image;
+};
+export const deleteImageProduct = async (id: number) => {
+	await prisma.productImages.delete({
 		where: {
 			id,
 		},

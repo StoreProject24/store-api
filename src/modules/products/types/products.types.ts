@@ -38,3 +38,12 @@ export interface ProductsGetByCategoryId {
 	categoryId: number;
 	storeId: number;
 }
+
+export interface ProductImages {
+	images: ImageProduct[];
+}
+
+interface ImageProduct {
+	productId: number;
+	urlImage: string;
+}

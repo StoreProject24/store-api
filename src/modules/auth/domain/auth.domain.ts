@@ -34,30 +34,6 @@ export class AuthDomain implements AuthRepository {
 		if (!comparePassword) {
 			throw new AppError(409, "Invalid user or password");
 		}
-		const store = await getByUserId(existUser.id);
-		if (!store.length) {
-			throw new AppError(404, "Store not found");
-		}
-		const token = createToken({
-			id: existUser.id,
-			email: existUser.email,
-			name: existUser.name,
-			rol: existUser.role,
-			statusId: existUser.statusId,
-			storeId: store[0].id,
-		});
-		return token;
-	}
-
-	async loginAdmin(email: string, password: string) {
-		const existUser = await findUserByEmail(email);
-		if (!existUser) {
-			throw new AppError(404, "User not found");
-		}
-		const comparePassword = bcrypt.compareSync(password, existUser.password);
-		if (!comparePassword) {
-			throw new AppError(409, "Invalid user or password");
-		}
 		const token = createToken({
 			id: existUser.id,
 			email: existUser.email,
@@ -105,7 +81,6 @@ export class AuthDomain implements AuthRepository {
 		if (!store.length) {
 			throw new AppError(404, "Store not found");
 		}
-		console.log('data', data)
 		const token = createToken({
 			id: data.id,
 			email: data.email,

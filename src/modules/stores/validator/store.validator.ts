@@ -1,5 +1,5 @@
 import { handleValidator } from "@config/helpers";
-import { check, param } from "express-validator";
+import { check, param, query } from "express-validator";
 
 export const validationCreateStore = [
 	check("name").isString().withMessage("name is required"),
@@ -26,6 +26,10 @@ export const validationUpdateStore = [
 	handleValidator,
 ];
 
+export const validationUploadImageStore = [
+	param("storeId").isNumeric().withMessage("storeId is required"),
+	query("field").isString().withMessage("field is required"),
+];
 export const validationDeleteStore = [
 	param("id").isNumeric().withMessage("id is required"),
 	handleValidator,

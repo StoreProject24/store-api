@@ -25,7 +25,6 @@ export const verifytoken = (
 			req.user = {
 				id: tokenDecoded.user.id,
 				rol: tokenDecoded.user.rol,
-				storeId: tokenDecoded.user.storeId,
 				email: tokenDecoded.user.email,
 				name: tokenDecoded.user.name,
 				statusId: tokenDecoded.user.statusId,
