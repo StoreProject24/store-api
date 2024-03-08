@@ -37,15 +37,14 @@ export const getProducts = async (body: ProductsGet) => {
 			id: true,
 			name: true,
 			pricePublic: true,
-			// productImages: true,
-			productImages: {
+			images: {
 				select: {
 					id: true,
 					urlImage: true,
 				},
 			},
 			quantity: true,
-			productVariants: {
+			variants: {
 				select: {
 					id: true,
 					name: true,
@@ -78,14 +77,14 @@ export const getProductsByCategoryId = async (
 			id: true,
 			name: true,
 			pricePublic: true,
-			productImages: {
+			images: {
 				select: {
 					id: true,
 					urlImage: true,
 				},
 			},
 			quantity: true,
-			productVariants: {
+			variants: {
 				select: {
 					id: true,
 					name: true,
@@ -126,14 +125,14 @@ export const getProductById = async (storeId: number, id: number) => {
 			id: true,
 			name: true,
 			pricePublic: true,
-			productImages: {
+			images: {
 				select: {
 					id: true,
 					urlImage: true,
 				},
 			},
 			quantity: true,
-			productVariants: {
+			variants: {
 				select: {
 					id: true,
 					name: true,

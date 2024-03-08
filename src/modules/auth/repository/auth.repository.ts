@@ -3,22 +3,23 @@ import { UserCreate } from "../types/auth.types";
 
 export const create = async (body: UserCreate) => {
 	const user = await prisma.users.create({
-		data: {
-			email: body.email,
-			name: body.name,
-			password: body.password,
-			role: 'ADMINSTORE',
-			urlImage: body.urlImage,
-			statusId: 1,
-		},
-		select: {
-			email: true,
-			name: true,
-			id: true,
-			role: true,
-			statusId: true,
-		},
-	});
+    data: {
+      email: body.email,
+      name: body.name,
+      password: body.password,
+      role: 'ADMINSTORE',
+      urlImage: body.urlImage,
+      statusId: 1,
+      phone: body.phone,
+    },
+    select: {
+      email: true,
+      name: true,
+      id: true,
+      role: true,
+      statusId: true,
+    },
+  });
 	await prisma.$disconnect();
 	return user;
 };
