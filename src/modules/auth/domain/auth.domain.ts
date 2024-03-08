@@ -7,7 +7,7 @@ import {
 	findUserByEmail,
 	saveOtpCode,
 } from "../repository/auth.repository";
-import { User, UserCreate, UserRefreshToken } from "../types/auth.types";
+import { UserCreate, UserRefreshToken } from "../types/auth.types";
 import { AuthRepository } from "./auth.interface";
 import { getByUserId } from "@modules/stores/repository/store.repository";
 

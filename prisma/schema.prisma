@@ -81,25 +81,25 @@ model Categories {
 }
 
 model Products {
-  id              Int               @id @default(autoincrement())
-  name            String
-  price           Float
-  sku             String
-  quantity        Int
-  description     String
-  pricePublic     Float
-  store           Stores            @relation(fields: [storeId], references: [id])
-  storeId         Int
-  brands          Brands?           @relation(fields: [brandId], references: [id])
-  brandId         Int?
-  status          Status            @relation(fields: [statusId], references: [id])
-  statusId        Int               @default(1)
-  categories      Categories?       @relation(fields: [categoryId], references: [id])
-  categoryId      Int?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @default(now())
-  productImages   ProductImages[]
-  productVariants ProductVariants[]
+  id          Int               @id @default(autoincrement())
+  name        String
+  price       Float
+  sku         String
+  quantity    Int
+  description String
+  pricePublic Float
+  store       Stores            @relation(fields: [storeId], references: [id])
+  storeId     Int
+  brands      Brands?           @relation(fields: [brandId], references: [id])
+  brandId     Int?
+  status      Status            @relation(fields: [statusId], references: [id])
+  statusId    Int               @default(1)
+  categories  Categories?       @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @default(now())
+  images      ProductImages[]
+  variants    ProductVariants[]
 }
 
 model ProductImages {

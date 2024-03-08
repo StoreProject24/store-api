@@ -6,7 +6,7 @@ export interface User {
 	urlImage: string;
 	role: string;
 	phone: string;
-	otpCode: string;
+	otpCode?: string;
 	statusId: number;
 	createdAt: Date;
 	updatedAt: Date;
