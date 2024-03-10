@@ -36,24 +36,25 @@ model Users {
 }
 
 model Stores {
-  id        Int        @id @default(autoincrement())
-  name      String
-  address   String
-  logoUrl   String
-  bannerUrl String
-  domain    String     @unique
-  city      String
-  zip       String
-  phone     String
-  email     String     @unique
-  User      Users?     @relation(fields: [userId], references: [id])
-  userId    Int
-  status    Status     @relation(fields: [statusId], references: [id])
-  statusId  Int        @default(1)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @default(now())
-  products  Products[]
-  Brands    Brands[]
+  id         Int          @id @default(autoincrement())
+  name       String
+  address    String
+  logoUrl    String
+  bannerUrl  String
+  domain     String       @unique
+  city       String
+  zip        String
+  phone      String
+  email      String       @unique
+  User       Users?       @relation(fields: [userId], references: [id])
+  userId     Int
+  status     Status       @relation(fields: [statusId], references: [id])
+  statusId   Int          @default(1)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @default(now())
+  products   Products[]
+  Brands     Brands[]
+  Categories Categories[]
 }
 
 model Brands {
@@ -75,6 +76,8 @@ model Categories {
   urlImage  String
   status    Status     @relation(fields: [statusId], references: [id])
   statusId  Int
+  stores    Stores     @relation(fields: [storeId], references: [id])
+  storeId   Int        @default(1)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
   products  Products[]
@@ -100,6 +103,8 @@ model Products {
   updatedAt   DateTime          @default(now())
   images      ProductImages[]
   variants    ProductVariants[]
+  // video
+  // 
 }
 
 model ProductImages {

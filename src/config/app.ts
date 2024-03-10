@@ -16,6 +16,7 @@ import { userRouter } from '@modules/user/router';
 
 import { connectMongoDb } from './mongo/mongo';
 import redis from './redis/redis';
+import { categoriesRouter } from '@modules/categories/router';
 
 app.use(
   morgan('dev', {
@@ -43,6 +44,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 const apiPrefix = '/api';
 app.use('/healthCheck', healthCheck);
 app.use(apiPrefix + '/auth', authRouter);
+app.use(apiPrefix + '/categories', categoriesRouter);
 app.use(apiPrefix + '/user', userRouter);
 app.use(apiPrefix + '/brands', brandsRouter);
 app.use(apiPrefix + '/stores', storesRouter);
