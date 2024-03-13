@@ -1,4 +1,4 @@
-import { User, UserCreate, UserRefreshToken } from "../types/auth.types";
+import { UserCreate, UserRefreshToken } from "../types/auth.types";
 
 export interface AuthRepository {
 	createUser(body: UserCreate): Promise<string>;

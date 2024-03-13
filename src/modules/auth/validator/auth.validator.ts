@@ -13,6 +13,7 @@ export const validateRegister = [
 	check("email").isEmail().withMessage("Email is required"),
 	check("password").isLength({ min: 6 }).withMessage("Password is required"),
 	check("name").isString().withMessage("Name is required"),
+	check("phone").isString().withMessage("Phone is required"),
 	check("urlImage").isString().withMessage("Url image is required"),
 	handleValidator,
 ];
