@@ -6,6 +6,9 @@ export const getAll = async (storeId: number) => {
     where: {
       storeId,
     },
+    orderBy: {
+      id: 'asc',
+    },
   });
   await prisma.$disconnect();
   return categories;
@@ -16,7 +19,7 @@ export const create = async (storeId: number, body: CreateCategory) => {
     data: {
       ...body,
       storeId,
-      statusId: 1
+      statusId: 1,
     },
   });
   await prisma.$disconnect();
@@ -48,20 +51,20 @@ export const deleteCategory = async (storeId: number, categoryId: number) => {
   await prisma.$disconnect();
 };
 
-export const updateImage = async (body: UpdateImageCategory)=> {
+export const updateImage = async (body: UpdateImageCategory) => {
   const category = await prisma.categories.update({
     where: {
       storeId: body.storeId,
-      id: body.categoryId
+      id: body.categoryId,
     },
     data: {
       urlImage: body.urlImage,
-      updatedAt: new Date()
-    }
-  })
-  await prisma.$disconnect()
-  return category
-}
+      updatedAt: new Date(),
+    },
+  });
+  await prisma.$disconnect();
+  return category;
+};
 
 export const findCategoryId = async (categoryId: number) => {
   const category = await prisma.categories.findUnique({

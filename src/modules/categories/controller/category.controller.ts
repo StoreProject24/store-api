@@ -2,7 +2,13 @@ import { Request, Response, Router } from 'express';
 import { handleError, handleSuccess } from '@config/helpers/response/response';
 import { verifyTokenAdminStore } from '@middlewares/verifyAdminStore.middleware';
 import { CategoryDomain } from '../domain/category.domain';
-import { validatorCreateCategory, validatorDeleteCategory, validatorGetCategories, validatorImageCategory, validatorUpdateCategory } from '../validator/category.validator';
+import {
+  validatorCreateCategory,
+  validatorDeleteCategory,
+  validatorGetCategories,
+  validatorImageCategory,
+  validatorUpdateCategory,
+} from '../validator/category.validator';
 
 export const CategoriesController = Router();
 
@@ -23,7 +29,7 @@ CategoriesController.post(
   async (req: Request, res: Response) => {
     try {
       const categoriesDomain = new CategoryDomain();
-      const storeId = parseInt(req.params.storeId)
+      const storeId = parseInt(req.params.storeId);
       const category = await categoriesDomain.createCategory(storeId, req.body);
       return handleSuccess(res, 201, { category });
     } catch (error) {
@@ -47,6 +53,18 @@ CategoriesController.patch(
     }
   }
 );
+
+CategoriesController.post('/images/:storeId', verifyTokenAdminStore, async (req: Request, res: Response) => {
+  try {
+    const categoriesDomain = new CategoryDomain();
+    const storeId = parseInt(req.params.storeId);
+    const images = await categoriesDomain.uploadImageCategory(storeId, req);
+    handleSuccess(res, 200, { images });
+  } catch (error: any) {
+    console.log('error', error);
+    handleError(res, error.status, error);
+  }
+});
 
 CategoriesController.patch(
   '/images/:storeId/:id',
@@ -75,11 +93,11 @@ CategoriesController.delete(
     try {
       const categoriesDomain = new CategoryDomain();
       const id = parseInt(req.params.id);
-      const storeId = parseInt(req.params.id);
+      const storeId = parseInt(req.params.storeId);
       await categoriesDomain.deleteCategory(storeId, id);
       return handleSuccess(res, 200, {});
     } catch (error) {
-      return handleError(res, 200, 'CategoriesController');
+      return handleError(res, 500, 'CategoriesController');
     }
   }
 );

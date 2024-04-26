@@ -91,6 +91,7 @@ model Products {
   quantity    Int
   description String
   pricePublic Float
+  tags        String[]          @default([""])
   store       Stores            @relation(fields: [storeId], references: [id])
   storeId     Int
   brands      Brands?           @relation(fields: [brandId], references: [id])
@@ -103,8 +104,7 @@ model Products {
   updatedAt   DateTime          @default(now())
   images      ProductImages[]
   variants    ProductVariants[]
-  // video
-  // 
+  video       String?           @default("")
 }
 
 model ProductImages {
