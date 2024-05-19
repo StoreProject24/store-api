@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
-import { handleError, handleSuccess } from '@config/helpers/response/response';
-import { verifyTokenAdminStore } from '@middlewares/verifyAdminStore.middleware';
+import { handleError, handleSuccess } from '~config/helpers/response/response';
+import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
 import { CategoryDomain } from '../domain/category.domain';
 import {
   validatorCreateCategory,

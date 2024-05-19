@@ -2,7 +2,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client
 import { Request } from 'express';
 import formidable from 'formidable';
 import fs from 'fs/promises';
-import { lowWeightImage } from '@utils/lowWeightImage';
+import { lowWeightImage } from '~utils/lowWeightImage';
 
 const s3 = new S3Client({
   endpoint: process.env.AWS_ENDPOINT,

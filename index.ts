@@ -1,6 +1,6 @@
-import { Logger } from "winston";
-import app from "@config/app";
-import logger from "@config/logger/logger";
+import { Logger } from 'winston';
+import app from '~config/app';
+import logger from '~config/logger/logger';
 const { PORT } = process.env;
 
 declare global {

@@ -1,4 +1,4 @@
-import { prisma } from '@config/prisma/prisma';
+import { prisma } from '~config/prisma/prisma';
 import { CreateBrand, DeleteBrand, GetBrands, UpdateBrand, UpdateBrandImage } from '../types/brands.types';
 
 export const create = async (body: CreateBrand) => {

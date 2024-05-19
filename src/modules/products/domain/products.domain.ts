@@ -1,7 +1,7 @@
 import { Request } from 'express';
-import { deleteImages, uploadImages } from '@services/image/image.service';
-import { AppError } from '@config/helpers';
-import { existStoreRedis } from '@modules/stores/utils/storeRedis';
+import { deleteImages, uploadImages } from '~services/image/image.service';
+import { AppError } from '~config/helpers';
+import { existStoreRedis } from '~modules/stores/utils/storeRedis';
 import {
   create,
   createProductImages,

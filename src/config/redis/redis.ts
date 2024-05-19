@@ -1,24 +1,24 @@
-import logger from "@config/logger/logger";
-import { createClient } from "redis";
+import logger from '~config/logger/logger';
+import { createClient } from 'redis';
 
 let client: any;
 
 const createClientRedis = async () => {
-	client = await createClient()
-		.on('connect', () => logger.info("Redis Client connect"))
-		.on("error", (err) => logger.error("Redis Client Error", err))
-		.connect();
+  client = await createClient()
+    .on('connect', () => logger.info('Redis Client connect'))
+    .on('error', (err) => logger.error('Redis Client Error', err))
+    .connect();
 };
 export const setKeyRedis = async (key: string, value: string) => {
-	await client.set(key, value, { EX: 60 * 60 * 12 });
+  await client.set(key, value, { EX: 60 * 60 * 12 });
 };
 
 export const getKeyRedis = async (key: string) => {
-	return await client.get(key);
+  return await client.get(key);
 };
 
 export const deleteKeyRedis = async (key: string) => {
-	return await client.del(key);
+  return await client.del(key);
 };
 
 export default createClientRedis;

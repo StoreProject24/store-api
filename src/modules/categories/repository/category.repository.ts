@@ -1,4 +1,4 @@
-import { prisma } from '@config/prisma/prisma';
+import { prisma } from '~config/prisma/prisma';
 import { CreateCategory, UpdateCategory, UpdateImageCategory } from '../types/category.types';
 
 export const getAll = async (storeId: number) => {

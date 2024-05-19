@@ -1,8 +1,8 @@
-import { AppError } from '@config/helpers';
+import { AppError } from '~config/helpers';
 import { create, deleteCategory, findCategoryId, getAll, update, updateImage } from '../repository/category.repository';
 import { CreateCategory, UpdateCategory, UpdateImageCategory } from '../types/category.types';
 import { CategoryRepository } from './category.interface';
-import { deleteImages, uploadImages } from '@services/image/image.service';
+import { deleteImages, uploadImages } from '~services/image/image.service';
 import { Request } from 'express';
 
 export class CategoryDomain implements CategoryRepository {

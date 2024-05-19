@@ -1,36 +1,33 @@
-import { handleValidator } from "@config/helpers";
-import { check, param, query } from "express-validator";
+import { handleValidator } from '~config/helpers';
+import { check, param, query } from 'express-validator';
 
 export const validationCreateStore = [
-	check("name").isString().withMessage("name is required"),
-	check("address").isString().withMessage("address is required"),
-	check("domain").isString().withMessage("domain is required"),
-	check("phone").isString().withMessage("phone is required"),
-	check("email").isEmail().withMessage("email is required"),
-	check("city").isString().withMessage("city is required"),
-	check("zip").isString().withMessage("zip is required"),
-	check("bannerUrl").isString().withMessage("bannerUrl is required"),
-	check("logoUrl").isString().withMessage("logoUrl is required"),
-	handleValidator,
+  check('name').isString().withMessage('name is required'),
+  check('address').isString().withMessage('address is required'),
+  check('domain').isString().withMessage('domain is required'),
+  check('phone').isString().withMessage('phone is required'),
+  check('email').isEmail().withMessage('email is required'),
+  check('city').isString().withMessage('city is required'),
+  check('zip').isString().withMessage('zip is required'),
+  check('bannerUrl').isString().withMessage('bannerUrl is required'),
+  check('logoUrl').isString().withMessage('logoUrl is required'),
+  handleValidator,
 ];
 
 export const validationUpdateStore = [
-	check("name").optional().isString().withMessage("name is required"),
-	check("address").optional().isString().withMessage("address is required"),
-	check("phone").optional().isString().withMessage("phone is required"),
-	check("email").optional().isEmail().withMessage("email is required"),
-	check("city").optional().isString().withMessage("city is required"),
-	check("zip").optional().isString().withMessage("zip is required"),
-	check("userId").isNumeric().withMessage("userId is required"),
-	check("statusId").isNumeric().withMessage("statusId is required"),
-	handleValidator,
+  check('name').optional().isString().withMessage('name is required'),
+  check('address').optional().isString().withMessage('address is required'),
+  check('phone').optional().isString().withMessage('phone is required'),
+  check('email').optional().isEmail().withMessage('email is required'),
+  check('city').optional().isString().withMessage('city is required'),
+  check('zip').optional().isString().withMessage('zip is required'),
+  check('userId').isNumeric().withMessage('userId is required'),
+  check('statusId').isNumeric().withMessage('statusId is required'),
+  handleValidator,
 ];
 
 export const validationUploadImageStore = [
-	param("storeId").isNumeric().withMessage("storeId is required"),
-	query("field").isString().withMessage("field is required"),
+  param('storeId').isNumeric().withMessage('storeId is required'),
+  query('field').isString().withMessage('field is required'),
 ];
-export const validationDeleteStore = [
-	param("id").isNumeric().withMessage("id is required"),
-	handleValidator,
-];
+export const validationDeleteStore = [param('id').isNumeric().withMessage('id is required'), handleValidator];

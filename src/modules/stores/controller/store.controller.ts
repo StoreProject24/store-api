@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
-import { handleError, handleSuccess } from '@config/helpers';
-import { verifyTokenAdminStore } from '@middlewares/verifyAdminStore.middleware';
-import { verifytoken } from '@middlewares/verifyToken.middleware';
+import { handleError, handleSuccess } from '~config/helpers';
+import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
+import { verifytoken } from '~middlewares/verifyToken.middleware';
 import { StoreDomain } from '../domain/store.domain';
 import {
   validationCreateStore,

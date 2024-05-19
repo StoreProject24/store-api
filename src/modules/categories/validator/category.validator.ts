@@ -1,4 +1,4 @@
-import { handleValidator } from '@config/helpers';
+import { handleValidator } from '~config/helpers';
 import { check, param } from 'express-validator';
 
 export const validatorCreateCategory = [

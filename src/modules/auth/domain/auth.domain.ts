@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
 import * as _ from 'lodash';
-import { AppError, createToken } from '@config/helpers';
+import { AppError, createToken } from '~config/helpers';
 import { changePassword, create, findUserByEmail, saveOtpCode } from '../repository/auth.repository';
 import { UserCreate, UserRefreshToken } from '../types/auth.types';
 import { AuthRepository } from './auth.interface';
-import { getByUserId } from '@modules/stores/repository/store.repository';
+import { getByUserId } from '~modules/stores/repository/store.repository';
 
 export class AuthDomain implements AuthRepository {
   async createUser(body: UserCreate) {

@@ -1,1 +1,1 @@
-import { handleValidator } from "@config/helpers";
+import { handleValidator } from '~config/helpers';

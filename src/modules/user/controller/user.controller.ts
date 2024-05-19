@@ -1,8 +1,7 @@
-
-import { Request, Response, Router } from "express";
-import { handleError, handleSuccess } from "@config/helpers";
-import { verifytoken } from "@middlewares/verifyToken.middleware";
-import { UserDomain } from "../domain/user.domain";
+import { Request, Response, Router } from 'express';
+import { handleError, handleSuccess } from '~config/helpers';
+import { verifytoken } from '~middlewares/verifyToken.middleware';
+import { UserDomain } from '../domain/user.domain';
 
 export const UserController = Router();
 

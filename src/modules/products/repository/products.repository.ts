@@ -1,4 +1,4 @@
-import { prisma } from '@config/prisma/prisma';
+import { prisma } from '~config/prisma/prisma';
 import {
   ProductCreate,
   ProductImages,
