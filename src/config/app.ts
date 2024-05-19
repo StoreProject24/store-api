@@ -7,16 +7,16 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 
-import { healthCheck } from '@config/healthCheck/healthCheck';
-import { brandsRouter } from '@modules/brands/router';
-import { authRouter } from '@modules/auth/router';
-import { storesRouter } from '@modules/stores/router';
-import { productsRouter } from '@modules/products/router';
-import { userRouter } from '@modules/user/router';
+import { healthCheck } from '~config/healthCheck/healthCheck';
+import { brandsRouter } from '~modules/brands/router';
+import { authRouter } from '~modules/auth/router';
+import { storesRouter } from '~modules/stores/router';
+import { productsRouter } from '~modules/products/router';
+import { userRouter } from '~modules/user/router';
 
 import { connectMongoDb } from './mongo/mongo';
 import redis from './redis/redis';
-import { categoriesRouter } from '@modules/categories/router';
+import { categoriesRouter } from '~modules/categories/router';
 
 app.use(
   morgan('dev', {
