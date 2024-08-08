@@ -51,7 +51,8 @@ export const validatorChangeStatusProduct = [
 ];
 
 export const validatorDeleteImageProduct = [
-  param('imageId').isNumeric().withMessage('imageId is required'),
+  param('productId').isNumeric().withMessage('productId is required'),
+  check('imagesId').isArray().isNumeric().withMessage('imagesId is required'),
   handleValidator,
 ];
 

@@ -23,7 +23,7 @@ ProductController.post(
       const product = await productDomain.createProduct(req.body);
       handleSuccess(res, 201, { product });
     } catch (error: any) {
-      handleError(res, error.status, error);
+      handleError(res, error.status, error.message);
     }
   }
 );
@@ -61,17 +61,24 @@ ProductController.get('/:storeId', validatorGetProducts, async (req: Request, re
   }
 });
 
-ProductController.get('/:storeId/product/:productId', validatorGetProductById, async (req: Request, res: Response) => {
-  try {
-    const productDomain = new ProductsDomain();
-    const productId = parseInt(req.params.productId);
-    const storeId = parseInt(req.params.storeId);
-    const product = await productDomain.getProductById(storeId, productId);
-    handleSuccess(res, 200, { product });
-  } catch (error: any) {
-    handleError(res, error.status, error);
+ProductController.get(
+  '/:storeId/product/:productId',
+  verifyTokenAdminStore,
+  validatorGetProductById,
+  async (req: Request, res: Response) => {
+    try {
+      const productDomain = new ProductsDomain();
+      const productId = parseInt(req.params.productId);
+      console.log('productId', productId);
+      const storeId = parseInt(req.params.storeId);
+      console.log('storeId', storeId);
+      const product = await productDomain.getProductById(storeId, productId);
+      handleSuccess(res, 200, { product });
+    } catch (error: any) {
+      handleError(res, error.status, error);
+    }
   }
-});
+);
 
 ProductController.patch(
   '/:productId',
@@ -100,21 +107,25 @@ ProductController.post(
       const images = await productDomain.uploadImages(productId, storeId, userId, req);
       handleSuccess(res, 200, { images });
     } catch (error: any) {
+      console.log('error', error);
       handleError(res, error.status, error);
     }
   }
 );
 
 ProductController.delete(
-  '/images/:imageId',
+  '/:storeId/images/:productId',
   [verifyTokenAdminStore, ...validatorDeleteImageProduct],
   async (req: Request, res: Response) => {
     try {
       const productDomain = new ProductsDomain();
-      const imageId = parseInt(req.params.imageId);
-      await productDomain.deleteImage(imageId);
+      const imagesId: number[] = req.body.imagesId;
+      console.log('imagesId', imagesId);
+      const productId = parseInt(req.params.productId);
+      await productDomain.deleteImages(imagesId, productId);
       handleSuccess(res, 200, {});
     } catch (error: any) {
+      console.log('error', error);
       handleError(res, error.status, error);
     }
   }

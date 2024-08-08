@@ -5,8 +5,8 @@ import { existStoreRedis } from '~modules/stores/utils/storeRedis';
 import {
   create,
   createProductImages,
-  deleteImageProduct,
-  getImageProductId,
+  deleteImagesProduct,
+  getImagesProductId,
   getProductById,
   getProductByIdProduct,
   getProducts,
@@ -65,12 +65,12 @@ export class ProductsDomain implements ProductsRepository {
     return images;
   }
 
-  async deleteImage(imageId: number) {
-    const image = await getImageProductId(imageId);
-    if (!image) {
-      throw new AppError(404, 'Image not found');
+  async deleteImages(imagesId: number[], productId: number) {
+    const images = await getImagesProductId(productId);
+    if (!images) {
+      throw new AppError(404, 'Images not found');
     }
-    await deleteImageProduct(imageId);
-    await deleteImages([image.urlImage]);
+    await deleteImagesProduct(imagesId);
+    await deleteImages(images.map((img) => img.urlImage));
   }
 }
