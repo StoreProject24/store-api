@@ -28,7 +28,8 @@ AuthController.post('/login', validateLogin, async (req: Request, res: Response)
     const token = await authDomain.loginUser(req.body.email, req.body.password);
     handleSuccess(res, 200, { token });
   } catch (error: any) {
-    handleError(res, 500, error.message);
+    console.log('error', error);
+    handleError(res, error.status, error.message);
   }
 });
 

@@ -86,7 +86,7 @@ model Categories {
 model Products {
   id          Int               @id @default(autoincrement())
   name        String
-  price       Float
+  price       Float             @default(0)
   sku         String
   quantity    Int
   description String
@@ -104,7 +104,7 @@ model Products {
   updatedAt   DateTime          @default(now())
   images      ProductImages[]
   variants    ProductVariants[]
-  video       String?           @default("")
+  video       String            @default("")
 }
 
 model ProductImages {
