@@ -9,20 +9,6 @@ import {
 } from '../types/products.types';
 
 export const create = async (body: ProductCreate) => {
-  console.log('first', {
-    storeId: body.storeId,
-    name: body.name,
-    description: body.description,
-    price: body.price,
-    quantity: body.quantity,
-    categoryId: body.categoryId,
-    sku: body.sku,
-    pricePublic: body.pricePublic,
-    brandId: body.brandId,
-    video: body.video,
-    tags: body.tags,
-    statusId: 1,
-  });
   const product = await prisma.products.create({
     data: {
       storeId: body.storeId,
@@ -285,4 +271,13 @@ export const deleteImagesProduct = async (ids: number[]) => {
     },
   });
   await prisma.$disconnect();
+};
+
+export const validateIsMyProduct = async (id: number, storeId: number) => {
+  return await prisma.products.findUnique({
+    where: {
+      id,
+      storeId,
+    },
+  });
 };

@@ -69,9 +69,7 @@ ProductController.get(
     try {
       const productDomain = new ProductsDomain();
       const productId = parseInt(req.params.productId);
-      console.log('productId', productId);
       const storeId = parseInt(req.params.storeId);
-      console.log('storeId', storeId);
       const product = await productDomain.getProductById(storeId, productId);
       handleSuccess(res, 200, { product });
     } catch (error: any) {
@@ -81,13 +79,14 @@ ProductController.get(
 );
 
 ProductController.patch(
-  '/:productId',
+  '/:storeId/:productId',
   [verifyTokenAdminStore, ...validatorChangeStatusProduct],
   async (req: Request, res: Response) => {
     try {
       const productDomain = new ProductsDomain();
       const productId = parseInt(req.params.productId);
-      const product = await productDomain.changeStatusProduct(productId, req.body.status);
+      const storeId = parseInt(req.params.storeId);
+      const product = await productDomain.changeStatusProduct(productId, storeId, req.body.status);
       handleSuccess(res, 200, { product });
     } catch (error: any) {
       handleError(res, error.status, error);
@@ -107,7 +106,6 @@ ProductController.post(
       const images = await productDomain.uploadImages(productId, storeId, userId, req);
       handleSuccess(res, 200, { images });
     } catch (error: any) {
-      console.log('error', error);
       handleError(res, error.status, error);
     }
   }
@@ -120,12 +118,11 @@ ProductController.delete(
     try {
       const productDomain = new ProductsDomain();
       const imagesId: number[] = req.body.imagesId;
-      console.log('imagesId', imagesId);
       const productId = parseInt(req.params.productId);
-      await productDomain.deleteImages(imagesId, productId);
+      const storeId = parseInt(req.params.storeId);
+      await productDomain.deleteImages(imagesId, productId, storeId);
       handleSuccess(res, 200, {});
     } catch (error: any) {
-      console.log('error', error);
       handleError(res, error.status, error);
     }
   }

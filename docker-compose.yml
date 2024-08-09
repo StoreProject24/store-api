@@ -7,12 +7,14 @@ services:
       dockerfile: Dockerfile
     container_name: app
     ports:
-      - '3001:3000' # Ensure that this port mapping is correct
+      - '3001:3001' # Ensure that this port mapping is correct
     depends_on:
       - redis
     environment:
-      - REDIS_URL=redis://default:drYiFjkaHRwaSKOggochYcZPuttCNbFQ@redis.railway.internal:6379 # Use the service name here
-      - DATABASE_URL=postgresql://postgres:JRZoAfmRBDnjkJyRdNcTHQhdznSpIOYd@postgres.railway.internal:5432/railway
+      - REDIS_URL=${REDIS_URL}
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - MONGO_URL=${MONGO_URL}
 
     networks:
       - app-network
@@ -22,9 +24,22 @@ services:
     container_name: redis
     ports:
       - '6379:6379'
+    env_file:
+      - .env
+    networks:
+      - app-network
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
     networks:
       - app-network
 
+volumes:
+  mongo-data:
 networks:
   app-network:
     driver: bridge
