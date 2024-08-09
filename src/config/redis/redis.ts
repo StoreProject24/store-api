@@ -4,7 +4,10 @@ import { createClient } from 'redis';
 let client: any;
 
 const createClientRedis = async () => {
-  client = await createClient()
+  console.log('process.env.REDIS_URL', process.env.REDIS_URL);
+  client = await createClient({
+    url: process.env.REDIS_URL,
+  })
     .on('connect', () => logger.info('Redis Client connect'))
     .on('error', (err) => logger.error('Redis Client Error', err))
     .connect();

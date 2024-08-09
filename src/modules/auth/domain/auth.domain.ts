@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import * as _ from 'lodash';
 import { AppError, createToken } from '~config/helpers';
 import { changePassword, create, findUserByEmail, saveOtpCode } from '../repository/auth.repository';
