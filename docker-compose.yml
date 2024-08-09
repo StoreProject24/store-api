@@ -11,7 +11,8 @@ services:
     depends_on:
       - redis
     environment:
-      - REDIS_URL=redis://redis:6379 # Use the service name here
+      - REDIS_URL=redis://default:drYiFjkaHRwaSKOggochYcZPuttCNbFQ@redis.railway.internal:6379 # Use the service name here
+      - DATABASE_URL=postgresql://postgres:JRZoAfmRBDnjkJyRdNcTHQhdznSpIOYd@postgres.railway.internal:5432/railway
 
     networks:
       - app-network
