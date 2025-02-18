@@ -17,6 +17,13 @@ export class BrandsDomain implements BrandRepository {
     return await create(body);
   }
   async updateNameBrand(data: UpdateBrand) {
+    const currentBrand = await findBrandById({
+      id: data.id,
+      storeId: data.storeId,
+    });
+    if (!currentBrand) {
+      throw new AppError(404, 'Brand not found');
+    }
     return await updateName(data);
   }
   async updateImageBrand(data: UpdateBrandImage) {

@@ -5,7 +5,9 @@ import { existStoreRedis } from '~modules/stores/utils/storeRedis';
 import {
   create,
   createProductImages,
+  deleteImagesByProductId,
   deleteImagesProduct,
+  deleteProduct,
   getImagesProductId,
   getProductById,
   getProductByIdProduct,
@@ -72,7 +74,7 @@ export class ProductsDomain implements ProductsRepository {
     }
     const images = await uploadImages(req, store.id, 'products');
     const imagesProduct: ProductImages['images'] = [];
-    for (const img of images!) {
+    for (const img of images) {
       imagesProduct.push({
         urlImage: img,
         productId: productId,
@@ -80,6 +82,15 @@ export class ProductsDomain implements ProductsRepository {
     }
     await createProductImages(imagesProduct);
     return images;
+  }
+
+  async deleteProductById(productId: number, storeId: number) {
+    const isMyProduct = await validateIsMyProduct(productId, storeId);
+    if (!isMyProduct) {
+      throw new AppError(401, 'No estas autorizado para esta accion');
+    }
+    await deleteImagesByProductId(productId);
+    await deleteProduct(productId, storeId);
   }
 
   async deleteImages(imagesId: number[], productId: number, storeId: number) {

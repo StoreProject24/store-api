@@ -1,11 +1,12 @@
 import bcrypt from 'bcryptjs';
-import * as _ from 'lodash';
 import { AppError, createToken } from '~config/helpers';
 import { changePassword, create, findUserByEmail, saveOtpCode } from '../repository/auth.repository';
 import { UserCreate, UserRefreshToken } from '../types/auth.types';
 import { AuthRepository } from './auth.interface';
 import { getByUserId } from '~modules/stores/repository/store.repository';
+import { sendEmail } from '~services/email/email.service';
 
+const STORE_APP_NAME = process.env.STORE_APP_NAME;
 export class AuthDomain implements AuthRepository {
   async createUser(body: UserCreate) {
     const existUser = await findUserByEmail(body.email);
@@ -17,7 +18,13 @@ export class AuthDomain implements AuthRepository {
       ...body,
       password: newPassword,
     });
-    const token = createToken({ ...user });
+    const token = createToken(user);
+    await sendEmail(body.email, 'Bienvenido a Store', 'welcome', {
+      communityName: 'Store Admin',
+      name: body.name,
+      url: 'www.google.com',
+      year: new Date().getFullYear(),
+    });
     return token;
   }
   async loginUser(email: string, password: string) {
@@ -45,7 +52,13 @@ export class AuthDomain implements AuthRepository {
       throw new AppError(404, 'User not found');
     }
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-    // TODO:: send email with otp code
+    await sendEmail(email, 'Recuperacion de contrasena', 'otpCode', {
+      otpCode,
+      name: existUser.name,
+      logoUrl: '',
+      year: new Date().getFullYear(),
+      companyName: STORE_APP_NAME,
+    });
     await saveOtpCode(email, otpCode);
   }
 

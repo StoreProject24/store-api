@@ -1,11 +1,10 @@
 import salesModel from '~models/sale/sale.model';
-import { CreateSale, SaleStatus, UpdateSale } from '../types/sale.types';
+import { Types } from 'mongoose';
+import { CreateSale, Sale, SaleStatus, UpdateSale } from '../types/sale.types';
 
-const createSale = async (newSale: CreateSale) => {
-  const sale = await salesModel.create({
-    ...newSale,
-  });
-  return sale;
+const create = async (newSale: CreateSale) => {
+  const sale = await salesModel.create(newSale);
+  return sale.toObject() as Sale;
 };
 
 const getSaleBySequential = async (storeId: number, sequential: number) => {
@@ -14,6 +13,22 @@ const getSaleBySequential = async (storeId: number, sequential: number) => {
     sequential,
   });
   return sale;
+};
+
+const getSaleById = async (storeId: number, saleId: Types.ObjectId) => {
+  const sale = await salesModel.findOne({
+    storeId,
+    _id: saleId,
+  });
+
+  return sale;
+};
+
+const deleteSale = async (storeId: number, saleId: Types.ObjectId) => {
+  await salesModel.deleteOne({
+    storeId,
+    _id: saleId,
+  });
 };
 
 const getLastSaleSequential = async (storeId: number) => {
@@ -48,35 +63,36 @@ const updateUserSale = async (storeId: number, sequential: number, idUser: numbe
   return sale;
 };
 
-const changeSaleStatus = async (storeId: number, sequential: number, status: string) => {
+const updateStatusSale = async (storeId: number, saleId: Types.ObjectId, status: SaleStatus) => {
   const sale = await salesModel.findOneAndUpdate(
-    { storeId, sequential },
+    { storeId, _id: saleId },
     { $set: { status, updatedAt: new Date() } },
     { new: true }
   );
-  return sale;
+  return sale?.toJSON() as Sale;
 };
 
 const getSalesByStore = async (storeId: number, page: number, limit: number, status: SaleStatus | null) => {
-  let params = {};
+  const filter: any = { storeId };
   if (status) {
-    params = {
-      status,
-    };
+    filter.status = status;
   }
   const sales = await salesModel
-    .find({ storeId, params })
+    .find(filter)
     .skip((page - 1) * limit)
-    .limit(limit);
-  return sales;
+    .limit(limit)
+    .lean();
+  return sales as unknown as Sale[];
 };
 
-export default {
-  createSale,
+export {
+  create,
   getSaleBySequential,
   getLastSaleSequential,
   updateSale,
   getSalesByStore,
-  changeSaleStatus,
+  updateStatusSale,
   updateUserSale,
+  getSaleById,
+  deleteSale,
 };

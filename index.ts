@@ -8,6 +8,8 @@ declare global {
 }
 global.log = logger;
 
+// Crear Middleware para detectar que la tienda no este en status = 2; diabled for making thinks
+
 app.listen(PORT, () => {
   log.info(`Server running on port ${PORT}`);
 });

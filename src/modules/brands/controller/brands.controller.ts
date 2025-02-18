@@ -15,8 +15,8 @@ BrandsController.get('/:storeId', validatorGetBrand, async (req: Request, res: R
       statusIds: [1],
     });
     return handleSuccess(res, 201, { brands });
-  } catch (error) {
-    return handleError(res, 201, 'BrandsController');
+  } catch (error: any) {
+    return handleError(res, error.status, error.message);
   }
 });
 
@@ -32,8 +32,8 @@ BrandsController.post(
         storeId,
       });
       return handleSuccess(res, 201, { brand });
-    } catch (error) {
-      return handleError(res, 201, 'BrandsController');
+    } catch (error: any) {
+      return handleError(res, error.status, error.message);
     }
   }
 );
@@ -45,8 +45,7 @@ BrandsController.post('/images/:storeId', verifyTokenAdminStore, async (req: Req
     const images = await brandDomain.uploadImageBrand(storeId, req);
     return handleSuccess(res, 201, { images });
   } catch (error: any) {
-    console.log('error', error);
-    handleError(res, error.status, error);
+    return handleError(res, error.status, error.message);
   }
 });
 
@@ -61,8 +60,8 @@ BrandsController.patch('/:storeId/:id', verifyTokenAdminStore, async (req: Reque
       name: req.body.name,
     });
     return handleSuccess(res, 201, { brands });
-  } catch (error) {
-    return handleError(res, 201, 'BrandsController');
+  } catch (error: any) {
+    return handleError(res, error.status, error.message);
   }
 });
 
@@ -73,8 +72,8 @@ BrandsController.delete('/:storeId/:id', verifyTokenAdminStore, async (req: Requ
     const storeId = parseInt(req.params.storeId);
     await brandDomain.deleteBrand(id, storeId);
     return handleSuccess(res, 201, {});
-  } catch (error) {
-    return handleError(res, 201, 'BrandsController');
+  } catch (error: any) {
+    return handleError(res, error.status, error.message);
   }
 });
 
@@ -89,7 +88,7 @@ BrandsController.patch('/image/:storeId', verifyTokenAdminStore, async (req: Req
       storeId,
     });
     return handleSuccess(res, 201, response);
-  } catch (error) {
-    return handleError(res, 201, 'BrandsController');
+  } catch (error: any) {
+    return handleError(res, error.status, error.message);
   }
 });

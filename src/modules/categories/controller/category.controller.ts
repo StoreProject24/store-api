@@ -18,8 +18,8 @@ CategoriesController.get('/:storeId', validatorGetCategories, async (req: Reques
     const storeId = parseInt(req.params.storeId);
     const categories = await categoriesDomain.getAllCategories(storeId);
     return handleSuccess(res, 200, { categories });
-  } catch (error) {
-    return handleError(res, 200, 'Categories');
+  } catch (error: any) {
+    return handleError(res, error.status, error.message);
   }
 });
 
@@ -32,8 +32,8 @@ CategoriesController.post(
       const storeId = parseInt(req.params.storeId);
       const category = await categoriesDomain.createCategory(storeId, req.body);
       return handleSuccess(res, 201, { category });
-    } catch (error) {
-      return handleError(res, 201, 'CategoriesController');
+    } catch (error: any) {
+      return handleError(res, error.status, error.message);
     }
   }
 );
@@ -48,8 +48,8 @@ CategoriesController.patch(
       const storeId = parseInt(req.params.storeId);
       const category = await categoriesDomain.updateCategory(storeId, { id, ...req.body });
       return handleSuccess(res, 200, { category });
-    } catch (error) {
-      return handleError(res, 201, 'CategoriesController');
+    } catch (error: any) {
+      return handleError(res, error.status, error.message);
     }
   }
 );
@@ -61,8 +61,7 @@ CategoriesController.post('/images/:storeId', verifyTokenAdminStore, async (req:
     const images = await categoriesDomain.uploadImageCategory(storeId, req);
     handleSuccess(res, 200, { images });
   } catch (error: any) {
-    console.log('error', error);
-    handleError(res, error.status, error);
+    return handleError(res, error.status, error.message);
   }
 });
 
@@ -80,8 +79,8 @@ CategoriesController.patch(
         urlImage: req.body.urlImage,
       });
       return handleSuccess(res, 200, { category });
-    } catch (error) {
-      return handleError(res, 200, 'CategoriesController');
+    } catch (error: any) {
+      return handleError(res, error.status, error.message);
     }
   }
 );
@@ -96,8 +95,8 @@ CategoriesController.delete(
       const storeId = parseInt(req.params.storeId);
       await categoriesDomain.deleteCategory(storeId, id);
       return handleSuccess(res, 200, {});
-    } catch (error) {
-      return handleError(res, 500, 'CategoriesController');
+    } catch (error: any) {
+      return handleError(res, error.status, error.message);
     }
   }
 );

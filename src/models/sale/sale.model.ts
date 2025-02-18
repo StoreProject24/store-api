@@ -1,92 +1,102 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
+import { SaleStatus } from '~modules/sales/types/sale.types';
 
-const itemsSchema = new Schema({
-	productId: {
-		type: Number,
-		required: true,
-	},
-	productName: {
-		type: String,
-		required: true,
-	},
-	discount: {
-		type: Number,
-		required: false,
-		default: 0,
-	},
-	quantity: {
-		type: Number,
-		required: true,
-	},
-	price: {
-		type: Number,
-		required: true,
-	},
-	total: {
-		type: Number,
-		required: true,
-	},
-});
+const itemsSchema = new Schema(
+  {
+    id: {
+      type: Number,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    discount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+  },
+  {
+    _id: false,
+  }
+);
 
-const userSchema = new Schema({
-	name: {
-		type: String,
-		required: true,
-	},
-	email: {
-		type: String,
-		required: true,
-	},
-	phone: {
-		type: String,
-		required: true,
-	},
-	id: {
-		type: String,
-		required: false,
-	},
-});
+const userSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    id: {
+      type: String,
+      required: false,
+    },
+  },
+  {
+    _id: false,
+  }
+);
 
 export const saleSchema = new Schema({
-	_id: Schema.Types.ObjectId,
-	sequential: {
-		type: Number,
-		required: true,
-	},
-	items: [itemsSchema],
-	total: {
-		type: Number,
-		required: true,
-	},
-	storeId: {
-		type: Number,
-		required: true,
-	},
-	status: {
-		type: String,
-		enum: ["active", "deleted", "completed", "cancelled"],
-		default: "active",
-	},
-	idUser: {
-		type: Number || null,
-		required: false,
-		default: null,
-	},
-	user: userSchema,
-	createdAt: {
-		type: Date,
-		default: Date.now,
-	},
-	updatedAt: {
-		type: Date,
-		default: Date.now,
-	},
+  _id: {
+    type: Schema.Types.ObjectId,
+    auto: true,
+  },
+  sequential: {
+    type: Number,
+    required: true,
+  },
+  items: [itemsSchema],
+  total: {
+    type: Number,
+    required: true,
+  },
+  discount: {
+    type: Number,
+    required: true,
+  },
+  storeId: {
+    type: Number,
+    required: true,
+  },
+  userId: {
+    type: Number || null,
+    required: false,
+    default: null,
+  },
+  user: userSchema,
+  status: {
+    type: String,
+    enum: SaleStatus,
+    default: SaleStatus.active,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
+const salesModel = model('sales', saleSchema);
 
-const salesModel =  model("sales", saleSchema);
-
-export default salesModel
-// Para la parte del admin, tambien hay personas que atienden a los clientes
-// Se podria crear un panel donde ellos pudieran mirar las ventas, y que ventas tiene cada uno
-// Tambien se podria crear un panel para que ellos puedan ver los productos que hay en el almacen
+export default salesModel;

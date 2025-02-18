@@ -60,3 +60,9 @@ export const validatorUploadImagesProduct = [
   param('productId').isNumeric().withMessage('productId is required'),
   handleValidator,
 ];
+
+export const validatorDeleteProduct = [
+  param('storeId').isNumeric().withMessage('storeId is required'),
+  param('productId').isNumeric().withMessage('productId is required'),
+  handleValidator,
+];

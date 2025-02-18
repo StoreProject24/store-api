@@ -1,6 +1,5 @@
-import { check, param } from 'express-validator';
+import { check } from 'express-validator';
 
-import { Request, Response, NextFunction } from 'express';
 import { handleValidator } from '~config/helpers';
 
 export const validateLogin = [

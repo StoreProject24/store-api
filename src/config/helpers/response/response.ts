@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import type { IData } from './response.type';
 
 export const handleSuccess = (res: Response, status: number, data: any) => {
   return res.status(status).json({

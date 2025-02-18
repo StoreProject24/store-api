@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
-import { AuthDomain } from '../domain/auth.domain';
 import { handleError, handleSuccess } from '~config/helpers';
+import { AuthDomain } from '../domain/auth.domain';
 import {
   validateForgotPassword,
   validateLogin,
@@ -8,7 +8,7 @@ import {
   validateResetPassword,
   validateVerifyOtp,
 } from '../validator/auth.validator';
-import { verifytoken } from '~middlewares/verifyToken.middleware';
+import { verifyToken } from '~middlewares/verifyToken.middleware';
 
 export const AuthController = Router();
 
@@ -28,7 +28,6 @@ AuthController.post('/login', validateLogin, async (req: Request, res: Response)
     const token = await authDomain.loginUser(req.body.email, req.body.password);
     handleSuccess(res, 200, { token });
   } catch (error: any) {
-    console.log('error', error);
     handleError(res, error.status, error.message);
   }
 });
@@ -36,8 +35,10 @@ AuthController.post('/login', validateLogin, async (req: Request, res: Response)
 AuthController.post('/forgot-password', validateForgotPassword, async (req: Request, res: Response) => {
   try {
     const authDomain = new AuthDomain();
-    authDomain.forgotPasswordUser(req.body.email);
-    handleSuccess(res, 200, 'Email sent');
+    await authDomain.forgotPasswordUser(req.body.email);
+    handleSuccess(res, 200, {
+      message: 'Email sent',
+    });
   } catch (error: any) {
     handleError(res, 500, error.message);
   }
@@ -64,7 +65,7 @@ AuthController.patch('/reset-password', validateResetPassword, async (req: Reque
   }
 });
 
-AuthController.post('/refresh-token', verifytoken, async (req: Request, res: Response) => {
+AuthController.post('/refresh-token', verifyToken, async (req: Request, res: Response) => {
   try {
     const authDomain = new AuthDomain();
     const token = await authDomain.refreshToken(req.user);

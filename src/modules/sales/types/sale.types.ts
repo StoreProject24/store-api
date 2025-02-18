@@ -1,35 +1,52 @@
+import { ObjectId } from 'mongoose';
+
 export interface Sale {
-	_id: string;
-	sequential: number;
-	items: SaleItem[];
-	total: number;
-	storeId: number;
-	idUser: number | null;
-	status: SaleStatus["status"];
+  _id: ObjectId;
+  sequential: number;
+  items: SaleItem[];
+  total: number;
+  discount: number;
+  storeId: number;
+  userId: number | null;
+  status: SaleStatus;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateSale {
-	sequential: number;
-	items: SaleItem[];
-	total: number;
-	storeId: number;
-	idUser: number | null;
+  sequential: number;
+  items: SaleItem[];
+  total: number;
+  storeId: number;
+  userId: number | null;
+}
+
+export interface CreateSaleBody {
+  userId: number;
+  items: SaleItem[];
+  storeId: number;
+  discount: number;
+  status: SaleStatus;
+  total: number;
 }
 
 export interface SaleItem {
-	productId: string;
-	productName: string;
-	discount: number;
-	quantity: number;
-	price: number;
-	total: number;
+  productId: string;
+  productName: string;
+  discount: number;
+  quantity: number;
+  price: number;
+  total: number;
 }
 
 export interface UpdateSale {
-	items?: SaleItem[];
-	total?: number;
+  items?: SaleItem[];
+  total?: number;
 }
 
-export interface SaleStatus {
-	status: "active" | "deleted" | "completed" | "cancelled";
+export enum SaleStatus {
+  'active',
+  'deleted',
+  'completed',
+  'cancelled',
 }

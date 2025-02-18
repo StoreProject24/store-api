@@ -13,6 +13,7 @@ import { authRouter } from '~modules/auth/router';
 import { storesRouter } from '~modules/stores/router';
 import { productsRouter } from '~modules/products/router';
 import { userRouter } from '~modules/user/router';
+import { salesRouter } from '~modules/sales/router';
 
 import { connectMongoDb } from './mongo/mongo';
 import redis from './redis/redis';
@@ -49,5 +50,6 @@ app.use(apiPrefix + '/user', userRouter);
 app.use(apiPrefix + '/brands', brandsRouter);
 app.use(apiPrefix + '/stores', storesRouter);
 app.use(apiPrefix + '/products', productsRouter);
+app.use(apiPrefix + '/sales', salesRouter);
 
 export default app;

@@ -217,10 +217,19 @@ export const updateStatusProduct = async (id: number, status: number) => {
   return product;
 };
 
-export const deleteProduct = async (id: number) => {
+export const deleteImagesByProductId = async (id: number) => {
+  await prisma.productImages.deleteMany({
+    where: {
+      productId: id,
+    },
+  });
+};
+
+export const deleteProduct = async (id: number, storeId: number) => {
   await prisma.products.delete({
     where: {
       id,
+      storeId,
     },
   });
   await prisma.$disconnect();

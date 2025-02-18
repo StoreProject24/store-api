@@ -10,6 +10,7 @@ import {
   validatorChangeStatusProduct,
   validatorUploadImagesProduct,
   validatorDeleteImageProduct,
+  validatorDeleteProduct,
 } from '../validator/products.validator';
 
 export const ProductController = Router();
@@ -105,6 +106,22 @@ ProductController.post(
       const userId = req.user.id;
       const images = await productDomain.uploadImages(productId, storeId, userId, req);
       handleSuccess(res, 200, { images });
+    } catch (error: any) {
+      handleError(res, error.status, error);
+    }
+  }
+);
+
+ProductController.delete(
+  '/:storeId/productId/:productId',
+  [verifyTokenAdminStore, ...validatorDeleteProduct],
+  async (req: Request, res: Response) => {
+    try {
+      const productDomain = new ProductsDomain();
+      const productId = parseInt(req.params.productId);
+      const storeId = parseInt(req.params.storeId);
+      await productDomain.deleteProductById(productId, storeId);
+      handleSuccess(res, 200, {});
     } catch (error: any) {
       handleError(res, error.status, error);
     }
