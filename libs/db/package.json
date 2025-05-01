@@ -1,0 +1,17 @@
+{
+  "name": "@stores-api/db",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "generate": "prisma generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prisma": "5.9.1"
+  },
+  "dependencies": {
+    "@prisma/client": "5.9.1"
+  }
+}

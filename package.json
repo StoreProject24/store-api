@@ -10,9 +10,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon",
-    "build": "rm -f tsconfig.tsbuildinfo && npx tsc && tsc-alias -p tsconfig.json",
-    "start": "node ./dist/index.js"
+    "api-admin:dev": "cd apps/admin-api && nodemon",
+    "api-admin:build": "cd apps/admin-api && rm -f tsconfig.tsbuildinfo && npx tsc && tsc-alias -p tsconfig.json",
+    "api-admin:start": "cd apps/admin-api && node ./dist/index.js"
   },
 
   "prisma": {
