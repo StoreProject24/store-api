@@ -7,10 +7,23 @@ export interface Product {
   categoryId: number | null;
   sku: string;
   pricePublic: number;
-  tags: string[] | string;
-  video: string | null;
+  tags: string[];
+  variants: ProductVariants[];
+  storeId: number;
+  video: string;
   brandId: number | null;
   statusId: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ProductVariants {
+  id: number;
+  name: string;
+  price: number;
+  sku: string;
+  quantity: number;
+  productId: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,20 +35,7 @@ export interface ProductsGetSearch {
   page: number;
 }
 
-export interface ProductCreate {
-  name: string;
-  description: string;
-  price: number;
-  quantity: number;
-  categoryId: number;
-  sku: string;
-  tags: string[];
-  video: string;
-  pricePublic: number;
-  brandId?: number;
-  statusId?: number;
-  storeId: number;
-}
+export type ProductCreate = Omit <Product, 'id'>
 
 export interface ProductsGet {
   page: number;

@@ -1,6 +1,6 @@
 import { AppError } from '~config/helpers';
 import { create, deleteCategory, findCategoryId, getAll, update, updateImage } from '../repository/category.repository';
-import { CreateCategory, UpdateCategory, UpdateImageCategory } from '../types/category.types';
+import { CreateCategory, UpdateImageCategory, Category} from '../types/category.types';
 import { CategoryRepository } from './category.interface';
 import { deleteImages, uploadImages } from '~services/image/image.service';
 import { Request } from 'express';
@@ -11,7 +11,7 @@ export class CategoryDomain implements CategoryRepository {
     return category;
   }
 
-  async updateCategory(storeId: number, body: UpdateCategory) {
+  async updateCategory(storeId: number, body: Category) {
     const currentCategory = await findCategoryId(body.id);
     if (!currentCategory) {
       throw new AppError(404, 'Not found category');

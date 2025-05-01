@@ -15,6 +15,7 @@ import {
 
 export const ProductController = Router();
 
+// Admin
 ProductController.post(
   '/',
   [verifyTokenAdminStore, ...validationCreateProduct],
@@ -38,40 +39,6 @@ ProductController.put(
       const productId = Number(req.params.productId);
       const storeId = Number(req.params.storeId);
       const product = await productDomain.updateProduct(productId, storeId, req.body);
-      handleSuccess(res, 200, { product });
-    } catch (error: any) {
-      handleError(res, error.status, error);
-    }
-  }
-);
-
-ProductController.get('/:storeId', validatorGetProducts, async (req: Request, res: Response) => {
-  try {
-    const productDomain = new ProductsDomain();
-    const storeId = parseInt(req.params.storeId);
-    const { limit, page, q } = req.query;
-    const { products, total } = await productDomain.getProductsByStore({
-      storeId,
-      limit: Number(limit),
-      page: Number(page),
-      q: q as string,
-    });
-    handleSuccess(res, 200, { products, total });
-  } catch (error: any) {
-    handleError(res, error.status, error);
-  }
-});
-
-ProductController.get(
-  '/:storeId/product/:productId',
-  verifyTokenAdminStore,
-  validatorGetProductById,
-  async (req: Request, res: Response) => {
-    try {
-      const productDomain = new ProductsDomain();
-      const productId = parseInt(req.params.productId);
-      const storeId = parseInt(req.params.storeId);
-      const product = await productDomain.getProductById(storeId, productId);
       handleSuccess(res, 200, { product });
     } catch (error: any) {
       handleError(res, error.status, error);
@@ -144,3 +111,38 @@ ProductController.delete(
     }
   }
 );
+
+ProductController.get(
+  '/:storeId/product/:productId',
+  verifyTokenAdminStore,
+  validatorGetProductById,
+  async (req: Request, res: Response) => {
+    try {
+      const productDomain = new ProductsDomain();
+      const productId = parseInt(req.params.productId);
+      const storeId = parseInt(req.params.storeId);
+      const product = await productDomain.getProductById(storeId, productId);
+      handleSuccess(res, 200, { product });
+    } catch (error: any) {
+      handleError(res, error.status, error);
+    }
+  }
+);
+
+// Public
+ProductController.get('/:storeId', validatorGetProducts, async (req: Request, res: Response) => {
+  try {
+    const productDomain = new ProductsDomain();
+    const storeId = parseInt(req.params.storeId);
+    const { limit, page, q } = req.query;
+    const { products, total } = await productDomain.getPublicProductsByStore({
+      storeId,
+      limit: Number(limit),
+      page: Number(page),
+      q: q as string,
+    });
+    handleSuccess(res, 200, { products, total });
+  } catch (error: any) {
+    handleError(res, error.status, error);
+  }
+});

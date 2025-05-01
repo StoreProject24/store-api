@@ -74,3 +74,14 @@ AuthController.post('/refresh-token', verifyToken, async (req: Request, res: Res
     handleError(res, 500, error.message);
   }
 });
+
+AuthController.post('/pick-store', verifyToken, async (req: Request, res: Response) => {
+  try {
+    const authDomain = new AuthDomain();
+    const storeId = Number(req.body.storeId);
+    const token = await authDomain.pickStore(storeId, req.user.id);
+    handleSuccess(res, 200, { token });
+  } catch (error: any) {
+    handleError(res, 500, error.message);
+  }
+});

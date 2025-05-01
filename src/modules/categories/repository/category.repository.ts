@@ -1,5 +1,5 @@
 import { prisma } from '~config/prisma/prisma';
-import { CreateCategory, UpdateCategory, UpdateImageCategory } from '../types/category.types';
+import { CreateCategory, UpdateImageCategory } from '../types/category.types';
 
 export const getAll = async (storeId: number) => {
   const categories = await prisma.categories.findMany({
@@ -9,6 +9,9 @@ export const getAll = async (storeId: number) => {
     orderBy: {
       id: 'asc',
     },
+    include: {
+      subCategories: true
+    }
   });
   await prisma.$disconnect();
   return categories;
@@ -26,7 +29,7 @@ export const create = async (storeId: number, body: CreateCategory) => {
   return category;
 };
 
-export const update = async (storeId: number, categoryId: number, body: UpdateCategory) => {
+export const update = async (storeId: number, categoryId: number, body: CreateCategory) => {
   const category = await prisma.categories.update({
     where: {
       storeId,
@@ -71,6 +74,9 @@ export const findCategoryId = async (categoryId: number) => {
     where: {
       id: categoryId,
     },
+    include: {
+      subCategories: true
+    }
   });
   await prisma.$disconnect();
   return category;

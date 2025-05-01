@@ -17,7 +17,10 @@ export const validatorGetSales = [
   query('page').isNumeric(),
   query('status').optional().isIn(Object.keys(SaleStatus)),
   check('storeId').isNumeric(),
+  check('q').isString(),
   handleValidator,
 ];
+
+export const validatorGetSaleProducts = [check('storeId').isNumeric(), check('saleId').isString()];
 
 export const validatorUpdateStatusSale = [param('storeId').isNumeric(), param('saleId').isString(), handleValidator];

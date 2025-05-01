@@ -11,6 +11,7 @@ export const create = async (body: StoreCreate) => {
       phone: body.phone,
       email: body.email,
       city: body.city,
+      department: body.department,
       zip: body.zip,
       userId: body.userId,
       domain: body.domain,
@@ -47,6 +48,17 @@ export const update = async (id: number, body: StoreUpdate) => {
     },
     data: {
       ...body,
+    },
+  });
+  await prisma.$disconnect();
+  return store;
+};
+
+export const getStoreByIdAndUserId = async (id: number, userId: number) => {
+  const store = await prisma.stores.findUnique({
+    where: {
+      id,
+      userId,
     },
   });
   await prisma.$disconnect();

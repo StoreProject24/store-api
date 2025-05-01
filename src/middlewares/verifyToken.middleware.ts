@@ -24,6 +24,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
         email: tokenDecoded.user.email,
         name: tokenDecoded.user.name,
         statusId: tokenDecoded.user.statusId,
+        storeId: tokenDecoded.user.storeId,
       };
       next();
     } else {

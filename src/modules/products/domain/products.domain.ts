@@ -5,6 +5,7 @@ import { existStoreRedis } from '~modules/stores/utils/storeRedis';
 import {
   create,
   createProductImages,
+  createVariants,
   deleteImagesByProductId,
   deleteImagesProduct,
   deleteProduct,
@@ -13,16 +14,33 @@ import {
   getProductByIdProduct,
   getProducts,
   getProductsByCategoryId,
+  getProductsPublic,
   update,
   updateStatusProduct,
   validateIsMyProduct,
 } from '../repository/products.repository';
-import { ProductCreate, ProductsGet, ProductsGetByCategoryId, ProductImages } from '../types/products.types';
+import {
+  ProductCreate,
+  ProductsGet,
+  ProductsGetByCategoryId,
+  ProductImages,
+  Product,
+  ProductVariants,
+} from '../types/products.types';
 import { ProductsRepository } from './products.interface';
 
 export class ProductsDomain implements ProductsRepository {
   async createProduct(product: ProductCreate) {
-    return await create(product);
+    const newProduct = await create(product);
+    let variants: ProductVariants[] = [];
+
+    if (product.variants.length) {
+      for (const variant of product.variants) {
+        variant.productId = newProduct.id;
+      }
+      variants = await createVariants(product.variants);
+    }
+    return { ...newProduct, variants } as Product;
   }
 
   async getProductsByStore(body: ProductsGet) {
@@ -37,6 +55,12 @@ export class ProductsDomain implements ProductsRepository {
       throw new AppError(401, 'No estas autorizado para esta accion');
     }
     return await getProductById(storeId, id);
+  }
+
+  async getPublicProductsByStore(body: ProductsGet) {
+    const { products, total } = await getProductsPublic(body);
+
+    return { products, total };
   }
 
   async getProductsByCategoryId(body: ProductsGetByCategoryId) {

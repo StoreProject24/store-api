@@ -2,16 +2,15 @@ import { Request, Response, Router } from 'express';
 import { handleError, handleSuccess } from '~config/helpers/response/response';
 import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
 import { BrandsDomain } from '../domain/brands.domain';
-import { validatorCreateBrand, validatorGetBrand } from '../validator/brans.validator';
+import { validatorCreateBrand } from '../validator/brans.validator';
 
 export const BrandsController = Router();
 
-BrandsController.get('/:storeId', validatorGetBrand, async (req: Request, res: Response) => {
+BrandsController.get('/', verifyTokenAdminStore, async (req: Request, res: Response) => {
   try {
     const brandDomain = new BrandsDomain();
-    const storeId = parseInt(req.params.storeId);
     const brands = await brandDomain.getBrands({
-      storeId,
+      storeId: req.user.storeId,
       statusIds: [1],
     });
     return handleSuccess(res, 201, { brands });
@@ -21,15 +20,14 @@ BrandsController.get('/:storeId', validatorGetBrand, async (req: Request, res: R
 });
 
 BrandsController.post(
-  '/:storeId',
+  '/',
   [verifyTokenAdminStore, ...validatorCreateBrand],
   async (req: Request, res: Response) => {
     try {
-      const storeId = parseInt(req.params.storeId);
       const brandDomain = new BrandsDomain();
       const brand = await brandDomain.createBrand({
         ...req.body,
-        storeId,
+        storeId: req.user.storeId,
       });
       return handleSuccess(res, 201, { brand });
     } catch (error: any) {
@@ -38,26 +36,25 @@ BrandsController.post(
   }
 );
 
-BrandsController.post('/images/:storeId', verifyTokenAdminStore, async (req: Request, res: Response) => {
+BrandsController.post('/images', verifyTokenAdminStore, async (req: Request, res: Response) => {
   try {
-    const storeId = parseInt(req.params.storeId);
     const brandDomain = new BrandsDomain();
-    const images = await brandDomain.uploadImageBrand(storeId, req);
+    const images = await brandDomain.uploadImageBrand(req.user.storeId, req);
     return handleSuccess(res, 201, { images });
   } catch (error: any) {
     return handleError(res, error.status, error.message);
   }
 });
 
-BrandsController.patch('/:storeId/:id', verifyTokenAdminStore, async (req: Request, res: Response) => {
+BrandsController.patch('/:id', verifyTokenAdminStore, async (req: Request, res: Response) => {
   try {
     const brandDomain = new BrandsDomain();
     const id = parseInt(req.params.id);
-    const storeId = parseInt(req.params.storeId);
     const brands = await brandDomain.updateNameBrand({
       id,
-      storeId,
+      storeId: req.user.storeId,
       name: req.body.name,
+      urlImage: req.body.urlImage
     });
     return handleSuccess(res, 201, { brands });
   } catch (error: any) {
@@ -65,27 +62,25 @@ BrandsController.patch('/:storeId/:id', verifyTokenAdminStore, async (req: Reque
   }
 });
 
-BrandsController.delete('/:storeId/:id', verifyTokenAdminStore, async (req: Request, res: Response) => {
+BrandsController.delete('/:id', verifyTokenAdminStore, async (req: Request, res: Response) => {
   try {
     const brandDomain = new BrandsDomain();
     const id = parseInt(req.params.id);
-    const storeId = parseInt(req.params.storeId);
-    await brandDomain.deleteBrand(id, storeId);
+    await brandDomain.deleteBrand(id, req.user.storeId);
     return handleSuccess(res, 201, {});
   } catch (error: any) {
     return handleError(res, error.status, error.message);
   }
 });
 
-BrandsController.patch('/image/:storeId', verifyTokenAdminStore, async (req: Request, res: Response) => {
+BrandsController.patch('/image', verifyTokenAdminStore, async (req: Request, res: Response) => {
   try {
     const brandDomain = new BrandsDomain();
     const id = parseInt(req.params.id);
-    const storeId = parseInt(req.params.storeId);
     const response = await brandDomain.updateImageBrand({
       id,
       urlImage: req.body.urlImage,
-      storeId,
+      storeId: req.user.storeId,
     });
     return handleSuccess(res, 201, response);
   } catch (error: any) {

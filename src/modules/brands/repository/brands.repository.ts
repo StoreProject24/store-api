@@ -1,5 +1,5 @@
 import { prisma } from '~config/prisma/prisma';
-import { CreateBrand, DeleteBrand, GetBrands, UpdateBrand, UpdateBrandImage } from '../types/brands.types';
+import { Brand, CreateBrand, GetBrands, UpdateBrandImage, UpdateBrand } from '../types/brands.types';
 
 export const create = async (body: CreateBrand) => {
   const response = await prisma.brands.create({
@@ -68,7 +68,7 @@ export const getBrands = async (data: GetBrands) => {
   return response;
 };
 
-export const findBrandById = async (data: DeleteBrand) => {
+export const findBrandById = async (data: {id: number, storeId: number}) => {
   const response = await prisma.brands.findUnique({
     where: {
       id: data.id,

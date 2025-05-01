@@ -2,10 +2,9 @@ import { prisma } from '~config/prisma/prisma';
 import {
   ProductCreate,
   ProductImages,
+  ProductVariants,
   ProductsGet,
   ProductsGetByCategoryId,
-  ProductsGetSearch,
-  ProductsTotal,
 } from '../types/products.types';
 
 export const create = async (body: ProductCreate) => {
@@ -28,6 +27,49 @@ export const create = async (body: ProductCreate) => {
   await prisma.$disconnect();
   return product;
 };
+
+export const getProductsPublic = async (body: ProductsGet) => {
+  const [products, total] = await prisma.$transaction([
+    prisma.products.findMany({
+      skip: (body.page - 1) * body.limit,
+      take: body.limit,
+      where: {
+        statusId: 1,
+        storeId: body.storeId,
+        name: {
+          contains: body.q,
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        name: true,
+        brands: true,
+        categories: true,
+        description: true,
+        id: true,
+        images: true,
+        quantity: true,
+        sku: true,
+        tags: true,
+        video: true,
+        variants: true,
+        status: true,
+        pricePublic: true,
+      },
+    }),
+    prisma.products.count({
+      where: {
+        statusId: 1,
+        storeId: body.storeId,
+        name: {
+          contains: body.q,
+          mode: 'insensitive',
+        },
+      }})]) 
+      await prisma.$disconnect();
+  return { products, total };
+
+}
 
 export const getProducts = async (body: ProductsGet) => {
   const [products, total] = await prisma.$transaction([
@@ -167,6 +209,12 @@ export const getProductById = async (storeId: number, id: number) => {
   });
   await prisma.$disconnect();
   return product;
+};
+
+export const createVariants = async (data: ProductVariants[]) => {
+  const variants = await Promise.all(data.map((variant) => prisma.productVariants.create({ data: variant })));
+  await prisma.$disconnect();
+  return variants;
 };
 
 export const getProductByIdProduct = async (id: number) => {

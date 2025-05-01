@@ -9,6 +9,7 @@ declare global {
         email: string;
         statusId: number;
         rol: 'ADMINSTORE' | 'USER' | 'ADMIN';
+        storeId: number;
       };
     }
   }

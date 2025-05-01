@@ -7,22 +7,9 @@ export interface Brand {
 	updatedAt: Date;
 }
 
-export interface CreateBrand {
-	name: string;
-	urlImage: string;
-	storeId: number;
-}
+export type CreateBrand = Omit<Brand, 'id'>
 
-export interface UpdateBrand {
-	id: number;
-	name: string;
-    storeId: number;
-}
-
-export interface DeleteBrand {
-	id: number;
-	storeId: number;
-}
+export type UpdateBrand = Omit<Brand, 'createdAt'| 'updatedAt'>
 
 export interface GetBrands {
 	storeId: number;

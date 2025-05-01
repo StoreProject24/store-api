@@ -1,31 +1,56 @@
 import { Request, Response, Router } from 'express';
 import { handleError, handleSuccess } from '~config/helpers/response/response';
 
-import { verifyToken } from '~middlewares/verifyToken.middleware';
 import { SaleDomain } from '../domain/sale.domain';
-import { validatorCreateSale, validatorGetSales, validatorUpdateStatusSale } from '../validator/sale.validator';
+import {
+  validatorCreateSale,
+  validatorGetSaleProducts,
+  validatorGetSales,
+  validatorUpdateStatusSale,
+} from '../validator/sale.validator';
 import { SaleStatus } from '../types/sale.types';
+import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
 
 export const SalesController = Router();
 
-SalesController.post('/:storeId', [verifyToken, ...validatorCreateSale], async (req: Request, res: Response) => {
-  try {
-    const saleDomain = new SaleDomain();
-    const storeId = parseInt(req.params.storeId);
-    const body = req.body;
-    const sale = await saleDomain.createSale({
-      ...body,
-      storeId,
-    });
-    return handleSuccess(res, 200, { sale });
-  } catch (error: any) {
-    return handleError(res, error.status, error.message);
+SalesController.post(
+  '/:storeId',
+  [verifyTokenAdminStore, ...validatorCreateSale],
+  async (req: Request, res: Response) => {
+    try {
+      const saleDomain = new SaleDomain();
+      const storeId = parseInt(req.params.storeId);
+      const body = req.body;
+      const sale = await saleDomain.createSale({
+        ...body,
+        storeId,
+      });
+      return handleSuccess(res, 200, { sale });
+    } catch (error: any) {
+      return handleError(res, error.status, error.message);
+    }
   }
-});
+);
+
+SalesController.get(
+  '/:storeId/:saleId',
+  [verifyTokenAdminStore, ...validatorGetSaleProducts],
+  async (req: Request, res: Response) => {
+    try {
+      const saleDomain = new SaleDomain();
+      const storeId = parseInt(req.params.storeId);
+      const saleId = req.params.saleId;
+      const sale = await saleDomain.getSaleProducts(storeId, saleId);
+      return handleSuccess(res, 200, { sale });
+    } catch (error: any) {
+      return handleError(res, error.status, error.message);
+    }
+  }
+);
 
 SalesController.patch(
   '/:storeId/:saleId',
-  [verifyToken, ...validatorUpdateStatusSale],
+  [verifyTokenAdminStore, ...validatorUpdateStatusSale],
   async (req: Request, res: Response) => {
     try {
       const saleDomain = new SaleDomain();
@@ -42,7 +67,7 @@ SalesController.patch(
 
 SalesController.delete(
   '/:storeId/:saleId',
-  [verifyToken, ...validatorUpdateStatusSale],
+  [verifyTokenAdminStore, ...validatorUpdateStatusSale],
   async (req: Request, res: Response) => {
     try {
       const saleDomain = new SaleDomain();
@@ -56,7 +81,7 @@ SalesController.delete(
   }
 );
 
-SalesController.get('/:storeId', [verifyToken, ...validatorGetSales], async (req: Request, res: Response) => {
+SalesController.get('/:storeId', [verifyTokenAdminStore, ...validatorGetSales], async (req: Request, res: Response) => {
   try {
     const saleDomain = new SaleDomain();
     const storeId = parseInt(req.params.storeId);
@@ -67,8 +92,8 @@ SalesController.get('/:storeId', [verifyToken, ...validatorGetSales], async (req
       Number(page),
       status as unknown as SaleStatus
     );
-    return handleSuccess(res, 200, { sales });
+    handleSuccess(res, 200, { sales });
   } catch (error: any) {
-    return handleError(res, error.status, error.message);
+    handleError(res, error.status, error.message);
   }
 });

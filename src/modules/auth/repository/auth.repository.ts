@@ -51,6 +51,16 @@ export const saveOtpCode = async (email: string, otpCode: string) => {
   return user;
 };
 
+export const getById = async (id: number) => {
+  const user = await prisma.users.findUnique({
+    where: {
+      id,
+    },
+  });
+  await prisma.$disconnect();
+  return user;
+};
+
 export const changePassword = async (email: string, password: string) => {
   const user = await prisma.users.update({
     where: {

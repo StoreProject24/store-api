@@ -10,6 +10,7 @@ import {
 import { SaleRepository } from './sale.interface';
 import { CreateSaleBody, SaleStatus } from '../types/sale.types';
 import { convertToObjectId } from '../utils/convetObjetId';
+import { ProductsDomain } from '~modules/products/domain/products.domain';
 
 export class SaleDomain implements SaleRepository {
   async createSale(body: CreateSaleBody) {
@@ -42,5 +43,26 @@ export class SaleDomain implements SaleRepository {
       throw new AppError(404, 'Venta no encontrada');
     }
     return await deleteSale(storeId, convertToObjectId(saleId));
+  }
+
+  async getSaleProducts(storeId: number, saleId: string) {
+    const existSale = await getSaleById(storeId, convertToObjectId(saleId));
+    if (!existSale) {
+      throw new AppError(404, 'Venta no encontrada');
+    }
+    const products = [];
+    const productDomain = new ProductsDomain();
+    for (const item of existSale.toJSON().items) {
+      try {
+        const product = await productDomain.getProductById(storeId, item.id);
+        if (product) {
+          products.push(product);
+        }
+      } catch (error) {}
+    }
+    return {
+      ...existSale.toJSON(),
+      products,
+    };
   }
 }

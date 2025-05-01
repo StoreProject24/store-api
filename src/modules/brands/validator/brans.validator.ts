@@ -6,5 +6,3 @@ export const validatorCreateBrand = [
   check('urlImage').isString().withMessage('urlImage is required'),
   handleValidator,
 ];
-
-export const validatorGetBrand = [param('storeId').isNumeric().withMessage('storeId is required')];

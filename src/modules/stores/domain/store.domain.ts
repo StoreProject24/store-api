@@ -4,7 +4,7 @@ import { setKeyRedis, deleteKeyRedis } from '~config/redis/redis';
 import { deleteImages, uploadImages } from '~services/image/image.service';
 import { AppError } from '~config/helpers';
 import { create, getById, getByUserId, update } from '../repository/store.repository';
-import { FieldStore, Store, StoreCreate, StoreUpdate } from '../types/store.types';
+import { FieldStore, StoreCreate, StoreUpdate } from '../types/store.types';
 import { StoreRepository } from './store.interface';
 import { existStoreRedis, getStoresRedis } from '../utils/storeRedis';
 export class StoreDomain implements StoreRepository {

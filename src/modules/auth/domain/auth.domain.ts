@@ -1,9 +1,9 @@
 import bcrypt from 'bcryptjs';
 import { AppError, createToken } from '~config/helpers';
-import { changePassword, create, findUserByEmail, saveOtpCode } from '../repository/auth.repository';
+import { changePassword, create, findUserByEmail, getById, saveOtpCode } from '../repository/auth.repository';
 import { UserCreate, UserRefreshToken } from '../types/auth.types';
 import { AuthRepository } from './auth.interface';
-import { getByUserId } from '~modules/stores/repository/store.repository';
+import { getByUserId, getStoreByIdAndUserId } from '~modules/stores/repository/store.repository';
 import { sendEmail } from '~services/email/email.service';
 
 const STORE_APP_NAME = process.env.STORE_APP_NAME;
@@ -98,5 +98,25 @@ export class AuthDomain implements AuthRepository {
       storeId: store[0].id,
     });
     return token;
+  }
+
+  async pickStore(storeId: number, userId: number) {
+   const store = await getStoreByIdAndUserId(storeId, userId);
+   if (!store) {
+    throw new AppError(404, 'Store not found');
+   }
+   const user = await getById(userId);
+   if (!user) {
+    throw new AppError(404, 'User not found');
+   }
+   const token = createToken({
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    rol: user.role,
+    statusId: user.statusId,
+    storeId: store.id,
+   });
+   return token;
   }
 }

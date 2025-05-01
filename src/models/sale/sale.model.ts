@@ -45,7 +45,7 @@ const userSchema = new Schema(
       required: true,
     },
     id: {
-      type: String,
+      type: Number,
       required: false,
     },
   },
@@ -82,10 +82,9 @@ export const saleSchema = new Schema({
     default: null,
   },
   user: userSchema,
-  status: {
-    type: String,
-    enum: SaleStatus,
-    default: SaleStatus.active,
+  statusId: {
+    type: Number,
+    default: 1,
   },
   createdAt: {
     type: Date,

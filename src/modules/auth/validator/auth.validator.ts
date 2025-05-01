@@ -31,3 +31,8 @@ export const validateResetPassword = [
   check('otpCode').isString().withMessage('Otp code is required'),
   handleValidator,
 ];
+
+export const validatePickStore = [
+  check('storeId').isInt().withMessage('Store id is required'),
+  handleValidator,
+];

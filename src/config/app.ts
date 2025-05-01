@@ -3,6 +3,7 @@ import 'dotenv/config';
 
 const app: Application = express();
 
+import { rateLimit } from 'express-rate-limit';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -14,10 +15,17 @@ import { storesRouter } from '~modules/stores/router';
 import { productsRouter } from '~modules/products/router';
 import { userRouter } from '~modules/user/router';
 import { salesRouter } from '~modules/sales/router';
+import { categoriesRouter } from '~modules/categories/router';
 
 import { connectMongoDb } from './mongo/mongo';
 import redis from './redis/redis';
-import { categoriesRouter } from '~modules/categories/router';
+
+const limiter = rateLimit({
+  windowMs: 15 * 50 * 1000,
+  limit: 100,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+});
 
 app.use(
   morgan('dev', {
@@ -30,6 +38,7 @@ app.use(
 connectMongoDb();
 redis();
 
+app.use(limiter);
 app.use(helmet());
 app.use(cors());
 app.use(function (req, res, next) {
