@@ -1,0 +1,20 @@
+export {};
+
+declare global {
+  namespace Express {
+    interface Request {
+      user: {
+        id: number;
+        name: string;
+        email: string;
+        statusId: number;
+        rol: 'ADMINSTORE' | 'USER' | 'ADMIN';
+        storeId: number;
+      };
+      store: {
+        id: number;
+        name: string;
+      };
+    }
+  }
+}
