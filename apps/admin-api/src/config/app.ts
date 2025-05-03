@@ -18,7 +18,7 @@ import { salesRouter } from '~modules/sales/router';
 import { categoriesRouter } from '~modules/categories/router';
 
 import { connectMongoDb } from './mongo/mongo';
-import redis from './redis/redis';
+// import redis from './redis/redis';
 
 const limiter = rateLimit({
   windowMs: 15 * 50 * 1000,
@@ -34,7 +34,7 @@ app.use(
 );
 
 connectMongoDb();
-redis();
+// redis();
 
 // @ts-ignore
 app.use(limiter);

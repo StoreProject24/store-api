@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Request } from 'express';
-import { setKeyRedis, deleteKeyRedis } from '~config/redis/redis';
+// import { setKeyRedis, deleteKeyRedis } from '~config/redis/redis';
 import { deleteImages, uploadImages } from '~services/image/image.service';
 import { AppError } from '@shared/helpers/response/response';
 import { create, getById, getByUserId, update } from '../repository/store.repository';
@@ -14,7 +14,7 @@ export class StoreDomain implements StoreRepository {
 
   async updateStore(id: number, data: StoreUpdate) {
     const store = await update(id, data);
-    await deleteKeyRedis(`user-${data.userId}`);
+    // await deleteKeyRedis(`user-${data.userId}`);
     return store;
   }
 
@@ -25,7 +25,7 @@ export class StoreDomain implements StoreRepository {
     }
     const newStatusId = store.statusId === 2 ? 1 : 2;
     await update(id, { statusId: newStatusId });
-    await deleteKeyRedis(`user-${store.userId}`);
+    // await deleteKeyRedis(`user-${store.userId}`);
   }
 
   async getStoreById(id: number) {
@@ -42,7 +42,7 @@ export class StoreDomain implements StoreRepository {
       return existStores;
     }
     const stores = await getByUserId(userId);
-    await setKeyRedis(`user-${userId}`, JSON.stringify(stores));
+    // await setKeyRedis(`user-${userId}`, JSON.stringify(stores));
     return stores;
   }
 
@@ -56,7 +56,7 @@ export class StoreDomain implements StoreRepository {
       [field]: image[0],
     });
     await deleteImages([store[field]]);
-    await deleteKeyRedis(`user-${userId}`);
+    // await deleteKeyRedis(`user-${userId}`);
     return storeUpdate;
   }
 }
