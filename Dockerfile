@@ -8,8 +8,8 @@ WORKDIR /app
 
 # Copia archivos mínimos primero para aprovechar el cache
 COPY pnpm-workspace.yaml ./
-COPY package.json ./apps/admin-api/
-COPY ../../libs/db/package.json ./libs/db/
+COPY apps/admin-api/package.json ./apps/admin-api/
+COPY libs/db/package.json ./libs/db/
 COPY package.json pnpm-lock.yaml ./
 
 # Instala dependencias con pnpm (y workspaces)
