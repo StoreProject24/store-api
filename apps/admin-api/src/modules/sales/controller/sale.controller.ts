@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { handleError, handleSuccess } from '~config/helpers/response/response';
+import { handleError, handleSuccess } from '@shared/helpers/response/response';
 
 import { SaleDomain } from '../domain/sale.domain';
 import {
@@ -8,7 +8,7 @@ import {
   validatorGetSales,
   validatorUpdateStatusSale,
 } from '../validator/sale.validator';
-import { SaleStatus } from '../types/sale.types';
+import { SaleStatus } from '@shared/types/sale.types';
 import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
 
 export const SalesController = Router();
@@ -25,7 +25,7 @@ SalesController.post(
         ...body,
         storeId,
       });
-      handleSuccess(res, 200, { sale });
+      handleSuccess(res, 201, { sale });
     } catch (error: any) {
       handleError(res, error.status, error.message);
     }

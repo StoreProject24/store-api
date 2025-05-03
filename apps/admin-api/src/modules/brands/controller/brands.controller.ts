@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { handleError, handleSuccess } from '~config/helpers/response/response';
+import { handleError, handleSuccess } from '@shared/helpers/response/response';
 import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
 import { BrandsDomain } from '../domain/brands.domain';
 import { validatorCreateBrand } from '../validator/brans.validator';
@@ -19,22 +19,18 @@ BrandsController.get('/', verifyTokenAdminStore, async (req: Request, res: Respo
   }
 });
 
-BrandsController.post(
-  '/',
-  [verifyTokenAdminStore, ...validatorCreateBrand],
-  async (req: Request, res: Response) => {
-    try {
-      const brandDomain = new BrandsDomain();
-      const brand = await brandDomain.createBrand({
-        ...req.body,
-        storeId: req.user.storeId,
-      });
-      handleSuccess(res, 201, { brand });
-    } catch (error: any) {
-      handleError(res, error.status, error.message);
-    }
+BrandsController.post('/', [verifyTokenAdminStore, ...validatorCreateBrand], async (req: Request, res: Response) => {
+  try {
+    const brandDomain = new BrandsDomain();
+    const brand = await brandDomain.createBrand({
+      ...req.body,
+      storeId: req.user.storeId,
+    });
+    handleSuccess(res, 201, { brand });
+  } catch (error: any) {
+    handleError(res, error.status, error.message);
   }
-);
+});
 
 BrandsController.post('/images', verifyTokenAdminStore, async (req: Request, res: Response) => {
   try {
@@ -54,7 +50,7 @@ BrandsController.patch('/:id', verifyTokenAdminStore, async (req: Request, res: 
       id,
       storeId: req.user.storeId,
       name: req.body.name,
-      urlImage: req.body.urlImage
+      urlImage: req.body.urlImage,
     });
     handleSuccess(res, 201, { brands });
   } catch (error: any) {

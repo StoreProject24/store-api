@@ -1,4 +1,4 @@
-import { AppError } from '~config/helpers';
+import { AppError } from '@shared/helpers/response/response';
 import {
   create,
   deleteBrand,
@@ -7,7 +7,7 @@ import {
   updateImage,
   updateName,
 } from '../repository/brands.repository';
-import { CreateBrand, GetBrands, Brand, UpdateBrandImage, UpdateBrand } from '../types/brands.types';
+import { CreateBrand, GetBrands, UpdateBrandImage, UpdateBrand } from '@shared/types/brand.types';
 import { BrandRepository } from './brands.interface';
 import { deleteImages, uploadImages } from '~services/image/image.service';
 import { Request } from 'express';
@@ -19,7 +19,7 @@ export class BrandsDomain implements BrandRepository {
   async updateNameBrand(data: UpdateBrand) {
     const currentBrand = await findBrandById({
       id: data.id,
-      storeId: data.storeId
+      storeId: data.storeId,
     });
     if (!currentBrand) {
       throw new AppError(404, 'Brand not found');

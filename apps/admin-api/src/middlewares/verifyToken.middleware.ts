@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon';
 import { NextFunction, Request, Response } from 'express';
 
-import { handleError, decodeToken } from '~config/helpers';
-import { HttpCode } from '~config/helpers/response/response.type';
+import { handleError } from '@shared/helpers/response/response';
+import { decodeToken } from '~config/helpers/jwt/jwt';
+import { HttpCode } from '@shared/helpers/response/response.type';
 import { MessageError } from './verifyToken.type';
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {

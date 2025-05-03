@@ -1,5 +1,5 @@
 import { getKeyRedis } from '~config/redis/redis';
-import { Store } from '../types/store.types';
+import { Store } from '@shared/types/store.types';
 
 const existStoreRedis = async (userId: number, storeId: number) => {
   const existStore = await getKeyRedis(`user-${userId}`);

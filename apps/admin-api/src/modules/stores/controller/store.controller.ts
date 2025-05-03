@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { handleError, handleSuccess } from '~config/helpers';
+import { handleError, handleSuccess } from '@shared/helpers/response/response';
 import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
 import { verifyToken } from '~middlewares/verifyToken.middleware';
 import { StoreDomain } from '../domain/store.domain';
@@ -9,7 +9,7 @@ import {
   validationUpdateStore,
   validationUploadImageStore,
 } from '../validator/store.validator';
-import { FieldStore } from '../types/store.types';
+import { FieldStore } from '@shared/types/store.types';
 
 export const StoreController = Router();
 

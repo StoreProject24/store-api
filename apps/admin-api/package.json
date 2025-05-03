@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "nodemon",
-    "build": "rm -f tsconfig.tsbuildinfo && npx tsc && tsc-alias -p tsconfig.json",
-    "start": "node ./dist/index.js"
+    "build": "rm -f tsconfig.tsbuildinfo && tsc && tsc-alias -p tsconfig.json && cp -r src/templates dist/templates",
+    "start": "node ./dist/apps/admin-api/src/index.js"
   },
   "dependencies": {
     "@stores-api/db": "workspace:^"
+  },
+  "_moduleAliases": {
+    "@stores-api/db": "../../libs/db/dist"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",

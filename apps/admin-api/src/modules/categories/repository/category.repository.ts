@@ -1,5 +1,5 @@
-import {prisma} from '@stores-api/db'
-import { CreateCategory, UpdateImageCategory } from '../types/category.types';
+import { prisma } from '@stores-api/db';
+import { CreateCategory, UpdateImageCategory } from '@shared/types/category.types';
 
 export const getAll = async (storeId: number) => {
   const categories = await prisma.categories.findMany({
@@ -10,8 +10,8 @@ export const getAll = async (storeId: number) => {
       id: 'asc',
     },
     include: {
-      subCategories: true
-    }
+      subCategories: true,
+    },
   });
   await prisma.$disconnect();
   return categories;
@@ -75,8 +75,8 @@ export const findCategoryId = async (categoryId: number) => {
       id: categoryId,
     },
     include: {
-      subCategories: true
-    }
+      subCategories: true,
+    },
   });
   await prisma.$disconnect();
   return category;

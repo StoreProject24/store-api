@@ -1,11 +1,11 @@
-import {prisma} from '@stores-api/db'
+import { prisma } from '@stores-api/db';
 import {
   ProductCreate,
   ProductImages,
   ProductVariants,
   ProductsGet,
   ProductsGetByCategoryId,
-} from '../types/products.types';
+} from '@shared/types/product.types';
 
 export const create = async (body: ProductCreate) => {
   const product = await prisma.products.create({
@@ -65,11 +65,12 @@ export const getProductsPublic = async (body: ProductsGet) => {
           contains: body.q,
           mode: 'insensitive',
         },
-      }})]) 
-      await prisma.$disconnect();
+      },
+    }),
+  ]);
+  await prisma.$disconnect();
   return { products, total };
-
-}
+};
 
 export const getProducts = async (body: ProductsGet) => {
   const [products, total] = await prisma.$transaction([
@@ -335,6 +336,33 @@ export const validateIsMyProduct = async (id: number, storeId: number) => {
     where: {
       id,
       storeId,
+    },
+  });
+};
+
+export const getProductsByIds = async (storeId: number, ids: number[]) => {
+  const products = await prisma.products.findMany({
+    where: {
+      id: { in: ids },
+      storeId,
+    },
+    include: {
+      variants: true,
+    },
+  });
+  await prisma.$disconnect();
+  return products;
+};
+
+export const updateProductsQuantity = async (products: { id: number; quantity: number }[]) => {
+  await prisma.products.updateMany({
+    where: {
+      id: { in: products.map((product) => product.id) },
+    },
+    data: {
+      ...products.map((product) => ({
+        quantity: product.quantity,
+      })),
     },
   });
 };

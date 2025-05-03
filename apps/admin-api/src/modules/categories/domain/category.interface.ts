@@ -1,7 +1,7 @@
-import { Category, CreateCategory, UpdateImageCategory } from '../types/category.types';
+import { Category, CreateCategory, UpdateImageCategory } from '@shared/types/category.types';
 
 export interface CategoryRepository {
-  createCategory: (storeId: number, v: CreateCategory) => Promise<Category>;
+  createCategory: (storeId: number, category: CreateCategory) => Promise<Category>;
   deleteCategory: (storeId: number, categoryId: number) => Promise<void>;
   updateCategory: (storeId: number, category: Category) => Promise<Category>;
   getAllCategories: (storeId: number) => Promise<Category[]>;

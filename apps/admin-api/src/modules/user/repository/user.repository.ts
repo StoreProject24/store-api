@@ -1,4 +1,4 @@
-import {prisma} from '@stores-api/db'
+import { prisma } from '@stores-api/db';
 
 export const findUserById = async (id: number) => {
   const user = await prisma.users.findMany({

@@ -1,4 +1,4 @@
-import {prisma} from '@stores-api/db'
+import { prisma } from '@stores-api/db';
 import { UserCreate } from '../types/auth.types';
 
 export const create = async (body: UserCreate) => {

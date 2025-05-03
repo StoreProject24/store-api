@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { handleError, handleSuccess } from '~config/helpers';
+import { handleError, handleSuccess } from '@shared/helpers/response/response';
 import { AuthDomain } from '../domain/auth.domain';
 import {
   validateForgotPassword,

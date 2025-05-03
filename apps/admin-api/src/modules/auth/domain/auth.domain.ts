@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
-import { AppError, createToken } from '~config/helpers';
+import { createToken } from '~config/helpers';
+import { AppError } from '@shared/helpers/response/response';
 import { changePassword, create, findUserByEmail, getById, saveOtpCode } from '../repository/auth.repository';
 import { UserCreate, UserRefreshToken } from '../types/auth.types';
 import { AuthRepository } from './auth.interface';
@@ -101,22 +102,22 @@ export class AuthDomain implements AuthRepository {
   }
 
   async pickStore(storeId: number, userId: number) {
-   const store = await getStoreByIdAndUserId(storeId, userId);
-   if (!store) {
-    throw new AppError(404, 'Store not found');
-   }
-   const user = await getById(userId);
-   if (!user) {
-    throw new AppError(404, 'User not found');
-   }
-   const token = createToken({
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    rol: user.role,
-    statusId: user.statusId,
-    storeId: store.id,
-   });
-   return token;
+    const store = await getStoreByIdAndUserId(storeId, userId);
+    if (!store) {
+      throw new AppError(404, 'Store not found');
+    }
+    const user = await getById(userId);
+    if (!user) {
+      throw new AppError(404, 'User not found');
+    }
+    const token = createToken({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      rol: user.role,
+      statusId: user.statusId,
+      storeId: store.id,
+    });
+    return token;
   }
 }

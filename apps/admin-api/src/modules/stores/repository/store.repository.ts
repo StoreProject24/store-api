@@ -1,5 +1,5 @@
-import {prisma} from '@stores-api/db'
-import { StoreCreate, StoreUpdate } from '../types/store.types';
+import { prisma } from '@stores-api/db';
+import { StoreCreate, StoreUpdate } from '@shared/types/store.types';
 
 export const create = async (body: StoreCreate) => {
   const store = await prisma.stores.create({

@@ -11,6 +11,10 @@ declare global {
         rol: 'ADMINSTORE' | 'USER' | 'ADMIN';
         storeId: number;
       };
+      store: {
+        id: number;
+        name: string;
+      };
     }
   }
 }

@@ -2,12 +2,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@types/*": ["packages/types/*"]
+      "@types/*": ["packages/types/*"],
+      "@shared/*": ["libs/shared/*"]
     },
     "module": "CommonJS",
-    "typeRoots": [
-      "./packages/types"
-    ],
+    "typeRoots": ["./packages/types", "./libs/shared/types"],
     "target": "ES2020",
     "moduleResolution": "node",
     "strict": true,

@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { deleteImages, uploadImages } from '~services/image/image.service';
-import { AppError } from '~config/helpers';
+import { AppError } from '@shared/helpers/response/response';
 import { existStoreRedis } from '~modules/stores/utils/storeRedis';
 import {
   create,
@@ -26,7 +26,7 @@ import {
   ProductImages,
   Product,
   ProductVariants,
-} from '../types/products.types';
+} from '@shared/types/product.types';
 import { ProductsRepository } from './products.interface';
 
 export class ProductsDomain implements ProductsRepository {

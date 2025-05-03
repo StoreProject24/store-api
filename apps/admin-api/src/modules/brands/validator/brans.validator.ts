@@ -1,5 +1,5 @@
-import { handleValidator } from '~config/helpers';
-import { check, param } from 'express-validator';
+import { handleValidator } from '@shared/helpers/response/response';
+import { check } from 'express-validator';
 
 export const validatorCreateBrand = [
   check('name').isString().withMessage('name is required'),

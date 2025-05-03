@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import { check } from 'express-validator';
 
-import { handleValidator } from '~config/helpers';
+import { handleValidator } from '@shared/helpers/response/response';
 
 export const validateLogin = [
   check('email').isEmail().withMessage('Email is required'),
@@ -33,7 +33,4 @@ export const validateResetPassword = [
   handleValidator,
 ];
 
-export const validatePickStore = [
-  check('storeId').isInt().withMessage('Store id is required'),
-  handleValidator,
-];
+export const validatePickStore = [check('storeId').isInt().withMessage('Store id is required'), handleValidator];

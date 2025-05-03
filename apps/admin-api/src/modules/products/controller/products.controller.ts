@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { handleError, handleSuccess } from '~config/helpers/response/response';
+import { handleError, handleSuccess } from '@shared/helpers/response/response';
 import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
 import { ProductsDomain } from '../domain/products.domain';
 import {

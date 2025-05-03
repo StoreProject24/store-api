@@ -1,4 +1,4 @@
-import { handleValidator } from '~config/helpers';
+import { handleValidator } from '@shared/helpers/response/response';
 import { check, param } from 'express-validator';
 
 export const validationCreateSubcategory = [
@@ -9,15 +9,15 @@ export const validationCreateSubcategory = [
 ];
 
 export const validationUpdateSubcategory = [
-    check('name').isString().withMessage('name is required'),
-    param('storeId').isNumeric().withMessage('storeId is required'),
-    param('categoryId').isNumeric().withMessage('categoryId is required'),
-    param('subcategoryId').isNumeric().withMessage('subcategoryId is required'),
+  check('name').isString().withMessage('name is required'),
+  param('storeId').isNumeric().withMessage('storeId is required'),
+  param('categoryId').isNumeric().withMessage('categoryId is required'),
+  param('subcategoryId').isNumeric().withMessage('subcategoryId is required'),
   handleValidator,
-]
+];
 
 export const validationDeleteSubcategory = [
-    param('storeId').isNumeric().withMessage('storeId is required'),
-    param('subcategoryId').isNumeric().withMessage('subcategoryId is required'),
-    handleValidator,
-]
+  param('storeId').isNumeric().withMessage('storeId is required'),
+  param('subcategoryId').isNumeric().withMessage('subcategoryId is required'),
+  handleValidator,
+];

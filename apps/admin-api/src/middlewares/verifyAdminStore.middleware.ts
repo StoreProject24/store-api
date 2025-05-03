@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { handleError } from '~config/helpers';
+import { handleError } from '@shared/helpers/response/response';
 import { verifyToken } from './verifyToken.middleware';
 
 export const verifyTokenAdminStore = (req: Request, res: Response, next: NextFunction) => {

@@ -1,10 +1,5 @@
 {
-  "extends": [
-    "plugin:prettier/recommended",
-    "prettier/flowtype",
-    "prettier/react",
-    "prettier/standard"
-  ],
+  "extends": ["plugin:prettier/recommended", "prettier/flowtype", "prettier/react", "prettier/standard"],
   "trailingComma": "es5",
   "tabWidth": 2,
   "semi": true,
