@@ -1,25 +1,37 @@
 FROM node:20.5.1
 
-# Set the working directory
+# Instala pnpm globalmente
+RUN npm install -g pnpm
+
+# Establece el directorio raíz del monorepo
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copia archivos mínimos primero para aprovechar el cache
+COPY pnpm-workspace.yaml ./
+COPY apps/admin-api/package.json ./apps/admin-api/
+COPY libs/db/package.json ./libs/db/
+COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies using npm 
-RUN npm install
+# Instala dependencias con pnpm (y workspaces)
+RUN pnpm install
 
-# Copy the entire application code
+# Copia el resto del código
 COPY . .
 
-# Generate Prisma Client
-RUN npx prisma generate
+# Build del paquete compartido @stores-api/db
+RUN pnpm --filter @stores-api/db build
 
-# Build the application
-RUN npm run build
+# Genera Prisma Client para admin-api
+RUN pnpm --filter admin-api prisma generate
 
-# Expose the port the app runs on
-EXPOSE 3000
+# Build del admin-api
+RUN pnpm --filter admin-api build
 
-# Define the command to run the application
-CMD ["npm", "start"]
+# Cambia al directorio del admin-api
+WORKDIR /app/apps/admin-api
+
+# Expone el puerto de la API
+EXPOSE 3001
+
+# Inicia el servicio
+CMD ["pnpm", "start"]
