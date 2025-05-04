@@ -1,36 +1,35 @@
-# apps/admin-api/Dockerfile
-
+# Usa una imagen base con Node.js y pnpm
 FROM node:20.5.1
 
-# 1. Instalar pnpm globalmente
+# Instala pnpm globalmente
 RUN npm install -g pnpm
 
-# 2. Definir el directorio de trabajo raíz (no el de la app)
+# Establece el directorio de trabajo
 WORKDIR /app
 
-# 3. Copiar archivos esenciales del monorepo
-COPY pnpm-workspace.yaml ./
-COPY package.json pnpm-lock.yaml ./
-COPY apps/admin-api/package.json ./apps/admin-api/
-COPY libs/db/package.json ./libs/db/
+# Copia los archivos del workspace
+COPY ../../pnpm-workspace.yaml ./
+COPY ../../package.json ../../pnpm-lock.yaml ./
+COPY ../../apps/admin-api/package.json ./apps/admin-api/
+COPY ../../libs/db/package.json ./libs/db/
 
-# 4. Instalar solo lo necesario para esta app y su lib
+# Instala dependencias (solo las necesarias)
 RUN pnpm install
 
-# 5. Copiar todo el código
-COPY . .
+# Copia el resto del proyecto (desde root porque el contexto es root)
+COPY ../../ .
 
-# 6. Generar el cliente de Prisma desde libs
+# Genera el Prisma Client
 RUN pnpm --filter @stores-api/db generate
 
-# 7. Compilar la app admin-api
+# Compila el código de admin-api
 RUN pnpm --filter admin-api build
 
-# 8. Establecer el directorio de trabajo final
+# Cambia al directorio de admin-api para iniciar
 WORKDIR /app/apps/admin-api
 
-# 9. Exponer el puerto 3001
+# Expón el puerto 3001
 EXPOSE 3001
 
-# 10. Comando de arranque
+# Comando de inicio
 CMD ["pnpm", "start"]
