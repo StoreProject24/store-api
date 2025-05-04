@@ -24,6 +24,6 @@ RUN pnpm --filter admin-api build
 
 WORKDIR /app/apps/admin-api
 
-EXPOSE 3001
+EXPOSE 80:3001
 
 CMD ["pnpm", "start"]
