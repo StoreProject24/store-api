@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "nodemon",
-    "build": "rm -f tsconfig.tsbuildinfo && tsc && tsc-alias -p tsconfig.json && cp -r src/templates dist/templates",
+    "build": "rm -f tsconfig.tsbuildinfo && tsc && tsc-alias -p tsconfig.json",
     "start": "node ./dist/apps/stores-api/src/index.js"
   },
   "dependencies": {

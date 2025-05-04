@@ -14,6 +14,8 @@
     "api-admin:build": "cd apps/admin-api && rm -f tsconfig.tsbuildinfo && tsc && tsc-alias -p tsconfig.json && cp -r src/templates dist/apps/admin-api/src/templates",
     "api-admin:start": "cd apps/admin-api && node ./dist/index.js",
     "api-stores:dev": "cd apps/stores-api && nodemon",
+    "api-stores:build": "cd apps/stores-api && rm -f tsconfig.tsbuildinfo && tsc && tsc-alias -p tsconfig.json",
+    "api-stores:start": "cd apps/stores-api && node ./dist/index.js",
     "format": "prettier . --write"
   },
   "prisma": {
