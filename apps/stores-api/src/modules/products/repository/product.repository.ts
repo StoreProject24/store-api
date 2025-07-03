@@ -1,12 +1,22 @@
 import { prisma } from '@stores-api/db';
+import { Prisma } from '@prisma/client';
 
-const getProductsByPage = async (page: number, limit: number, storeId: number) => {
+const getProductsByPage = async (page: number, limit: number, storeId: number, search: string, categoryIds: string | null) => {
+  let where: Prisma.ProductsWhereInput = {
+    storeId,
+    statusId: 1,
+    OR: [
+      { name: { contains: search, mode: 'insensitive' } },
+      { description: { contains: search, mode: 'insensitive' } },
+      { sku: { contains: search, mode: 'insensitive' } },
+    ],
+  };
+  if (categoryIds) {
+    where.categoryId = { in: categoryIds.split(',').map(Number) };
+  }
   const [products, total] = await prisma.$transaction([
     prisma.products.findMany({
-      where: {
-        storeId,
-        statusId: 1,
-      },
+      where,
       select: {
         id: true,
         name: true,
@@ -32,10 +42,7 @@ const getProductsByPage = async (page: number, limit: number, storeId: number) =
       },
     }),
     prisma.products.count({
-      where: {
-        storeId,
-        statusId: 1,
-      },
+      where,
     }),
   ]);
   await prisma.$disconnect();
@@ -75,7 +82,6 @@ const getProductByIdAndStore = async (storeId: number, productId: number) => {
 };
 
 const getProductsByIds = async (storeId: number, ids: number[]) => {
-  console.log('ids', ids);
   const products = await prisma.products.findMany({
     where: {
       id: { in: ids },
@@ -100,4 +106,61 @@ const updateProductsQuantity = async (products: { id: number; quantity: number }
   );
 };
 
-export { getProductsByPage, getProductByIdAndStore, getProductsByIds, updateProductsQuantity };
+const getRandomProducts = async (storeId: number, limit: number) => {
+  const products = await prisma.products.findMany({
+    where: { storeId },
+    select: {
+       id: true,
+        name: true,
+        description: true,
+        pricePublic: true,
+        quantity: true,
+        sku: true,
+        images: true,
+        brands: true,
+        variants: true,
+        status: true,
+        storeId: true,
+        video: true,
+        tags: true,
+        categoryId: true,
+        brandId: true,
+        statusId: true,
+        createdAt: true,
+        updatedAt: true,
+    },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+  });
+  return products;
+};
+
+const getRelatedProducts = async (storeId: number, productId: number, categoryId: number, limit: number) => {
+  const products = await prisma.products.findMany({
+    where: { storeId, categoryId, statusId: 1, id: { not: productId } },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      pricePublic: true,
+      quantity: true,
+      brands: true,
+      storeId: true,
+      sku: true,
+      images: true,
+      variants: true,
+      tags: true,
+      video: true,
+      brandId: true,
+      categoryId: true,
+      statusId: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+  });
+  return products;
+};
+
+export { getProductsByPage, getProductByIdAndStore, getProductsByIds, updateProductsQuantity, getRandomProducts, getRelatedProducts };

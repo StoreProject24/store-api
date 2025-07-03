@@ -12,21 +12,15 @@ export interface Store {
   bannerUrl: string;
   logoUrl: string;
   userId: number;
+  description: string;
+  tiktok: string;
+  instagram: string;
+  facebook: string;
+  twitter: string;
+  youtube: string;
 }
 
-export interface StoreCreate {
-  name: string;
-  address: string;
-  domain: string;
-  phone: string;
-  email: string;
-  city: string;
-  department: string;
-  zip: string;
-  bannerUrl: string;
-  logoUrl: string;
-  userId: number;
-}
+export type StoreCreate = Omit<Store, 'id' >;
 
 export interface FieldStore {
   field: 'bannerUrl' | 'logoUrl';
@@ -44,4 +38,10 @@ export interface StoreUpdate {
   userId?: number;
   domain?: string;
   statusId?: number;
+  description?: string;
+  tiktok?: string;
+  instagram?: string;
+  facebook?: string;
+  twitter?: string;
+  youtube?: string;
 }

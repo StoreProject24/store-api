@@ -9,7 +9,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 
 import { healthCheck } from '~config/healthCheck/healthCheck';
-// import { brandsRouter } from '~modules/brands/router';
+import { brandsRouter } from '~modules/brands/router';
 import { salesRouter } from '~modules/sales/router';
 import { storesRouter } from '~modules/stores/router';
 import { productsRouter } from '~modules/products/router';
@@ -52,7 +52,7 @@ const apiPrefix = '/api';
 app.use('/healthCheck', healthCheck);
 app.use(`${apiPrefix}/categories`, categoriesRouter);
 app.use(`${apiPrefix}/sales`, salesRouter);
-// app.use(`${apiPrefix}/brands`, brandsRouter);
+app.use(`${apiPrefix}/brands`, brandsRouter);
 app.use(`${apiPrefix}/stores`, storesRouter);
 app.use(`${apiPrefix}/products`, productsRouter);
 

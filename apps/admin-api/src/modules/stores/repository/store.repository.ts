@@ -15,6 +15,12 @@ export const create = async (body: StoreCreate) => {
       zip: body.zip,
       userId: body.userId,
       domain: body.domain,
+      description: body.description,
+      tiktok: body.tiktok,
+      instagram: body.instagram,
+      facebook: body.facebook,
+      twitter: body.twitter,
+      youtube: body.youtube,
     },
   });
   await prisma.$disconnect();

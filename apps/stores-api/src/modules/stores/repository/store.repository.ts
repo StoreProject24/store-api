@@ -20,6 +20,28 @@ const getStoreById = async (id: number) => {
     where: {
       id,
     },
+    select: {
+      id: true,
+      name: true,
+      domain: true,
+      createdAt: true,
+      updatedAt: true,
+      logoUrl: true,
+      address: true,
+      phone: true,
+      email: true,
+      description: true,
+      tiktok: true,
+      instagram: true,
+      facebook: true,
+      twitter: true,
+      youtube: true,
+      city: true,
+      department: true,
+      zip: true,
+      bannerUrl: true,
+      userId: false,
+    }
   });
   prisma.$disconnect();
   return store;

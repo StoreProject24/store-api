@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Stores" ADD COLUMN     "description" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "facebook" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "instagram" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "tiktok" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "twitter" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "youtube" TEXT NOT NULL DEFAULT '';

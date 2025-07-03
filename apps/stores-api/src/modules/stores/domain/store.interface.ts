@@ -1,5 +1,5 @@
-import { Store } from '@shared/types/store.types';
+import { StoreWithOutUser } from '../type';
 
 export interface StoreRepository {
-  getStore: (storeId: number) => Promise<Store>;
+  getStore: (storeId: number) => Promise<StoreWithOutUser>;
 }

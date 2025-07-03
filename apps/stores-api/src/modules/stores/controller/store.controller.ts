@@ -9,6 +9,7 @@ StoreController.get('/', verifyStore, async (req: Request, res: Response) => {
   try {
     const storeDomain = new StoreDomain();
     const store = await storeDomain.getStore(req.store.id);
+    console.log('store', store)
     handleSuccess(res, 200, { store });
   } catch (error: any) {
     handleError(res, error.status, error.message);
