@@ -10,7 +10,7 @@ export interface Product {
   tags: string[];
   variants: ProductVariants[];
   storeId: number;
-  images?: ProductImages['images'][];
+  images?: ProductImages['images'];
   video: string;
   brandId: number | null;
   statusId: number;
@@ -22,6 +22,7 @@ export interface ProductVariants {
   id: number;
   name: string;
   price: number;
+  pricePublic: number;
   sku: string;
   quantity: number;
   productId: number;

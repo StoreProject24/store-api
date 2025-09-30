@@ -30,10 +30,12 @@ export class AuthDomain implements AuthRepository {
   }
   async loginUser(email: string, password: string) {
     const existUser = await findUserByEmail(email);
+    console.log("existUser ", existUser);
     if (!existUser) {
       throw new AppError(404, 'User not found');
     }
     const comparePassword = bcrypt.compareSync(password, existUser.password);
+    console.log("comparePassword ", comparePassword);
     if (!comparePassword) {
       throw new AppError(409, 'Invalid user or password');
     }

@@ -18,13 +18,11 @@ export class ProductDomain implements ProductRepository {
       categoryId: product.categoryId,
       sku: product.sku,
       pricePublic: product.pricePublic,
-      images: [
-        product.images?.map((img) => ({
+      images: product.images?.map((img) => ({
           id: img.id,
           productId: img.productId,
           urlImage: img.urlImage,
         })) || [],
-      ],
       tags: product.tags || [],
       variants: product.variants || [],
       storeId: product.storeId,
@@ -55,13 +53,11 @@ export class ProductDomain implements ProductRepository {
         categoryId: product.categoryId,
         sku: product.sku,
         pricePublic: product.pricePublic,
-        images: [
-          product.images?.map((img) => ({
-            id: img.id,
-            productId: img.productId,
-            urlImage: img.urlImage,
-          })) || [],
-        ],
+        images: product.images?.map((img) => ({
+          id: img.id,
+          productId: img.productId,
+          urlImage: img.urlImage,
+        })) || [],
         tags: product.tags || [],
         variants: product.variants || [],
         storeId: product.storeId,
@@ -85,13 +81,11 @@ export class ProductDomain implements ProductRepository {
       categoryId: product.categoryId,
       sku: product.sku,
       pricePublic: product.pricePublic,
-      images: [
-        product.images?.map((img) => ({
+      images:  product.images?.map((img) => ({
           id: img.id,
           productId: img.productId,
           urlImage: img.urlImage,
         })) || [],
-      ],
       tags: product.tags || [],
       variants: product.variants || [],
       storeId: product.storeId,
@@ -114,13 +108,11 @@ export class ProductDomain implements ProductRepository {
       categoryId: product.categoryId,
       sku: product.sku,
       pricePublic: product.pricePublic,
-      images: [
-        product.images?.map((img) => ({
+      images: product.images?.map((img) => ({
           id: img.id,
           productId: img.productId,
           urlImage: img.urlImage,
         })) || [],
-      ],
       tags: product.tags || [],
       variants: product.variants || [],
       storeId: product.storeId,

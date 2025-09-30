@@ -8,6 +8,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// name: StatusProduct
 model Status {
   id            Int             @id @default(autoincrement())
   name          String
@@ -142,19 +143,25 @@ model ProductImages {
 }
 
 model ProductVariants {
-  id        Int      @id @default(autoincrement())
-  name      String
-  price     Float
-  sku       String
-  quantity  Int
-  product   Products @relation(fields: [productId], references: [id])
-  productId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       Float
+  pricePublic Float    @default(0)
+  sku         String
+  quantity    Int
+  product     Products @relation(fields: [productId], references: [id])
+  productId   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
 enum Role {
   USER
   ADMIN
   ADMINSTORE
+}
+
+enum StatusProduct {
+  ACTIVE
+  INACTIVE
 }

@@ -4,12 +4,14 @@ import { getStoreByDomain } from '~modules/stores/repository/store.repository';
 
 export const verifyStore = async (req: Request, res: Response, next: NextFunction) => {
   const host = req.headers.host;
-  let subdomain = host.split('.')[0];
+  console.log('host', host)
+  // let subdomain = host.split('.')[0];
+  let subdomain = 'test1'
   console.log('process.env.NODE_ENV', process.env.NODE_ENV)
   // console.log('subdomain', subdomain)
-  if (process.env.NODE_ENV === 'development'){
-    subdomain = 'test1'
-  }
+  // if (process.env.NODE_ENV === 'development'){
+  //   subdomain = 'test1'
+  // }
   const store = await getStoreByDomain(subdomain);
   console.log('store', store)
   if (!store) {
