@@ -19,15 +19,15 @@ export class SaleDomain implements SaleRepository {
     if (products.length !== body.items.length) {
       throw new AppError(404, 'Products not found');
     }
-    compareSaleWithProducts(body, products);
-    const saleSequence = await getLastSaleSequential(body.storeId);
-    const sequential = saleSequence ? saleSequence.sequential + 1 : 1;
-    const sale = await create({
-      ...body,
-      sequential,
-    });
-    const productsToUpdate = getProductsToUpdate(sale.items, products, SaleStatus.pending);
-    await updateProductsQuantity(productsToUpdate);
-    return sale;
+    // compareSaleWithProducts(body, products);
+    // const saleSequence = await getLastSaleSequential(body.storeId);
+    // const sequential = saleSequence ? saleSequence.sequential + 1 : 1;
+    // const sale = await create({
+    //   ...body,
+    //   sequential,
+    // });
+    // const productsToUpdate = getProductsToUpdate(sale.items, products, SaleStatus.pending);
+    // await updateProductsQuantity(productsToUpdate);
+    return null;
   }
 }

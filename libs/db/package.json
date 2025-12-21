@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "generate": "prisma generate --schema=./prisma/schema.prisma"
+    "generate": "prisma generate --schema=./prisma/schema.prisma",
+    "seed": "ts-node -r tsconfig-paths/register prisma/seed.ts"
   },
   "keywords": [],
   "author": "",

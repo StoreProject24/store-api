@@ -8,7 +8,7 @@ import {
   updateStatusSale,
 } from '../repository/sale.repository';
 import { SaleRepository } from './sale.interface';
-import { CreateSaleBody, SaleItem, SaleStatus } from '@shared/types/sale.types';
+import { CreateSaleBody, Sale, SaleItem, SaleStatus } from '@shared/types/sale.types';
 import { compareSaleWithProducts, getProductsToUpdate } from '@shared/utils/functions/saleWithProducts';
 import { convertToObjectId } from '../utils/convetObjetId';
 import { ProductsDomain } from '~modules/products/domain/products.domain';
@@ -23,19 +23,20 @@ export class SaleDomain implements SaleRepository {
     if (products.length !== body.items.length) {
       throw new AppError(404, 'Products not found');
     }
-    compareSaleWithProducts(body, products);
-    const saleSequence = await getLastSaleSequential(body.storeId);
-    let sequential = 0;
-    if (saleSequence) {
-      sequential = saleSequence.sequential + 1;
-    }
-    const sale = await create({
-      ...body,
-      sequential,
-    });
-    const productsToUpdate = getProductsToUpdate(sale.items, products, body.status);
-    await updateProductsQuantity(productsToUpdate);
-    return sale;
+    // compareSaleWithProducts(body, products);
+    // const saleSequence = await getLastSaleSequential(body.storeId);
+    // let sequential = 0;
+    // if (saleSequence) {
+    //   sequential = saleSequence.sequential + 1;
+    // }
+    // const sale = await create({
+    //   ...body,
+    //   sequential,
+    // });
+    // const productsToUpdate = getProductsToUpdate(sale.items, products, body.status);
+    // await updateProductsQuantity(productsToUpdate);
+    // return sale;
+    return {} as Sale
   }
 
   async getSalesByPage(storeId: number, limit: number, page: number, status: SaleStatus | null) {
@@ -67,8 +68,8 @@ export class SaleDomain implements SaleRepository {
         price: item.price,
         total: item.price * item.quantity,
       }));
-      const productsToUpdate = getProductsToUpdate(mappedItems, products, SaleStatus.cancelled);
-      await updateProductsQuantity(productsToUpdate);
+      // const productsToUpdate = getProductsToUpdate(mappedItems, products, SaleStatus.cancelled);
+      // await updateProductsQuantity(productsToUpdate);
     }
     return await updateStatusSale(storeId, convertToObjectId(saleId), newStatus);
   }

@@ -77,6 +77,7 @@ const getSalesByStore = async (storeId: number, page: number, limit: number, sta
   if (status) {
     filter.status = status;
   }
+  console.log("filter", filter);
   const sales = await salesModel
     .find(filter)
     .skip((page - 1) * limit)

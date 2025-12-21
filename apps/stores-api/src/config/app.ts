@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application, RequestHandler } from 'express';
 import 'dotenv/config';
 
 const app: Application = express();
@@ -9,14 +9,15 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 
 import { healthCheck } from '~config/healthCheck/healthCheck';
-// import { brandsRouter } from '~modules/brands/router';
 import { salesRouter } from '~modules/sales/router';
 import { storesRouter } from '~modules/stores/router';
 import { productsRouter } from '~modules/products/router';
 import { categoriesRouter } from '~modules/categories/router';
+import { brandsRouter } from '~modules/brands/router';
 
 import { connectMongoDb } from './mongo/mongo';
 import redis from './redis/redis';
+import { errorMiddleware } from '@shared/helpers/response/response';
 
 const limiter = rateLimit({
   windowMs: 15 * 50 * 1000,
@@ -32,7 +33,10 @@ app.use(
 );
 
 connectMongoDb();
-redis();
+// redis();
+
+app.use(errorMiddleware as unknown as RequestHandler);
+
 
 // @ts-ignore
 app.use(limiter);
@@ -52,7 +56,7 @@ const apiPrefix = '/api';
 app.use('/healthCheck', healthCheck);
 app.use(`${apiPrefix}/categories`, categoriesRouter);
 app.use(`${apiPrefix}/sales`, salesRouter);
-// app.use(`${apiPrefix}/brands`, brandsRouter);
+app.use(`${apiPrefix}/brands`, brandsRouter);
 app.use(`${apiPrefix}/stores`, storesRouter);
 app.use(`${apiPrefix}/products`, productsRouter);
 

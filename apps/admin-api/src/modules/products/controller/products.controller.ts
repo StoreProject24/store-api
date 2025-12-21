@@ -129,13 +129,12 @@ ProductController.get(
   }
 );
 
-// Public
-ProductController.get('/:storeId', validatorGetProducts, async (req: Request, res: Response) => {
+ProductController.get('/:storeId', verifyTokenAdminStore, validatorGetProducts, async (req: Request, res: Response) => {
   try {
     const productDomain = new ProductsDomain();
     const storeId = parseInt(req.params.storeId);
     const { limit, page, q } = req.query;
-    const { products, total } = await productDomain.getPublicProductsByStore({
+    const { products, total } = await productDomain.getProductsByStore({
       storeId,
       limit: Number(limit),
       page: Number(page),

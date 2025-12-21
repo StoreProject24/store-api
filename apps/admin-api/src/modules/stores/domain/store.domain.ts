@@ -37,10 +37,11 @@ export class StoreDomain implements StoreRepository {
   }
 
   async getStoreByIdUser(userId: number) {
-    const existStores = await getStoresRedis(userId);
-    if (existStores.length) {
-      return existStores;
-    }
+    // const existStores = await getStoresRedis(userId);
+    // console.log("existStores ", existStores)
+    // if (existStores.length) {
+    //   return existStores;
+    // }
     const stores = await getByUserId(userId);
     // await setKeyRedis(`user-${userId}`, JSON.stringify(stores));
     return stores;

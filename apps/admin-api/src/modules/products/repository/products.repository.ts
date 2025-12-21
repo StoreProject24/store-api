@@ -2,7 +2,6 @@ import { prisma } from '@stores-api/db';
 import {
   ProductCreate,
   ProductImages,
-  ProductVariants,
   ProductsGet,
   ProductsGetByCategoryId,
 } from '@shared/types/product.types';
@@ -28,7 +27,7 @@ export const create = async (body: ProductCreate) => {
   return product;
 };
 
-export const getProductsPublic = async (body: ProductsGet) => {
+export const getProductsByStore = async (body: ProductsGet) => {
   const [products, total] = await prisma.$transaction([
     prisma.products.findMany({
       skip: (body.page - 1) * body.limit,
@@ -52,7 +51,6 @@ export const getProductsPublic = async (body: ProductsGet) => {
         sku: true,
         tags: true,
         video: true,
-        variants: true,
         status: true,
         pricePublic: true,
       },
@@ -87,9 +85,22 @@ export const getProducts = async (body: ProductsGet) => {
       },
       include: {
         images: true,
-        variants: true,
         categories: true,
         brands: true,
+        variantTypes: {
+          include: {
+            options: true,
+          },
+        },
+        variantCombinations: {
+          include: {
+            values: {
+              include: {
+                option: true,
+              },
+            },
+          },
+        },
       },
     }),
     prisma.products.count({
@@ -129,15 +140,17 @@ export const getProductsByCategoryId = async (body: ProductsGetByCategoryId) => 
       video: true,
       tags: true,
       quantity: true,
-      variants: {
-        select: {
-          id: true,
-          name: true,
-          price: true,
-          quantity: true,
-          sku: true,
-        },
-      },
+      variantTypes: true,
+      variantCombinations: true,
+      // variants: {
+      //   select: {
+      //     id: true,
+      //     name: true,
+      //     price: true,
+      //     quantity: true,
+      //     sku: true,
+      //   },
+      // },
       sku: true,
       description: true,
       brands: {
@@ -182,13 +195,28 @@ export const getProductById = async (storeId: number, id: number) => {
         },
       },
       quantity: true,
-      variants: {
+      variantTypes: {
         select: {
-          id: true,
           name: true,
+          id: true,
+          options: true,
+        },
+      },
+      variantCombinations: {
+        select: {
+          values: {
+            select: {
+              optionId: true,
+              option: true,
+              combination: true
+            },
+          },
           price: true,
-          quantity: true,
+          pricePublic: true,
           sku: true,
+          status: true,
+          quantity: true,
+          id: true
         },
       },
       sku: true,
@@ -212,10 +240,58 @@ export const getProductById = async (storeId: number, id: number) => {
   return product;
 };
 
-export const createVariants = async (data: ProductVariants[]) => {
-  const variants = await Promise.all(data.map((variant) => prisma.productVariants.create({ data: variant })));
-  await prisma.$disconnect();
-  return variants;
+export const createVariantTypes = async (productId: number, types: ProductCreate["variantTypes"]) => {
+  const response = Promise.all(
+    types.map(type =>{
+      if (!type.name) {
+        throw new Error("VariantType.name is required");
+      }
+      return prisma.variantType.create({
+        include: { options: true },
+        data: {
+          name: type.name,
+          productId,
+          options: {
+            create: type.options.map(o => ({
+              name: o.name,
+              value: o.name
+            }))
+          }
+        }
+      })
+    }
+    )
+  );
+  await prisma.$disconnect()
+  return response;
+};
+
+
+export const createVariantCombinations = async (
+  productId: number,
+  combinations: ProductCreate["variantCombinations"],
+  optionMap: Map<string, number>
+) => {
+  return Promise.all(
+    combinations.map(c =>
+      prisma.variantCombination.create({
+        include: { values: true },
+        data: {
+          productId,
+          sku: c.sku,
+          price: c.price,
+          pricePublic: c.pricePublic,
+          quantity: c.quantity,
+          status: c.status,
+          values: {
+            create: c.values.map(v => ({
+              optionId: optionMap.get(v)
+            }))
+          }
+        }
+      })
+    )
+  );
 };
 
 export const getProductByIdProduct = async (id: number) => {
@@ -346,9 +422,9 @@ export const getProductsByIds = async (storeId: number, ids: number[]) => {
       id: { in: ids },
       storeId,
     },
-    include: {
-      variants: true,
-    },
+    // include: {
+    //   variants: true,
+    // },
   });
   await prisma.$disconnect();
   return products;

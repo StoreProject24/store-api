@@ -92,6 +92,7 @@ SalesController.get('/:storeId', [verifyTokenAdminStore, ...validatorGetSales], 
       Number(page),
       status as unknown as SaleStatus
     );
+    console.log("sales", sales);
     handleSuccess(res, 200, { sales });
   } catch (error: any) {
     handleError(res, error.status, error.message);

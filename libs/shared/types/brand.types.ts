@@ -21,3 +21,5 @@ export interface UpdateBrandImage {
   urlImage: string;
   storeId: number;
 }
+
+export type BrandsPublic = Omit<Brand, 'statusId' | 'storeId' | 'createdAt' | 'updatedAt'>;

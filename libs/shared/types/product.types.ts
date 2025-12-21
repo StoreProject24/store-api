@@ -8,9 +8,10 @@ export interface Product {
   sku: string;
   pricePublic: number;
   tags: string[];
-  variants: ProductVariants[];
+  variantTypes: VariantType[];
+  variantCombinations: VariantCombination[];
   storeId: number;
-  images?: ProductImages['images'][];
+  images?: ProductImages[];
   video: string;
   brandId: number | null;
   statusId: number;
@@ -18,17 +19,41 @@ export interface Product {
   updatedAt: Date;
 }
 
-export interface ProductVariants {
+export interface VariantType {
   id: number;
   name: string;
-  price: number;
-  sku: string;
-  quantity: number;
   productId: number;
   createdAt: Date;
   updatedAt: Date;
+  options: VariantOption[];
+}
+export interface VariantOption {
+  id: number;
+  name: string; 
+  variantTypeId: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+export interface VariantCombination {
+  id: number;
+  label: string;
+  sku: string;
+  price: number;
+  pricePublic: number;
+  quantity: number;
+  status: boolean;
+  productId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  values: string[];
 }
 
+export interface VariantCombinationValue {
+  id: number;
+  combinationId: number;
+  optionId: number;
+  option: VariantOption;
+}
 export interface ProductsGetSearch {
   storeId: number;
   name: string;

@@ -118,11 +118,12 @@ model Products {
   status      Status            @relation(fields: [statusId], references: [id])
   statusId    Int               @default(1)
   categories  Categories?       @relation(fields: [categoryId], references: [id])
+  variantTypes   VariantType[]
+  variantCombinations  VariantCombination[] 
   categoryId  Int?
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @default(now())
   images      ProductImages[]
-  variants    ProductVariants[]
   video       String            @default("")
 }
 
@@ -135,16 +136,40 @@ model ProductImages {
   updatedAt DateTime @default(now())
 }
 
-model ProductVariants {
+model VariantType {
   id        Int      @id @default(autoincrement())
   name      String
-  price     Float
-  sku       String
-  quantity  Int
   product   Products @relation(fields: [productId], references: [id])
   productId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  options   VariantOption[]
+}
+model VariantOption {
+  id           Int         @id @default(autoincrement())
+  name         String
+  value        String
+  type         VariantType  @relation(fields: [typeId], references: [id])
+  typeId       Int
+  combinationValues VariantCombinationValue[]
+}
+
+model VariantCombination {
+  id          Int      @id @default(autoincrement())
+  product     Products @relation(fields: [productId], references: [id])
+  productId   Int
+  price       Float     @default(0)
+  pricePublic Float     @default(0)
+  quantity    Int       @default(0)
+  sku         String
+  status      Boolean   @default(true)
+  values      VariantCombinationValue[]
+}
+
+model VariantCombinationValue {
+  id                Int                @id @default(autoincrement())
+  combination       VariantCombination @relation(fields: [combinationId], references: [id])
+  combinationId     Int
+  option            VariantOption      @relation(fields: [optionId], references: [id])
+  optionId          Int
 }
 
 enum Role {

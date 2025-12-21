@@ -15,14 +15,30 @@ export const handleError = (res: Response, status: number, message: string) => {
   return res.status(status ?? 500).json({ error: message ?? 'Internal server error', status: status ?? 500 });
 };
 
-export const handleValidator: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const handleValidator: RequestHandler = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    handleError(res, 400, errors.array()[0].msg);
-    return;
+    throw new AppError(400, errors.array()[0].msg);
   }
   next();
 };
+
+
+export const errorMiddleware = (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const status = err.status || 500;
+  const message = err.message || 'Internal server error';
+
+  return res.status(status).json({
+    error: message,
+    status,
+  });
+};
+
 
 export class AppError<T> extends Error {
   status: number;

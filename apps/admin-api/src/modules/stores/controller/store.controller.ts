@@ -16,7 +16,9 @@ export const StoreController = Router();
 StoreController.get('/', verifyToken, async (req: Request, res: Response) => {
   try {
     const storeDomain = new StoreDomain();
+    console.log("req.user.id ", req.user.id)
     const stores = await storeDomain.getStoreByIdUser(req.user.id);
+    console.log("stores ", stores)
     handleSuccess(res, 200, { stores });
   } catch (error: any) {
     handleError(res, 404, error);

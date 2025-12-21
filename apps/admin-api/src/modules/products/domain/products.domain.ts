@@ -5,7 +5,8 @@ import { existStoreRedis } from '~modules/stores/utils/storeRedis';
 import {
   create,
   createProductImages,
-  createVariants,
+  createVariantCombinations,
+  createVariantTypes,
   deleteImagesByProductId,
   deleteImagesProduct,
   deleteProduct,
@@ -14,7 +15,6 @@ import {
   getProductByIdProduct,
   getProducts,
   getProductsByCategoryId,
-  getProductsPublic,
   update,
   updateStatusProduct,
   validateIsMyProduct,
@@ -25,22 +25,29 @@ import {
   ProductsGetByCategoryId,
   ProductImages,
   Product,
-  ProductVariants,
 } from '@shared/types/product.types';
 import { ProductsRepository } from './products.interface';
 
 export class ProductsDomain implements ProductsRepository {
+  // @ts-ignore
   async createProduct(product: ProductCreate) {
     const newProduct = await create(product);
-    let variants: ProductVariants[] = [];
+    const types = await createVariantTypes(newProduct.id, product.variantTypes);
+    const optionMap = new Map<string, number>();
+    types.forEach(t =>
+      t.options.forEach(o => optionMap.set(o.name, o.id))
+    );
 
-    if (product.variants.length) {
-      for (const variant of product.variants) {
-        variant.productId = newProduct.id;
-      }
-      variants = await createVariants(product.variants);
+    const combinations = await createVariantCombinations(
+      newProduct.id,
+      product.variantCombinations,
+      optionMap
+    );
+    return {
+      ...newProduct,
+      variantCombinations: combinations,
+      variantTypes: types,
     }
-    return { ...newProduct, variants } as Product;
   }
 
   async getProductsByStore(body: ProductsGet) {
@@ -55,12 +62,6 @@ export class ProductsDomain implements ProductsRepository {
       throw new AppError(401, 'No estas autorizado para esta accion');
     }
     return await getProductById(storeId, id);
-  }
-
-  async getPublicProductsByStore(body: ProductsGet) {
-    const { products, total } = await getProductsPublic(body);
-
-    return { products, total };
   }
 
   async getProductsByCategoryId(body: ProductsGetByCategoryId) {
