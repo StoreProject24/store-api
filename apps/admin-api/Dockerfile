@@ -4,16 +4,15 @@ RUN npm install -g pnpm
 
 WORKDIR /app
 
-# Copiamos todo el repo (simple y seguro)
 COPY . .
 
-# Instalamos dependencias
 RUN pnpm install --frozen-lockfile
 
-# Prisma
-RUN pnpm --filter admin-api generate || true
+# Prisma + build del lib
+RUN pnpm --filter @stores-api/db generate
+RUN pnpm --filter @stores-api/db build
 
-# Build
+# Build de la API
 RUN pnpm --filter admin-api build
 
 # ---------- RUN ----------
@@ -23,6 +22,7 @@ WORKDIR /app
 
 COPY --from=builder /app/node_modules node_modules
 COPY --from=builder /app/apps/admin-api/dist apps/admin-api/dist
+COPY --from=builder /app/libs/db/dist libs/db/dist
 COPY --from=builder /app/apps/admin-api/package.json apps/admin-api/
 
 WORKDIR /app/apps/admin-api
