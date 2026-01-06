@@ -63,14 +63,47 @@ const getProductByIdAndStore = async (storeId: number, productId: number) => {
         description: true,
         pricePublic: true,
         quantity: true,
-        images: true,
+        images: {
+          select: {
+            urlImage: true,
+            id: true,
+            productId: true,
+          }
+        },
         storeId: true,
-        // variants: true,
         sku: true,
         tags: true,
         video: true,
         brandId: true,
         categoryId: true,
+        variantTypes: {
+          select: {
+            name: true,
+            id: true,
+            options: true,
+          },
+        },
+        variantCombinations: {
+          where: {
+            status: true
+          },
+          select: {
+            values: {
+              select: {
+                optionId: true,
+                option: true,
+                combination: true,
+                id: true
+              },
+            },
+            price: true,
+            pricePublic: true,
+            sku: true,
+            status: true,
+            quantity: true,
+            id: true
+          },
+        },
         categories: {
           select: {
             subCategories: true,

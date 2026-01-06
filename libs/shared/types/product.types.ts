@@ -83,10 +83,7 @@ export interface ProductsGetByCategoryId {
 }
 
 export interface ProductImages {
-  images: ImageProduct[];
-}
-
-interface ImageProduct {
+  id?: number;
   productId: number;
   urlImage: string;
 }

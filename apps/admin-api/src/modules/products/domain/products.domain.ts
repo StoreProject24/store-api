@@ -73,7 +73,8 @@ export class ProductsDomain implements ProductsRepository {
     if (!isMyProduct) {
       throw new AppError(401, 'No estas autorizado para esta accion');
     }
-    return await update(id, storeId, product);
+    await update(id, storeId, product);
+    
   }
 
   async changeStatusProduct(id: number, storeId: number, status: number) {
@@ -85,20 +86,24 @@ export class ProductsDomain implements ProductsRepository {
   }
 
   async uploadImages(productId: number, storeId: number, userId: number, req: Request) {
-    const store = await existStoreRedis(userId, storeId);
-    if (!store) {
-      throw new AppError(409, 'Store not found');
-    }
+    console.log("hola")
+    // const store = await existStoreRedis(userId, storeId);
+    // console.log("store ", store)
+    // if (!store) {
+    //   throw new AppError(409, 'Store not found');
+    // }
     const isMyProduct = await validateIsMyProduct(productId, storeId);
+    console.log("isMyProduct ", isMyProduct)
     if (!isMyProduct) {
       throw new AppError(401, 'No estas autorizado para esta accion');
     }
-    const existProduct = await getProductByIdProduct(productId);
-    if (!existProduct) {
-      throw new AppError(404, 'Product not found');
-    }
-    const images = await uploadImages(req, store.id, 'products');
-    const imagesProduct: ProductImages['images'] = [];
+    // const existProduct = await getProductByIdProduct(productId);
+    // if (!existProduct) {
+    //   throw new AppError(404, 'Product not found');
+    // }
+    console.log("store.id ", storeId)
+    const images = await uploadImages(req, storeId, 'products');
+    const imagesProduct: ProductImages[] = [];
     for (const img of images) {
       imagesProduct.push({
         urlImage: img,

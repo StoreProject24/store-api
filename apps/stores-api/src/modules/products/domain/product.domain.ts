@@ -18,18 +18,12 @@ export class ProductDomain implements ProductRepository {
       categoryId: product.categoryId,
       sku: product.sku,
       pricePublic: product.pricePublic,
-      variantCombinations: [],
-      variantTypes: [],
-      // images: [
-      //   product.images?.map((img) => ({
-      //     id: img.id,
-      //     productId: img.productId,
-      //     urlImage: img.urlImage,
-      //   })) || [],
-      // ],
-      images: [],
+      // @ts-ignore
+      variantCombinations: product.variantCombinations,
+      // @ts-ignore
+      variantTypes: product.variantTypes,
+      images: product.images,
       tags: product.tags || [],
-      // variants: product.variants || [],
       storeId: product.storeId,
       video: product.video || '',
       brandId: product.brandId,
@@ -61,15 +55,7 @@ export class ProductDomain implements ProductRepository {
         images: [],
         variantCombinations: [],
         variantTypes: [],
-        // images: [
-        //   product.images?.map((img) => ({
-        //     id: img.id,
-        //     productId: img.productId,
-        //     urlImage: img.urlImage,
-        //   })) || [],
-        // ],
         tags: product.tags || [],
-        // variants: product.variants || [],
         storeId: product.storeId,
         video: product.video || '',
         brandId: product.brandId,

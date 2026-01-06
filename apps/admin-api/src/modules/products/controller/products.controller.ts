@@ -15,7 +15,6 @@ import {
 
 export const ProductController = Router();
 
-// Admin
 ProductController.post(
   '/',
   [verifyTokenAdminStore, ...validationCreateProduct],
@@ -71,6 +70,7 @@ ProductController.post(
       const productId = parseInt(req.params.productId);
       const storeId = parseInt(req.params.storeId);
       const userId = req.user.id;
+      console.log("userId ", userId)
       const images = await productDomain.uploadImages(productId, storeId, userId, req);
       handleSuccess(res, 200, { images });
     } catch (error: any) {
@@ -140,6 +140,7 @@ ProductController.get('/:storeId', verifyTokenAdminStore, validatorGetProducts, 
       page: Number(page),
       q: q as string,
     });
+    console.log("products ", products)
     handleSuccess(res, 200, { products, total });
   } catch (error: any) {
     handleError(res, error.status, error);

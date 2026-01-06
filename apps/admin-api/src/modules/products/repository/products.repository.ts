@@ -142,15 +142,6 @@ export const getProductsByCategoryId = async (body: ProductsGetByCategoryId) => 
       quantity: true,
       variantTypes: true,
       variantCombinations: true,
-      // variants: {
-      //   select: {
-      //     id: true,
-      //     name: true,
-      //     price: true,
-      //     quantity: true,
-      //     sku: true,
-      //   },
-      // },
       sku: true,
       description: true,
       brands: {
@@ -294,6 +285,27 @@ export const createVariantCombinations = async (
   );
 };
 
+export const createVariantType = async (productId: number, type: {name: string})=> {
+  const newVariantType = await prisma.variantType.create({
+    data: {
+      name: type.name,
+      productId
+    },
+  });
+  await prisma.$disconnect()
+  return newVariantType
+}
+
+export const updateVariantType = async (productId: number, type: {typeId: number, name: string}) => {
+  await prisma.variantType.update({
+    where: { id: type.typeId },
+    data: { name: type.name },
+  });
+  await prisma.$disconnect();
+}
+
+
+
 export const getProductByIdProduct = async (id: number) => {
   const product = prisma.products.findUnique({
     where: {
@@ -360,7 +372,7 @@ export const deleteProduct = async (id: number, storeId: number) => {
   await prisma.$disconnect();
 };
 
-export const createProductImages = async (productImages: ProductImages['images']) => {
+export const createProductImages = async (productImages: ProductImages[]) => {
   await prisma.productImages.createMany({
     data: productImages,
   });
@@ -422,9 +434,6 @@ export const getProductsByIds = async (storeId: number, ids: number[]) => {
       id: { in: ids },
       storeId,
     },
-    // include: {
-    //   variants: true,
-    // },
   });
   await prisma.$disconnect();
   return products;

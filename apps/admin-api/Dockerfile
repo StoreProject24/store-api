@@ -1,37 +1,33 @@
-FROM node:20.5.1
+FROM node:20.5.1-alpine AS builder
 
-# Instala pnpm globalmente
 RUN npm install -g pnpm
 
-# Establece el directorio de trabajo en /app
 WORKDIR /app
 
-# Copia los archivos raíz del monorepo necesarios
-COPY pnpm-workspace.yaml ./
-COPY package.json pnpm-lock.yaml ./
-
-# Copia los package.json específicos
-COPY apps/admin-api/package.json ./apps/admin-api/
-COPY libs/db/package.json ./libs/db/
-
-# Instala dependencias
-RUN pnpm install
-
-# Copia todo el código del monorepo
+# Copiamos todo el repo (simple y seguro)
 COPY . .
 
-# Genera Prisma Client
-RUN pnpm --filter @stores-api/db generate
+# Instalamos dependencias
+RUN pnpm install --frozen-lockfile
 
-# Compila la app
+# Prisma
+RUN pnpm --filter admin-api generate || true
+
+# Build
 RUN pnpm --filter admin-api build
 
-# Cambia al directorio de la app
+# ---------- RUN ----------
+FROM node:20.5.1-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/node_modules node_modules
+COPY --from=builder /app/apps/admin-api/dist apps/admin-api/dist
+COPY --from=builder /app/apps/admin-api/package.json apps/admin-api/
+
 WORKDIR /app/apps/admin-api
 
-# Expone el puerto
-EXPOSE 3001
+ENV PORT=8080
+EXPOSE 8080
 
-# Comando de arranque
-CMD ["pnpm", "start"]
-
+CMD ["node", "dist/index.js"]
