@@ -7,6 +7,7 @@ import { create, getById, getByUserId, update } from '../repository/store.reposi
 import { FieldStore, StoreCreate, StoreUpdate } from '@shared/types/store.types';
 import { StoreRepository } from './store.interface';
 import { existStoreRedis, getStoresRedis } from '../utils/storeRedis';
+import { HttpCode } from '@shared/helpers/response/response.type';
 export class StoreDomain implements StoreRepository {
   async createStore(data: StoreCreate) {
     return await create(data);
@@ -21,7 +22,7 @@ export class StoreDomain implements StoreRepository {
   async deleteStore(id: number) {
     const store = await getById(id);
     if (!store) {
-      throw new AppError(404, 'Store not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'Tienda no encontrada');
     }
     const newStatusId = store.statusId === 2 ? 1 : 2;
     await update(id, { statusId: newStatusId });
@@ -31,7 +32,7 @@ export class StoreDomain implements StoreRepository {
   async getStoreById(id: number) {
     const store = await getById(id);
     if (!store) {
-      throw new AppError(404, 'Store not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'Tienda no encontrada');
     }
     return _.omit(store, ['userId']);
   }
@@ -50,7 +51,7 @@ export class StoreDomain implements StoreRepository {
   async uploadImage(userId: number, storeId: number, field: FieldStore['field'], req: Request) {
     const store = await existStoreRedis(userId, storeId);
     if (!store) {
-      throw new AppError(404, 'Store not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'Tienda no encontrada');
     }
     const image = await uploadImages(req, store.id, 'store');
     const storeUpdate = await update(store.id, {

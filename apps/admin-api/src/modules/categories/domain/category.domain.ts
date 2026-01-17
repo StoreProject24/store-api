@@ -4,6 +4,7 @@ import { CreateCategory, UpdateImageCategory, Category } from '@shared/types/cat
 import { CategoryRepository } from './category.interface';
 import { deleteImages, uploadImages } from '~services/image/image.service';
 import { Request } from 'express';
+import { HttpCode } from '@shared/helpers/response/response.type';
 
 export class CategoryDomain implements CategoryRepository {
   async createCategory(storeId: number, body: CreateCategory) {
@@ -14,7 +15,7 @@ export class CategoryDomain implements CategoryRepository {
   async updateCategory(storeId: number, body: Category) {
     const currentCategory = await findCategoryId(body.id);
     if (!currentCategory) {
-      throw new AppError(404, 'Not found category');
+      throw new AppError(HttpCode.NOT_FOUND, 'Categoria no encontrada');
     }
     const category = await update(storeId, body.id, body);
     return category;
@@ -23,7 +24,7 @@ export class CategoryDomain implements CategoryRepository {
   async updateImageCategory(body: UpdateImageCategory) {
     const currentCategory = await findCategoryId(body.categoryId);
     if (!currentCategory) {
-      throw new AppError(404, 'Not found category');
+      throw new AppError(HttpCode.NOT_FOUND, 'Categoria no encontrada');
     }
     if (currentCategory.urlImage !== body.urlImage) {
       await deleteImages([currentCategory.urlImage]);

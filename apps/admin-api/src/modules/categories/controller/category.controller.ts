@@ -9,6 +9,7 @@ import {
   // validatorImageCategory,
   validatorUpdateCategory,
 } from '../validator/category.validator';
+import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const CategoriesController = Router();
 
@@ -17,7 +18,7 @@ CategoriesController.get('/:storeId', validatorGetCategories, async (req: Reques
     const categoriesDomain = new CategoryDomain();
     const storeId = parseInt(req.params.storeId);
     const categories = await categoriesDomain.getAllCategories(storeId);
-    handleSuccess(res, 200, { categories });
+    handleSuccess(res, HttpCode.OK, { categories });
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }
@@ -31,7 +32,7 @@ CategoriesController.post(
       const categoriesDomain = new CategoryDomain();
       const storeId = parseInt(req.params.storeId);
       const category = await categoriesDomain.createCategory(storeId, req.body);
-      handleSuccess(res, 201, { category });
+      handleSuccess(res, HttpCode.CREATED, { category });
     } catch (error: any) {
       handleError(res, error.status, error.message);
     }
@@ -47,7 +48,7 @@ CategoriesController.patch(
       const id = parseInt(req.params.id);
       const storeId = parseInt(req.params.storeId);
       const category = await categoriesDomain.updateCategory(storeId, { id, ...req.body });
-      handleSuccess(res, 200, { category });
+      handleSuccess(res, HttpCode.OK, { category });
     } catch (error: any) {
       handleError(res, error.status, error.message);
     }
@@ -94,7 +95,7 @@ CategoriesController.delete(
       const id = parseInt(req.params.id);
       const storeId = parseInt(req.params.storeId);
       await categoriesDomain.deleteCategory(storeId, id);
-      handleSuccess(res, 200, {});
+      handleSuccess(res, HttpCode.OK, {});
     } catch (error: any) {
       handleError(res, error.status, error.message);
     }

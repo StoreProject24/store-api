@@ -1,5 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { validationResult } from 'express-validator';
+import { HttpCode } from './response.type';
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const handleSuccess = (res: Response, status: number, data: any) => {
@@ -7,18 +8,18 @@ export const handleSuccess = (res: Response, status: number, data: any) => {
     data: {
       ...data,
     },
-    status: status ?? 200,
+    status: status ?? HttpCode.OK,
   });
 };
 
 export const handleError = (res: Response, status: number, message: string) => {
-  return res.status(status ?? 500).json({ error: message ?? 'Internal server error', status: status ?? 500 });
+  return res.status(status ?? HttpCode.INTERNAL_SERVER_ERROR).json({ error: message ?? 'Internal server error', status: status ?? HttpCode.INTERNAL_SERVER_ERROR });
 };
 
 export const handleValidator: RequestHandler = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    throw new AppError(400, errors.array()[0].msg);
+    throw new AppError(HttpCode.BAD_REQUEST, errors.array()[0].msg);
   }
   next();
 };
@@ -30,7 +31,7 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const status = err.status || 500;
+  const status = err.status || HttpCode.INTERNAL_SERVER_ERROR;
   const message = err.message || 'Internal server error';
 
   return res.status(status).json({

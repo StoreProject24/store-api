@@ -6,13 +6,14 @@ import { UserCreate, UserRefreshToken } from '../types/auth.types';
 import { AuthRepository } from './auth.interface';
 import { getByUserId, getStoreByIdAndUserId } from '~modules/stores/repository/store.repository';
 import { sendEmail } from '~services/email/email.service';
+import { HttpCode } from '@shared/helpers/response/response.type';
 
 const STORE_APP_NAME = process.env.STORE_APP_NAME;
 export class AuthDomain implements AuthRepository {
   async createUser(body: UserCreate) {
     const existUser = await findUserByEmail(body.email);
     if (existUser) {
-      throw new AppError(409, 'User already exists');
+      throw new AppError(HttpCode.CONFLICT, 'User already exists');
     }
     const newPassword = bcrypt.hashSync(body.password, 10);
     const user = await create({
@@ -31,11 +32,11 @@ export class AuthDomain implements AuthRepository {
   async loginUser(email: string, password: string) {
     const existUser = await findUserByEmail(email);
     if (!existUser) {
-      throw new AppError(404, 'User not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'No se pudo encontrar el usuario');
     }
     const comparePassword = bcrypt.compareSync(password, existUser.password);
     if (!comparePassword) {
-      throw new AppError(409, 'Invalid user or password');
+      throw new AppError(HttpCode.CONFLICT, 'Usuario o contraseña son incorrectos');
     }
     const token = createToken({
       id: existUser.id,
@@ -50,10 +51,10 @@ export class AuthDomain implements AuthRepository {
   async forgotPasswordUser(email: string) {
     const existUser = await findUserByEmail(email);
     if (!existUser) {
-      throw new AppError(404, 'User not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'No se pudo encontrar el usuario');
     }
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-    await sendEmail(email, 'Recuperacion de contrasena', 'otpCode', {
+    await sendEmail(email, 'Recuperacion de contraseña', 'otpCode', {
       otpCode,
       name: existUser.name,
       logoUrl: '',
@@ -66,20 +67,20 @@ export class AuthDomain implements AuthRepository {
   async verifyOtpCodeUser(email: string, otpCode: string) {
     const existUser = await findUserByEmail(email);
     if (!existUser) {
-      throw new AppError(404, 'User not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'No se pudo encontrar el usuario');
     }
     if (existUser.otpCode !== otpCode) {
-      throw new AppError(409, 'Invalid otp code');
+      throw new AppError(HttpCode.CONFLICT, 'Codigo invalido');
     }
   }
 
   async changePasswordUser(email: string, password: string, otpCode: string) {
     const existUser = await findUserByEmail(email);
     if (!existUser) {
-      throw new AppError(404, 'User not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'No se pudo encontrar el usuario');
     }
     if (existUser.otpCode !== otpCode) {
-      throw new AppError(409, 'Invalid otp code');
+      throw new AppError(HttpCode.CONFLICT, 'Codigo invalido');
     }
     const newPassword = bcrypt.hashSync(password, 10);
     await changePassword(email, newPassword);
@@ -88,7 +89,7 @@ export class AuthDomain implements AuthRepository {
   async refreshToken(data: UserRefreshToken) {
     const store = await getByUserId(data.id);
     if (!store.length) {
-      throw new AppError(404, 'Store not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'Tienda no encontrada');
     }
     const token = createToken({
       id: data.id,
@@ -104,11 +105,11 @@ export class AuthDomain implements AuthRepository {
   async pickStore(storeId: number, userId: number) {
     const store = await getStoreByIdAndUserId(storeId, userId);
     if (!store) {
-      throw new AppError(404, 'Store not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'Tienda no encontrada');
     }
     const user = await getById(userId);
     if (!user) {
-      throw new AppError(404, 'User not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'No se pudo encontrar el usuario');
     }
     const token = createToken({
       id: user.id,

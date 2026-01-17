@@ -143,14 +143,23 @@ model VariantType {
   productId Int
   options   VariantOption[]
 }
+
 model VariantOption {
-  id           Int         @id @default(autoincrement())
-  name         String
-  value        String
-  type         VariantType  @relation(fields: [typeId], references: [id])
-  typeId       Int
+  id        Int      @id @default(autoincrement())
+  name      String
+  value     String
+  status    Boolean  @default(true)
+  type      VariantType @relation(fields: [typeId], references: [id])
+  typeId    Int
+
   combinationValues VariantCombinationValue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([typeId, name])
 }
+
 
 model VariantCombination {
   id          Int      @id @default(autoincrement())

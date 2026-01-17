@@ -9,6 +9,7 @@ import {
   validateVerifyOtp,
 } from '../validator/auth.validator';
 import { verifyToken } from '~middlewares/verifyToken.middleware';
+import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const AuthController = Router();
 
@@ -16,9 +17,9 @@ AuthController.post('/register', validateRegister, async (req: Request, res: Res
   try {
     const authDomain = new AuthDomain();
     const token = await authDomain.createUser(req.body);
-    handleSuccess(res, 201, { token });
+    handleSuccess(res, HttpCode.CREATED, { token });
   } catch (error: any) {
-    handleError(res, 500, error.message);
+    handleError(res, error.status, error.message);
   }
 });
 
@@ -26,7 +27,7 @@ AuthController.post('/login', validateLogin, async (req: Request, res: Response)
   try {
     const authDomain = new AuthDomain();
     const token = await authDomain.loginUser(req.body.email, req.body.password);
-    handleSuccess(res, 200, { token });
+    handleSuccess(res, HttpCode.OK, { token });
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }
@@ -36,11 +37,11 @@ AuthController.post('/forgot-password', validateForgotPassword, async (req: Requ
   try {
     const authDomain = new AuthDomain();
     await authDomain.forgotPasswordUser(req.body.email);
-    handleSuccess(res, 200, {
+    handleSuccess(res, HttpCode.OK, {
       message: 'Email sent',
     });
   } catch (error: any) {
-    handleError(res, 500, error.message);
+    handleError(res, error.status, error.message);
   }
 });
 
@@ -48,9 +49,9 @@ AuthController.post('/verify-otp', validateVerifyOtp, async (req: Request, res: 
   try {
     const authDomain = new AuthDomain();
     await authDomain.verifyOtpCodeUser(req.body.email, req.body.otpCode);
-    handleSuccess(res, 200, { message: 'Otp code verified' });
+    handleSuccess(res, HttpCode.OK, { message: 'Otp code verified' });
   } catch (error: any) {
-    handleError(res, 500, error.message);
+    handleError(res, error.status, error.message);
   }
 });
 
@@ -59,9 +60,9 @@ AuthController.patch('/reset-password', validateResetPassword, async (req: Reque
     const authDomain = new AuthDomain();
     const { email, password, otpCode } = req.body;
     await authDomain.changePasswordUser(email, password, otpCode);
-    handleSuccess(res, 200, { message: 'Otp code verified' });
+    handleSuccess(res, HttpCode.OK, { message: 'Otp code verified' });
   } catch (error: any) {
-    handleError(res, 500, error.message);
+    handleError(res, error.status, error.message);
   }
 });
 
@@ -69,9 +70,9 @@ AuthController.post('/refresh-token', verifyToken, async (req: Request, res: Res
   try {
     const authDomain = new AuthDomain();
     const token = await authDomain.refreshToken(req.user);
-    handleSuccess(res, 200, { token });
+    handleSuccess(res, HttpCode.OK, { token });
   } catch (error: any) {
-    handleError(res, 500, error.message);
+    handleError(res, error.status, error.message);
   }
 });
 
@@ -80,8 +81,8 @@ AuthController.post('/pick-store', verifyToken, async (req: Request, res: Respon
     const authDomain = new AuthDomain();
     const storeId = Number(req.body.storeId);
     const token = await authDomain.pickStore(storeId, req.user.id);
-    handleSuccess(res, 200, { token });
+    handleSuccess(res, HttpCode.OK, { token });
   } catch (error: any) {
-    handleError(res, 500, error.message);
+    handleError(res, error.status, error.message);
   }
 });

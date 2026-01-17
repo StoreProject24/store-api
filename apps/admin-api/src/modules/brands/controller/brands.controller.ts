@@ -3,6 +3,7 @@ import { handleError, handleSuccess } from '@shared/helpers/response/response';
 import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
 import { BrandsDomain } from '../domain/brands.domain';
 import { validatorCreateBrand } from '../validator/brans.validator';
+import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const BrandsController = Router();
 
@@ -13,7 +14,7 @@ BrandsController.get('/', verifyTokenAdminStore, async (req: Request, res: Respo
       storeId: req.user.storeId,
       statusIds: [1],
     });
-    handleSuccess(res, 201, { brands });
+    handleSuccess(res, HttpCode.OK, { brands });
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }
@@ -26,7 +27,7 @@ BrandsController.post('/', [verifyTokenAdminStore, ...validatorCreateBrand], asy
       ...req.body,
       storeId: req.user.storeId,
     });
-    handleSuccess(res, 201, { brand });
+    handleSuccess(res, HttpCode.CREATED, { brand });
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }
@@ -36,7 +37,7 @@ BrandsController.post('/images', verifyTokenAdminStore, async (req: Request, res
   try {
     const brandDomain = new BrandsDomain();
     const images = await brandDomain.uploadImageBrand(req.user.storeId, req);
-    handleSuccess(res, 201, { images });
+    handleSuccess(res, HttpCode.CREATED, { images });
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }
@@ -52,7 +53,7 @@ BrandsController.patch('/:id', verifyTokenAdminStore, async (req: Request, res: 
       name: req.body.name,
       urlImage: req.body.urlImage,
     });
-    handleSuccess(res, 201, { brands });
+    handleSuccess(res, HttpCode.OK, { brands });
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }
@@ -63,7 +64,7 @@ BrandsController.delete('/:id', verifyTokenAdminStore, async (req: Request, res:
     const brandDomain = new BrandsDomain();
     const id = parseInt(req.params.id);
     await brandDomain.deleteBrand(id, req.user.storeId);
-    handleSuccess(res, 201, {});
+    handleSuccess(res, HttpCode.OK, {});
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }
@@ -78,7 +79,7 @@ BrandsController.patch('/image', verifyTokenAdminStore, async (req: Request, res
       urlImage: req.body.urlImage,
       storeId: req.user.storeId,
     });
-    handleSuccess(res, 201, response);
+    handleSuccess(res, HttpCode.OK, response);
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }

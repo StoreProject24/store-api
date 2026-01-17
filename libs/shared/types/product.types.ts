@@ -23,16 +23,17 @@ export interface VariantType {
   id: number;
   name: string;
   productId: number;
-  createdAt: Date;
-  updatedAt: Date;
+  // createdAt: Date;
+  // updatedAt: Date;
   options: VariantOption[];
 }
 export interface VariantOption {
   id: number;
   name: string; 
   variantTypeId: number;
-  createdAt: Date;
-  updatedAt: Date;
+  status: boolean;
+  // createdAt: Date;
+  // updatedAt: Date;
 }
 export interface VariantCombination {
   id: number;

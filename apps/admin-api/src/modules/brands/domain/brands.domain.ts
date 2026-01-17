@@ -11,6 +11,7 @@ import { CreateBrand, GetBrands, UpdateBrandImage, UpdateBrand } from '@shared/t
 import { BrandRepository } from './brands.interface';
 import { deleteImages, uploadImages } from '~services/image/image.service';
 import { Request } from 'express';
+import { HttpCode } from '@shared/helpers/response/response.type';
 
 export class BrandsDomain implements BrandRepository {
   async createBrand(body: CreateBrand) {
@@ -22,14 +23,14 @@ export class BrandsDomain implements BrandRepository {
       storeId: data.storeId,
     });
     if (!currentBrand) {
-      throw new AppError(404, 'Brand not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'Marca no encontrada');
     }
     return await updateName(data);
   }
   async updateImageBrand(data: UpdateBrandImage) {
     const currentBrand = await findBrandById(data);
     if (!currentBrand) {
-      throw new AppError(404, 'Brand not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'Marca no encontrada');
     }
     await deleteImages([currentBrand.urlImage]);
     return await updateImage(data);
@@ -41,7 +42,7 @@ export class BrandsDomain implements BrandRepository {
       storeId,
     });
     if (!currentBrand) {
-      throw new AppError(404, 'Brand not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'Marca no encontrada');
     }
     if (currentBrand?.urlImage) {
       await deleteImages([currentBrand.urlImage]);

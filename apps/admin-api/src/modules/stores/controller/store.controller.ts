@@ -10,18 +10,17 @@ import {
   validationUploadImageStore,
 } from '../validator/store.validator';
 import { FieldStore } from '@shared/types/store.types';
+import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const StoreController = Router();
 
 StoreController.get('/', verifyToken, async (req: Request, res: Response) => {
   try {
     const storeDomain = new StoreDomain();
-    console.log("req.user.id ", req.user.id)
     const stores = await storeDomain.getStoreByIdUser(req.user.id);
-    console.log("stores ", stores)
-    handleSuccess(res, 200, { stores });
+    handleSuccess(res, HttpCode.OK, { stores });
   } catch (error: any) {
-    handleError(res, 404, error);
+    handleError(res, error.status, error);
   }
 });
 
@@ -30,9 +29,9 @@ StoreController.get('/:idStore', verifyTokenAdminStore, async (req: Request, res
     const storeDomain = new StoreDomain();
     const idStore = Number(req.params.idStore);
     const store = await storeDomain.getStoreById(idStore);
-    handleSuccess(res, 200, { store });
+    handleSuccess(res, HttpCode.OK, { store });
   } catch (error: any) {
-    handleError(res, 404, error);
+    handleError(res, error.status, error);
   }
 });
 
@@ -41,9 +40,9 @@ StoreController.post('/', [verifyToken, ...validationCreateStore], async (req: R
     const storeDomain = new StoreDomain();
     const userId = req.user.id;
     const store = await storeDomain.createStore({ ...req.body, userId });
-    handleSuccess(res, 201, { store });
+    handleSuccess(res, HttpCode.CREATED, { store });
   } catch (error: any) {
-    handleError(res, 404, error);
+    handleError(res, error.status, error);
   }
 });
 
@@ -51,9 +50,9 @@ StoreController.put('/', [verifyToken, ...validationUpdateStore], async (req: Re
   try {
     const storeDomain = new StoreDomain();
     const store = await storeDomain.createStore(req.body);
-    handleSuccess(res, 201, { store });
+    handleSuccess(res, HttpCode.OK, { store });
   } catch (error: any) {
-    handleError(res, 404, error);
+    handleError(res, error.status, error);
   }
 });
 
@@ -65,9 +64,9 @@ StoreController.patch(
       const storeDomain = new StoreDomain();
       const id = parseInt(req.params.id);
       const store = await storeDomain.deleteStore(id);
-      handleSuccess(res, 201, { store });
+      handleSuccess(res, HttpCode.OK, { store });
     } catch (error: any) {
-      handleError(res, 404, error);
+      handleError(res, error.status, error);
     }
   }
 );
@@ -81,9 +80,9 @@ StoreController.post(
       const field = req.query.field as FieldStore['field'];
       const storeId = parseInt(req.params.storeId);
       const store = await storeDomain.uploadImage(req.user.id, storeId, field, req);
-      handleSuccess(res, 201, { store });
+      handleSuccess(res, HttpCode.CREATED, { store });
     } catch (error: any) {
-      handleError(res, 404, error);
+      handleError(res, error.status, error);
     }
   }
 );

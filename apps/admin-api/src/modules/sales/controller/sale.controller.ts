@@ -10,6 +10,7 @@ import {
 } from '../validator/sale.validator';
 import { SaleStatus } from '@shared/types/sale.types';
 import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
+import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const SalesController = Router();
 
@@ -25,7 +26,7 @@ SalesController.post(
         ...body,
         storeId,
       });
-      handleSuccess(res, 201, { sale });
+      handleSuccess(res, HttpCode.CREATED, { sale });
     } catch (error: any) {
       handleError(res, error.status, error.message);
     }
@@ -41,7 +42,7 @@ SalesController.get(
       const storeId = parseInt(req.params.storeId);
       const saleId = req.params.saleId;
       const sale = await saleDomain.getSaleProducts(storeId, saleId);
-      handleSuccess(res, 200, { sale });
+      handleSuccess(res, HttpCode.OK, { sale });
     } catch (error: any) {
       handleError(res, error.status, error.message);
     }
@@ -58,7 +59,7 @@ SalesController.patch(
       const saleId = req.params.saleId;
       const body = req.body;
       const sale = await saleDomain.changeSaleStatus(storeId, saleId, body.status as unknown as SaleStatus);
-      handleSuccess(res, 200, { sale });
+      handleSuccess(res, HttpCode.OK, { sale });
     } catch (error: any) {
       handleError(res, error.status, error.message);
     }
@@ -74,7 +75,7 @@ SalesController.delete(
       const storeId = parseInt(req.params.storeId);
       const saleId = req.params.saleId;
       await saleDomain.deleteSaleByStore(storeId, saleId);
-      handleSuccess(res, 200, {});
+      handleSuccess(res, HttpCode.OK, {});
     } catch (error: any) {
       handleError(res, error.status, error.message);
     }
@@ -92,8 +93,7 @@ SalesController.get('/:storeId', [verifyTokenAdminStore, ...validatorGetSales], 
       Number(page),
       status as unknown as SaleStatus
     );
-    console.log("sales", sales);
-    handleSuccess(res, 200, { sales });
+    handleSuccess(res, HttpCode.OK, { sales });
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }

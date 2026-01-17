@@ -13,6 +13,7 @@ import { compareSaleWithProducts, getProductsToUpdate } from '@shared/utils/func
 import { convertToObjectId } from '../utils/convetObjetId';
 import { ProductsDomain } from '~modules/products/domain/products.domain';
 import { getProductsByIds, updateProductsQuantity } from '~modules/products/repository/products.repository';
+import { HttpCode } from '@shared/helpers/response/response.type';
 
 export class SaleDomain implements SaleRepository {
   async createSale(body: CreateSaleBody) {
@@ -21,7 +22,7 @@ export class SaleDomain implements SaleRepository {
       body.items.map((item) => item.productId)
     );
     if (products.length !== body.items.length) {
-      throw new AppError(404, 'Products not found');
+      throw new AppError(HttpCode.NOT_FOUND, 'Productos no encontrados');
     }
     // compareSaleWithProducts(body, products);
     // const saleSequence = await getLastSaleSequential(body.storeId);
@@ -46,13 +47,13 @@ export class SaleDomain implements SaleRepository {
   async changeSaleStatus(storeId: number, saleId: string, newStatus: SaleStatus) {
     const existSale = await getSaleById(storeId, convertToObjectId(saleId));
     if (!existSale) {
-      throw new AppError(404, 'Venta no encontrada');
+      throw new AppError(HttpCode.NOT_FOUND, 'Venta no encontrada');
     }
     if (existSale.status === SaleStatus.deleted) {
-      throw new AppError(400, 'La venta no puede ser cancelada porque ya fue eliminada');
+      throw new AppError(HttpCode.BAD_REQUEST, 'La venta no puede ser cancelada porque ya fue eliminada');
     }
     if (existSale.status === SaleStatus.paid) {
-      throw new AppError(400, 'La venta no puede ser cancelada porque ya fue pagada');
+      throw new AppError(HttpCode.BAD_REQUEST, 'La venta no puede ser cancelada porque ya fue pagada');
     }
     if (newStatus === SaleStatus.cancelled) {
       const products = await getProductsByIds(
@@ -77,7 +78,7 @@ export class SaleDomain implements SaleRepository {
   async deleteSaleByStore(storeId: number, saleId: string) {
     const existSale = await getSaleById(storeId, convertToObjectId(saleId));
     if (!existSale) {
-      throw new AppError(404, 'Venta no encontrada');
+      throw new AppError(HttpCode.NOT_FOUND, 'Venta no encontrada');
     }
     return await deleteSale(storeId, convertToObjectId(saleId));
   }
@@ -85,7 +86,7 @@ export class SaleDomain implements SaleRepository {
   async getSaleProducts(storeId: number, saleId: string) {
     const existSale = await getSaleById(storeId, convertToObjectId(saleId));
     if (!existSale) {
-      throw new AppError(404, 'Venta no encontrada');
+      throw new AppError(HttpCode.NOT_FOUND, 'Venta no encontrada');
     }
     const products = [];
     const productDomain = new ProductsDomain();
