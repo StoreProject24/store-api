@@ -120,7 +120,6 @@ const getProductByIdAndStore = async (storeId: number, productId: number) => {
 };
 
 const getProductsByIds = async (storeId: number, ids: number[]) => {
-  console.log('ids', ids);
   const products = await prisma.products.findMany({
     where: {
       id: { in: ids },

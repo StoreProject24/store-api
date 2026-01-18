@@ -9,7 +9,7 @@ export const validationCreateProduct = [
   check('quantity').isNumeric().withMessage('quantity is required'),
   check('sku').isString().withMessage('sku is required'),
   check('pricePublic').isNumeric().withMessage('pricePublic is required'),
-  check('tags').isArray().optional({ nullable: true }).isNumeric().withMessage('tags is required'),
+  check('tags').isArray().optional({ nullable: true }).withMessage('tags is required'),
   check('categoryId').optional({ nullable: true }).isNumeric().withMessage('categoryId is required'),
   check('brandId').optional({ nullable: true }).isNumeric().withMessage('brandId is required'),
   handleValidator,

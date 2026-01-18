@@ -103,82 +103,78 @@ model SubCategories {
 }
 
 model Products {
-  id          Int               @id @default(autoincrement())
-  name        String
-  price       Float             @default(0)
-  sku         String
-  quantity    Int
-  description String
-  pricePublic Float
-  tags        String[]          @default([""])
-  store       Stores            @relation(fields: [storeId], references: [id])
-  storeId     Int
-  brands      Brands?           @relation(fields: [brandId], references: [id])
-  brandId     Int?
-  status      Status            @relation(fields: [statusId], references: [id])
-  statusId    Int               @default(1)
-  categories  Categories?       @relation(fields: [categoryId], references: [id])
-  variantTypes   VariantType[]
-  variantCombinations  VariantCombination[] 
-  categoryId  Int?
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @default(now())
-  images      ProductImages[]
-  video       String            @default("")
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  price               Float                @default(0)
+  sku                 String
+  quantity            Int
+  description         String
+  pricePublic         Float
+  tags                String[]             @default([""])
+  store               Stores               @relation(fields: [storeId], references: [id])
+  storeId             Int
+  brands              Brands?              @relation(fields: [brandId], references: [id])
+  brandId             Int?
+  status              Status               @relation(fields: [statusId], references: [id])
+  statusId            Int                  @default(1)
+  categories          Categories?          @relation(fields: [categoryId], references: [id])
+  variantTypes        VariantType[]        
+  variantCombinations VariantCombination[] 
+  categoryId          Int?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now())
+  images              ProductImages[]      
+  video               String               @default("")
 }
 
 model ProductImages {
   id        Int      @id @default(autoincrement())
   urlImage  String
-  product   Products @relation(fields: [productId], references: [id])
+  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
 
 model VariantType {
-  id        Int      @id @default(autoincrement())
+  id        Int             @id @default(autoincrement())
   name      String
-  product   Products @relation(fields: [productId], references: [id])
+  product   Products        @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
   options   VariantOption[]
 }
 
 model VariantOption {
-  id        Int      @id @default(autoincrement())
-  name      String
-  value     String
-  status    Boolean  @default(true)
-  type      VariantType @relation(fields: [typeId], references: [id])
-  typeId    Int
-
+  id     Int         @id @default(autoincrement())
+  name   String
+  value  String
+  status Boolean     @default(true)
+  type   VariantType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  typeId Int
   combinationValues VariantCombinationValue[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   @@unique([typeId, name])
 }
 
-
 model VariantCombination {
-  id          Int      @id @default(autoincrement())
-  product     Products @relation(fields: [productId], references: [id])
+  id          Int                       @id @default(autoincrement())
+  product     Products                  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId   Int
-  price       Float     @default(0)
-  pricePublic Float     @default(0)
-  quantity    Int       @default(0)
+  price       Float                     @default(0)
+  pricePublic Float                     @default(0)
+  quantity    Int                       @default(0)
   sku         String
-  status      Boolean   @default(true)
+  status      Boolean                   @default(true)
   values      VariantCombinationValue[]
 }
 
 model VariantCombinationValue {
-  id                Int                @id @default(autoincrement())
-  combination       VariantCombination @relation(fields: [combinationId], references: [id])
-  combinationId     Int
-  option            VariantOption      @relation(fields: [optionId], references: [id])
-  optionId          Int
+  id            Int                @id @default(autoincrement())
+  combination   VariantCombination @relation(fields: [combinationId], references: [id], onDelete: Cascade)
+  combinationId Int
+  option        VariantOption      @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  optionId      Int
 }
 
 enum Role {
