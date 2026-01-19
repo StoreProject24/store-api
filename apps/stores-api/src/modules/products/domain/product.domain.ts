@@ -1,36 +1,18 @@
+
 import { AppError } from '@shared/helpers/response/response';
 import { getProductByIdAndStore, getProductsByPage, getProductsRandomByStore, getRelatedProducts } from '../repository/product.repository';
 import { ProductRepository } from './product.interface';
-import { Product, ProductUser } from '@shared/types/product.types';
+import { ProductUser } from '~types/product';
+import { HttpCode } from '@shared/helpers/response/response.type';
+import { omit } from '~utils/fn';
 
 export class ProductDomain implements ProductRepository {
-  async getProductById(storeId: number, id: number): Promise<Product | null> {
+  async getProductById(storeId: number, id: number) {
     const product = await getProductByIdAndStore(storeId, id);
     if (!product) {
-      throw new AppError(404, 'Product no found');
+      throw new AppError(HttpCode.OK, 'Producto no encontrado');
     }
-    return {
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      price: product.pricePublic,
-      quantity: product.quantity,
-      categoryId: product.categoryId,
-      sku: product.sku,
-      pricePublic: product.pricePublic,
-      // @ts-ignore
-      variantCombinations: product.variantCombinations,
-      // @ts-ignore
-      variantTypes: product.variantTypes,
-      images: product.images,
-      tags: product.tags || [],
-      storeId: product.storeId,
-      video: product.video || '',
-      brandId: product.brandId,
-      statusId: product.statusId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    return omit(product, ['price']) as unknown as ProductUser
   }
 
   async getProductsByPage(
@@ -39,69 +21,18 @@ export class ProductDomain implements ProductRepository {
     limit: number,
     q: string,
     categoryIds: number[],
-  ): Promise<{ total: number; products: Product[] }> {
-    const { products, total } = await getProductsByPage(page, limit, storeId, q, categoryIds);
-    return {
-      total,
-      products: products.map((product) => ({
-        id: product.id,
-        name: product.name,
-        description: product.description,
-        price: product.pricePublic,
-        quantity: product.quantity,
-        categoryId: product.categoryId,
-        sku: product.sku,
-        pricePublic: product.pricePublic,
-        images: [],
-        variantCombinations: [],
-        variantTypes: [],
-        tags: product.tags || [],
-        storeId: product.storeId,
-        video: product.video || '',
-        brandId: product.brandId,
-        statusId: product.statusId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })),
-    };
+  ){
+    const { products, total } = await getProductsByPage(page, limit, storeId, q, categoryIds)
+    return {total, products: products.map(product => omit(product, ['price'])) as unknown as ProductUser[]}
   }
 
-  async getRandomProducts(storeId: number, limit: number): Promise<ProductUser[]> {
+  async getRandomProducts(storeId: number, limit: number) {
     const products = await getProductsRandomByStore(storeId, limit);
-    return products.map((product) => ({
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      price: product.pricePublic,
-      quantity: product.quantity,
-      categoryId: product.categoryId,
-      sku: product.sku,
-      brandId: product.brandId,
-      storeId: product.storeId,
-      video: product.video || '',
-      tags: product.tags || [],
-      variantCombinations: [],
-      variantTypes: [],
-      pricePublic: product.pricePublic,
-      statusId: product.statusId,
-    }));
+    return products.map(product => omit(product, ['price'])) as unknown as ProductUser[]
   }
 
-  async getRelatedProducts(storeId: number, productId: number, categoryId: number, limit: number): Promise<ProductUser[]> {
+  async getRelatedProducts(storeId: number, productId: number, categoryId: number, limit: number) {
     const products = await getRelatedProducts(storeId, productId, categoryId, limit);
-    // @ts-ignore
-    return products.map((product) => ({
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      price: product.pricePublic,
-      brandId: product.brandId,
-      categoryId: product.categoryId,
-      pricePublic: product.pricePublic,
-      quantity: product.quantity,
-      sku: product.sku,
-      statusId: product.statusId,
-      tags: product.tags,
-    }));
+    return products.map(product => omit(product, ['price'])) as unknown as ProductUser[]
   }
 }

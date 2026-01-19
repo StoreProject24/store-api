@@ -30,10 +30,11 @@ export interface VariantType {
 export interface VariantOption {
   id: number;
   name: string; 
-  variantTypeId: number;
+  // variantTypeId: number;
+  typeId: number;
   status: boolean;
-  // createdAt: Date;
-  // updatedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 export interface VariantCombination {
   id: number;
@@ -89,4 +90,4 @@ export interface ProductImages {
   urlImage: string;
 }
 
-export type ProductUser = Omit<Product, 'price' | 'createdAt' | 'updatedAt'>;
+// export type ProductUser = Omit<Product, 'price' | 'createdAt' | 'updatedAt'| 'storeId'>;

@@ -14,23 +14,24 @@ const getProductsByPage = async (page: number, limit: number, storeId: number, q
           in: categoryIds.length > 0 ? categoryIds : undefined,
         },
       },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        pricePublic: true,
-        quantity: true,
-        sku: true,
-        images: true,
+      include: {
         brands: true,
-        // variants: true,
-        status: true,
-        storeId: true,
-        video: true,
-        tags: true,
-        categoryId: true,
-        brandId: true,
-        statusId: true,
+        categories:true,
+        images: true,
+        variantCombinations: {
+          include: {
+            values: true
+          }
+        },
+        variantTypes: {
+          include: {
+            options: {
+              include: {
+                combinationValues: true
+              }
+            },
+          }
+        }
       },
       skip: (page - 1) * limit,
       take: limit,
@@ -57,60 +58,24 @@ const getProductByIdAndStore = async (storeId: number, productId: number) => {
         storeId,
         statusId: 1,
       },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        pricePublic: true,
-        quantity: true,
-        images: {
-          select: {
-            urlImage: true,
-            id: true,
-            productId: true,
+      include: {
+        images: true,
+        variantCombinations: {
+          include: {
+            values: {
+              include: {
+                combination: true,
+                option: true
+              }
+            }
           }
         },
-        storeId: true,
-        sku: true,
-        tags: true,
-        video: true,
-        brandId: true,
-        categoryId: true,
         variantTypes: {
-          select: {
-            name: true,
-            id: true,
+          include: {
             options: true,
           },
-        },
-        variantCombinations: {
-          where: {
-            status: true
-          },
-          select: {
-            values: {
-              select: {
-                optionId: true,
-                option: true,
-                combination: true,
-                id: true
-              },
-            },
-            price: true,
-            pricePublic: true,
-            sku: true,
-            status: true,
-            quantity: true,
-            id: true
-          },
-        },
-        categories: {
-          select: {
-            subCategories: true,
-          },
-        },
-        statusId: true,
-      },
+        }
+      }
     });
     await prisma.$disconnect();
     return product;
@@ -159,6 +124,10 @@ const getRelatedProducts = async (storeId: number, productId: number, categoryId
       id: {
         not: productId,
       },
+    },
+    include: {
+      variantTypes: true,
+      variantCombinations: true
     },
     orderBy: { id: 'desc' },
     take: limit,

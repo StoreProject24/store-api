@@ -14,6 +14,7 @@
       "~services/*": ["./src/services/*"],
       "~utils/*": ["./src/utils/*"],
       "~models/*": ["./src/models/*"],
+      "~types/*": ["./src/types/*"],
       "@stores-api/db": ["../../libs/db/index.ts"],
       "@shared/*": ["../../libs/shared/*"]
     },
