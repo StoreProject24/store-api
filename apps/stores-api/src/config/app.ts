@@ -20,12 +20,11 @@ import redis from './redis/redis';
 import { errorMiddleware } from '@shared/helpers/response/response';
 
 const limiter = rateLimit({
-  windowMs: 15 * 50 * 1000,
+  windowMs: 1 * 60 * 1000,
   limit: 100,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
 });
-
 app.use(
   morgan('dev', {
     skip: (req, res) => res.statusCode < 400,

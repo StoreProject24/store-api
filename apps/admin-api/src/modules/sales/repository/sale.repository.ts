@@ -1,6 +1,6 @@
 import salesModel from '@shared/models/sale/sale.model';
 import { Types } from 'mongoose';
-import { CreateSale, Sale, SaleStatus, UpdateSale } from '@shared/types/sale.types';
+import { CreateSale, Sale, UpdateSale } from '@shared/types/sale.types';
 
 const create = async (newSale: CreateSale) => {
   const sale = await salesModel.create(newSale);
@@ -63,25 +63,51 @@ const updateUserSale = async (storeId: number, sequential: number, idUser: numbe
   return sale;
 };
 
-const updateStatusSale = async (storeId: number, saleId: Types.ObjectId, status: SaleStatus) => {
+const updateStatusSale = async (storeId: number, saleId: Types.ObjectId, statusId: number) => {
   const sale = await salesModel.findOneAndUpdate(
     { storeId, _id: saleId },
-    { $set: { status, updatedAt: new Date() } },
+    { $set: { statusId, updatedAt: new Date() } },
     { new: true }
   );
   return sale?.toJSON() as unknown as Sale;
 };
 
-const getSalesByStore = async (storeId: number, page: number, limit: number, status: SaleStatus | null) => {
-  const filter: { storeId: number; status?: SaleStatus } = { storeId };
-  if (status) {
-    filter.status = status;
+const getSalesByStore = async (
+  storeId: number,
+  page: number,
+  limit: number,
+  q: string,
+  statusesId: number[],
+  date?: string
+) => {
+  const filter: any = { storeId }
+
+  if (statusesId.length > 0) {
+    filter.statusId = { $in: statusesId }
   }
+  if (q){
+    filter.$expr = {
+      $regexMatch: {
+        input: { $toString: "$_id" },
+        regex: q,
+        options: "i",
+      },
+    };
+  }
+  if (date) {
+    const startOfDay = new Date(`${date}T00:00:00.000Z`)
+    const endOfDay = new Date(`${date}T23:59:59.999Z`)
+    filter.createdAt = {
+      $gte: startOfDay,
+      $lte: endOfDay,
+    }
+  }
+
   const sales = await salesModel
     .find(filter)
     .skip((page - 1) * limit)
     .limit(limit)
-    .lean();
+    .lean()
   return sales as unknown as Sale[];
 };
 

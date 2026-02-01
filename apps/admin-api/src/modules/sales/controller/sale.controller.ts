@@ -8,7 +8,6 @@ import {
   validatorGetSales,
   validatorUpdateStatusSale,
 } from '../validator/sale.validator';
-import { SaleStatus } from '@shared/types/sale.types';
 import { verifyTokenAdminStore } from '~middlewares/verifyAdminStore.middleware';
 import { HttpCode } from '@shared/helpers/response/response.type';
 
@@ -58,7 +57,7 @@ SalesController.patch(
       const storeId = parseInt(req.params.storeId);
       const saleId = req.params.saleId;
       const body = req.body;
-      const sale = await saleDomain.changeSaleStatus(storeId, saleId, body.status as unknown as SaleStatus);
+      const sale = await saleDomain.changeSaleStatus(storeId, saleId, body.statusId);
       handleSuccess(res, HttpCode.OK, { sale });
     } catch (error: any) {
       handleError(res, error.status, error.message);
@@ -86,15 +85,21 @@ SalesController.get('/:storeId', [verifyTokenAdminStore, ...validatorGetSales], 
   try {
     const saleDomain = new SaleDomain();
     const storeId = parseInt(req.params.storeId);
-    const { limit, page, status } = req.query;
+    const { limit, page, date, q } = req.query;
+    const statusIds = req.query.statusesId
+      ? String(req.query.statusesId).split(',').map(Number)
+      : []
+    const query = q.toString()
     const sales = await saleDomain.getSalesByPage(
       storeId,
       Number(limit),
       Number(page),
-      status as unknown as SaleStatus
+      query,
+      statusIds,
+      typeof date === 'string' ? date : undefined
     );
     handleSuccess(res, HttpCode.OK, { sales });
   } catch (error: any) {
-    handleError(res, error.status, error.message);
+    handleError(res, error?.status || 500, error?.message || 'Internal server error');
   }
 });

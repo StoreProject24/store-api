@@ -14,6 +14,7 @@ import {
   disableMissingCombinations,
   getImagesProductId,
   getProductById,
+  getProductByIdAndCombinationId,
   getProductByIdProduct,
   getProducts,
   getProductsByCategoryId,
@@ -108,6 +109,10 @@ export class ProductsDomain implements ProductsRepository {
       throw new AppError(HttpCode.UNAUTHORIZED, 'No estas autorizado para esta accion');
     }
     return await getProductById(storeId, id);
+  }
+
+  async getProductByIdAndCombinationId(storeId: number, productId: number, combinationId: number) {
+    return await getProductByIdAndCombinationId(storeId, productId, combinationId)
   }
 
   async getProductsByCategoryId(body: ProductsGetByCategoryId) {

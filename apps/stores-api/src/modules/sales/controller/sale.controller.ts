@@ -4,6 +4,7 @@ import { handleError, handleSuccess } from '@shared/helpers/response/response';
 import { SaleDomain } from '../domain/sale.domain';
 import { validatorCreateSale } from '../validator/sale.validator';
 import { verifyStore } from '~middlewares/verifyStore';
+import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const SalesController = Router();
 
@@ -15,7 +16,7 @@ SalesController.post('/', [verifyStore, ...validatorCreateSale], async (req: Req
       ...body,
       storeId: req.store.id,
     });
-    handleSuccess(res, 201, { sale });
+    handleSuccess(res, HttpCode.CREATED, { sale });
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }

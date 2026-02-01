@@ -1,3 +1,4 @@
+import { SaleItem } from '@shared/types/sale.types';
 import { prisma } from '@stores-api/db';
 
 const getProductsByPage = async (page: number, limit: number, storeId: number, q: string, categoryIds: number[]) => {
@@ -90,20 +91,48 @@ const getProductsByIds = async (storeId: number, ids: number[]) => {
       id: { in: ids },
       storeId,
     },
+    include: {
+      variantCombinations:{ 
+        include: {
+          values: true
+        }
+      },
+      variantTypes: {
+        include: {
+          options: true
+        }
+      }
+    }
   });
   await prisma.$disconnect();
   return products;
 };
 
-const updateProductsQuantity = async (products: { id: number; quantity: number }[]) => {
-  await Promise.all(
-    products.map((product) =>
-      prisma.products.update({
-        where: { id: product.id },
-        data: { quantity: product.quantity },
-      })
-    )
-  );
+const updateProductsQuantity = async (items: SaleItem[]) => {
+  await prisma.$transaction(async (tx) => {
+    for (const item of items) {
+      if (item.combinationId) {
+        await tx.variantCombination.update({
+          where: {id: item.combinationId, productId: item.productId},
+          data: {
+            quantity: {
+              decrement: item.quantity
+            }
+          }
+        })
+      }else {
+        await tx.products.update({
+          where: {id: item.productId},
+          data: {
+            quantity: {
+              decrement: item.quantity
+            }
+          }
+        })
+      }
+    }
+  })
+  
 };
 
 const getProductsRandomByStore = async (storeId: number, limit: number) => {

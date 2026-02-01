@@ -8,7 +8,7 @@ export interface Sale {
   discount: number;
   storeId: number;
   userId: number | null;
-  status: SaleStatus;
+  statusId: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -26,28 +26,25 @@ export interface CreateSaleBody {
   items: SaleItem[];
   storeId: number;
   discount: number;
-  status: SaleStatus;
+  statusId: number;
   total: number;
 }
 
 export interface SaleItem {
-  id: number;
+  categoryId: number | null;
+  combinationId: number | null;
   productId: number;
-  productName: string;
-  discount: number;
+  image: string;
+  key: string;
+  name: string;
+  pricePublic: number;
   quantity: number;
-  price: number;
-  total: number;
+  stock: number;
+  variantName: string| null;
+
 }
 
 export interface UpdateSale {
   items?: SaleItem[];
   total?: number;
-}
-
-export enum SaleStatus {
-  pending = 'pending',
-  deleted = 'deleted',
-  paid = 'paid',
-  cancelled = 'cancelled',
 }

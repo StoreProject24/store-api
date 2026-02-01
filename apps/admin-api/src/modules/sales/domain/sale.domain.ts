@@ -8,12 +8,13 @@ import {
   updateStatusSale,
 } from '../repository/sale.repository';
 import { SaleRepository } from './sale.interface';
-import { CreateSaleBody, Sale, SaleItem, SaleStatus } from '@shared/types/sale.types';
+import { CreateSaleBody, Sale } from '@shared/types/sale.types';
 import { compareSaleWithProducts, getProductsToUpdate } from '@shared/utils/functions/saleWithProducts';
 import { convertToObjectId } from '../utils/convetObjetId';
 import { ProductsDomain } from '~modules/products/domain/products.domain';
 import { getProductsByIds, updateProductsQuantity } from '~modules/products/repository/products.repository';
 import { HttpCode } from '@shared/helpers/response/response.type';
+import { STATUS } from '@shared/types/status.types';
 
 export class SaleDomain implements SaleRepository {
   async createSale(body: CreateSaleBody) {
@@ -40,39 +41,39 @@ export class SaleDomain implements SaleRepository {
     return {} as Sale
   }
 
-  async getSalesByPage(storeId: number, limit: number, page: number, status: SaleStatus | null) {
-    return await getSalesByStore(storeId, page, limit, status);
+  async getSalesByPage(storeId: number, limit: number, page: number, q: string, statuses: number [], date?: string) {
+    return await getSalesByStore(storeId, page, limit, q, statuses, date);
   }
 
-  async changeSaleStatus(storeId: number, saleId: string, newStatus: SaleStatus) {
+  async changeSaleStatus(storeId: number, saleId: string, newStatusId: number) {
     const existSale = await getSaleById(storeId, convertToObjectId(saleId));
     if (!existSale) {
       throw new AppError(HttpCode.NOT_FOUND, 'Venta no encontrada');
     }
-    if (existSale.status === SaleStatus.deleted) {
+    if (existSale.statusId === STATUS.deleted) {
       throw new AppError(HttpCode.BAD_REQUEST, 'La venta no puede ser cancelada porque ya fue eliminada');
     }
-    if (existSale.status === SaleStatus.paid) {
+    if (existSale.statusId === STATUS.done) {
       throw new AppError(HttpCode.BAD_REQUEST, 'La venta no puede ser cancelada porque ya fue pagada');
     }
-    if (newStatus === SaleStatus.cancelled) {
+    if (newStatusId === STATUS.cancel) {
       const products = await getProductsByIds(
         storeId,
         existSale.items.map((item) => item.id)
       );
-      const mappedItems: SaleItem[] = existSale.items.map((item) => ({
-        id: item.id,
-        productId: item.id,
-        productName: item.name,
-        discount: item.discount ?? 0,
-        quantity: item.quantity,
-        price: item.price,
-        total: item.price * item.quantity,
-      }));
+      // const mappedItems: SaleItem[] = existSale.items.map((item) => ({
+      //   id: item.id,
+      //   productId: item.id,
+      //   productName: item.name,
+      //   discount: item.discount ?? 0,
+      //   quantity: item.quantity,
+      //   price: item.pricePublic,
+      //   total: item.pricePublic * item.quantity,
+      // }));
       // const productsToUpdate = getProductsToUpdate(mappedItems, products, SaleStatus.cancelled);
       // await updateProductsQuantity(productsToUpdate);
     }
-    return await updateStatusSale(storeId, convertToObjectId(saleId), newStatus);
+    return await updateStatusSale(storeId, convertToObjectId(saleId), newStatusId);
   }
 
   async deleteSaleByStore(storeId: number, saleId: string) {
@@ -91,12 +92,16 @@ export class SaleDomain implements SaleRepository {
     const products = [];
     const productDomain = new ProductsDomain();
     for (const item of existSale.toJSON().items) {
-      try {
-        const product = await productDomain.getProductById(storeId, item.id);
-        if (product) {
-          products.push(product);
-        }
-      } catch (error) {}
+      let product;
+      if (item.combinationId){
+        product = await productDomain.getProductByIdAndCombinationId(storeId, item.productId, item.combinationId)
+      }else {
+        product = await productDomain.getProductById(storeId, item.productId);
+      }
+      if (!product) {
+        throw new AppError(HttpCode.NOT_FOUND, "Producto no encontrado");
+      }
+      products.push(product)
     }
     return {
       ...existSale.toJSON(),

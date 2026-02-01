@@ -1,11 +1,11 @@
 import { Schema, model } from 'mongoose';
-import { SaleStatus } from '../../types/sale.types';
+import {STATUS} from '../../types/status.types'
 
 const itemsSchema = new Schema(
   {
-    id: {
-      type: Number,
-      required: true,
+    _id: {
+      type: Schema.Types.ObjectId,
+      auto: true,
     },
     name: {
       type: String,
@@ -20,10 +20,22 @@ const itemsSchema = new Schema(
       type: Number,
       required: true,
     },
-    price: {
+    pricePublic: {
       type: Number,
       required: true,
     },
+    combinationId: {
+      type: Number,
+      required: false
+    },
+    variantName: {
+      type: String,
+      required: false
+    },
+    productId: {
+      type: Number,
+      required: true,
+    }
   },
   {
     _id: false,
@@ -83,10 +95,10 @@ export const saleSchema = new Schema(
       default: null,
     },
     user: userSchema,
-    status: {
-      type: String,
-      enum: SaleStatus,
-      default: 'pending',
+    statusId: {
+      type: Number,
+      enum: STATUS,
+      default: STATUS.pending,
     },
     createdAt: {
       type: Date,

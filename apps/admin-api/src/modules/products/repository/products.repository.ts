@@ -654,6 +654,32 @@ export const getProductsByIds = async (storeId: number, ids: number[]) => {
   return products;
 };
 
+export const getProductByIdAndCombinationId = async (storeId: number, productId: number, combinationId: number) => {
+  const product = await prisma.products.findUnique({
+    where: {
+      id: productId,
+      storeId
+    },
+    include: {
+      // variantCombinations: {
+      //   where: {
+      //     id: combinationId
+      //   },
+      //   include: {
+      //     values: true,
+      //   }
+      // },
+      // variantTypes: {
+      //   include: {
+      //     options: true,
+      //   }
+      // },
+      images: true
+    }
+  })
+  return product
+}
+
 export const updateProductsQuantity = async (products: { id: number; quantity: number }[]) => {
   await prisma.products.updateMany({
     where: {
