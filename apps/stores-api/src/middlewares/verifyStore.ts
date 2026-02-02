@@ -4,10 +4,13 @@ import { getStoreByDomain } from '~modules/stores/repository/store.repository';
 import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const verifyStore = async (req: Request, res: Response, next: NextFunction) => {
-  const host = req.headers.host;
-  console.log("host ", host)
-  const subdomain = host.split('.')[0];
-  // const subdomain = "miempresa.com"
+  const domain =
+    req.headers["x-store-domain"] ||
+    req.headers["x-forwarded-host"] ||
+    req.headers.host;
+  console.log("domain", domain);
+  // @ts-ignore
+  const subdomain = domain.split(".")[0];
   const store = await getStoreByDomain(subdomain);
   console.log("store >>> ", store)
   if (!store) {
