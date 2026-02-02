@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "nodemon",
-    "build": "rm -f tsconfig.tsbuildinfo && tsc && tsc-alias -p tsconfig.json && cp -r src/templates dist/templates",
-    "start": "node ./dist/index.js"
+   "build": "rm -f tsconfig.tsbuildinfo && tsc && tsc-alias -p tsconfig.json && cp -r src/templates dist/apps/admin-api/src/templates",
+    "start": "node ./dist/apps/admin-api/src/index.js"
   },
   "dependencies": {
     "@stores-api/db": "workspace:^"
