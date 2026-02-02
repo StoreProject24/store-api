@@ -44,7 +44,7 @@ RUN pnpm install --frozen-lockfile
 
 # Prisma + build del lib
 RUN pnpm --filter @stores-api/db generate
-RUN pnpm --filter @stores-api/db build
+# RUN pnpm --filter @stores-api/db build
 
 # Build de la API
 RUN pnpm --filter admin-api build
