@@ -10,7 +10,8 @@ export const verifyStore = async (req: Request, res: Response, next: NextFunctio
     req.headers.host;
   console.log("domain", domain);
   // @ts-ignore
-  const subdomain = domain.split(".")[0];
+  const hostname = new URL(domain).hostname;
+  const subdomain = hostname.split(".")[0];
   const store = await getStoreByDomain(subdomain);
   console.log("store >>> ", store)
   if (!store) {
