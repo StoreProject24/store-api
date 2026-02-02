@@ -19,12 +19,8 @@ import { connectMongoDb } from './mongo/mongo';
 import redis from './redis/redis';
 import { errorMiddleware } from '@shared/helpers/response/response';
 
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  limit: 100,
-  standardHeaders: 'draft-8',
-  legacyHeaders: false,
-});
+app.set("trust proxy", 1)
+
 app.use(
   morgan('dev', {
     skip: (req, res) => res.statusCode < 400,
@@ -36,6 +32,12 @@ connectMongoDb();
 
 app.use(errorMiddleware as unknown as RequestHandler);
 
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  limit: 100,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+});
 
 // @ts-ignore
 app.use(limiter);
