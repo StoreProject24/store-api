@@ -138,6 +138,9 @@ const updateProductsQuantity = async (items: SaleItem[]) => {
 const getProductsRandomByStore = async (storeId: number, limit: number) => {
   const products = await prisma.products.findMany({
     where: { storeId, statusId: 1 },
+    include:{
+      images: true
+    },
     orderBy: { id: 'desc' },
     take: limit,
   });
@@ -155,6 +158,7 @@ const getRelatedProducts = async (storeId: number, productId: number, categoryId
       },
     },
     include: {
+      images: true,
       variantTypes: true,
       variantCombinations: true
     },
