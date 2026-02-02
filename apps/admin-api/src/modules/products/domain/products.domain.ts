@@ -174,8 +174,6 @@ export class ProductsDomain implements ProductsRepository {
   }
 
   async deleteImages(imagesId: number[], productId: number, storeId: number) {
-
-    console.log("imagesId ", imagesId)
     const isMyProduct = await validateIsMyProduct(productId, storeId);
     if (!isMyProduct) {
       throw new AppError(HttpCode.UNAUTHORIZED, 'No estas autorizado para esta accion');
@@ -184,8 +182,8 @@ export class ProductsDomain implements ProductsRepository {
     if (!images) {
       throw new AppError(HttpCode.NOT_FOUND, 'Images not found');
     }
-    console.log("images", images)
+    const keys = images.filter((img) => imagesId.includes(img.id)).map((item) => item.urlImage)
     await deleteImagesProduct(imagesId);
-    await deleteImages(images.map((img) => img.urlImage));
+    await deleteImages(keys);
   }
 }
