@@ -5,9 +5,11 @@ import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const verifyStore = async (req: Request, res: Response, next: NextFunction) => {
   const host = req.headers.host;
-  // const subdomain = host.split('.')[0];
-  const subdomain = "miempresa.com"
+  console.log("host ", host)
+  const subdomain = host.split('.')[0];
+  // const subdomain = "miempresa.com"
   const store = await getStoreByDomain(subdomain);
+  console.log("store >>> ", store)
   if (!store) {
     handleError(res, HttpCode.NOT_FOUND, "Tienda no encontrada");
   }
