@@ -6,7 +6,6 @@
     "generate": "prisma generate --schema=./prisma/schema.prisma",
     "seed": "node --import tsx prisma/seed.ts"
   },
-  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

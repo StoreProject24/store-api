@@ -37,6 +37,7 @@ const uploadImages = async (req: Request, storeId: number, dirname: string) => {
         Bucket: bucketName,
         Key: `${storeId}/${dirname}/${fileName}`,
         Body: fileContentLow,
+        ACL: "public-read",
       })
     );
     images.push(`https://${bucketName}.s3.amazonaws.com/${storeId}/${dirname}/${fileName}`);
