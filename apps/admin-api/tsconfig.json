@@ -7,7 +7,6 @@
     "module": "commonjs",
     "baseUrl": ".",
     "outDir": "./dist",
-    "rootDir": "./src",
     "paths": {
       "~config/*": ["./src/config/*"],
       "~middlewares/*": ["./src/middlewares/*"],
