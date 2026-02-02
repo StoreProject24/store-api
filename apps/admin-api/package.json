@@ -7,6 +7,7 @@
     "start": "node ./dist/apps/admin-api/src/index.js"
   },
   "dependencies": {
+    "@aws-sdk/s3-request-presigner": "^3.980.0",
     "@stores-api/db": "workspace:^"
   },
   "_moduleAliases": {

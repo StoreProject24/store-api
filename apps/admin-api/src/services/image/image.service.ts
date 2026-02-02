@@ -1,9 +1,9 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Request } from 'express';
 import formidable from 'formidable';
 import fs from 'fs/promises';
 import { lowWeightImage } from '~utils/lowWeightImage';
-
 const s3 = new S3Client({
   endpoint: process.env.AWS_ENDPOINT,
   region: process.env.AWS_REGION,
@@ -13,12 +13,6 @@ const s3 = new S3Client({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
-
-console.log("AWS_ENDPOINT ", process.env.AWS_ENDPOINT)
-console.log("AWS_REGION ", process.env.AWS_REGION)
-console.log("AWS_ACCESS_KEY_ID ", process.env.AWS_ACCESS_KEY_ID)
-console.log("AWS_SECRET_ACCESS_KEY ", process.env.AWS_SECRET_ACCESS_KEY)
-console.log("AWS_BUCKET_NAME ", process.env.AWS_BUCKET_NAME)
 
 
 const bucketName = process.env.AWS_BUCKET_NAME;
@@ -32,25 +26,38 @@ const uploadImages = async (req: Request, storeId: number, dirname: string) => {
     const fileName = `${Date.now()}.${fileExt}`;
     const fileContent = await fs.readFile(file.filepath);
     const fileContentLow = await lowWeightImage(fileContent);
+    const key = `${storeId}/${dirname}/${fileName}`
     await s3.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: `${storeId}/${dirname}/${fileName}`,
+        Key: key,
         Body: fileContentLow,
-        ACL: "public-read",
+        ContentType: file.mimetype || "image/png"
       })
     );
-    images.push(`https://${bucketName}.s3.amazonaws.com/${storeId}/${dirname}/${fileName}`);
+    images.push(key);
   }
   return images;
 };
 
-const deleteImages = async (urls: string[]) => {
-  if (!urls.length) return;
-  const keys = urls.map((url) => {
-    const urlSplit = url.split('.com')[1];
-    return urlSplit.substring(1, urlSplit.length);
-  });
+const getSignedImageUrls = async (keys: string[]) => {
+  const images: string[] = []
+  for (const key of keys) {
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: key,
+    });
+  
+    const url = await getSignedUrl(s3 as any, command, {
+      expiresIn: 60 * 60, // 1 hora
+    })
+    images.push(url)
+  }
+  return images
+}
+
+const deleteImages = async (keys: string[]) => {
+  if (!keys.length) return;
   for (const key of keys) {
     await s3.send(
       new DeleteObjectCommand({
@@ -60,4 +67,4 @@ const deleteImages = async (urls: string[]) => {
     );
   }
 };
-export { uploadImages, deleteImages };
+export { uploadImages, deleteImages, getSignedImageUrls };

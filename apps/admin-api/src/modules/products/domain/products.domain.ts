@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { isEqual } from 'lodash';
-import { deleteImages, uploadImages } from '~services/image/image.service';
+import { deleteImages, uploadImages, getSignedImageUrls} from '~services/image/image.service';
 import { AppError } from '@shared/helpers/response/response';
 import { existStoreRedis } from '~modules/stores/utils/storeRedis';
 import {
@@ -108,7 +108,16 @@ export class ProductsDomain implements ProductsRepository {
     if (!isMyProduct) {
       throw new AppError(HttpCode.UNAUTHORIZED, 'No estas autorizado para esta accion');
     }
-    return await getProductById(storeId, id);
+    const product = await getProductById(storeId, id);
+    const urls = await getSignedImageUrls(product.images.map((item)=> item.urlImage))
+    const images = product.images.map((img, index) => ({
+      id: img.id,
+      urlImage: urls[index]
+    }))
+    return {
+      ...product,
+      images
+    }
   }
 
   async getProductByIdAndCombinationId(storeId: number, productId: number, combinationId: number) {
@@ -165,6 +174,8 @@ export class ProductsDomain implements ProductsRepository {
   }
 
   async deleteImages(imagesId: number[], productId: number, storeId: number) {
+
+    console.log("imagesId ", imagesId)
     const isMyProduct = await validateIsMyProduct(productId, storeId);
     if (!isMyProduct) {
       throw new AppError(HttpCode.UNAUTHORIZED, 'No estas autorizado para esta accion');
@@ -173,6 +184,7 @@ export class ProductsDomain implements ProductsRepository {
     if (!images) {
       throw new AppError(HttpCode.NOT_FOUND, 'Images not found');
     }
+    console.log("images", images)
     await deleteImagesProduct(imagesId);
     await deleteImages(images.map((img) => img.urlImage));
   }
