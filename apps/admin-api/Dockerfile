@@ -42,9 +42,8 @@ COPY . .
 
 RUN pnpm install --frozen-lockfile
 
-# Prisma + build del lib
+# Genera Prisma Client
 RUN pnpm --filter @stores-api/db generate
-# RUN pnpm --filter @stores-api/db build
 
 # Build de la API
 RUN pnpm --filter admin-api build
@@ -54,18 +53,14 @@ FROM node:20.5.1-alpine
 
 WORKDIR /app
 
-# Copiar TODOS los node_modules necesarios
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
-
-# Copiar libs
 COPY --from=builder /app/libs ./libs
-
-# Copiar app
 COPY --from=builder /app/apps/admin-api ./apps/admin-api
 
 ENV PORT=8080
 EXPOSE 8080
 
+# Con el rootDir arreglado, debería estar aquí:
 CMD ["node", "apps/admin-api/dist/index.js"]
