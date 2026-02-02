@@ -4,14 +4,16 @@
   "description": "",
   "scripts": {
     "generate": "prisma generate --schema=./prisma/schema.prisma",
-    "seed": "ts-node -r tsconfig-paths/register prisma/seed.ts"
+    "seed": "node --import tsx prisma/seed.ts"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^25.0.9",
-    "prisma": "5.9.1"
+    "prisma": "5.9.1",
+    "tsx": "^4.21.0"
   },
   "dependencies": {
     "@prisma/client": "5.9.1"

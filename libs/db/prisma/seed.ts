@@ -10,12 +10,28 @@ const main = async () => {
   await prisma.status.createMany({
     data: [
       {
-        id: 1,   
+        id: 1,
         name: 'ACTIVE',
       },
       {
         id: 2,
         name: 'INACTIVE',
+      },
+      {
+        id: 3,
+        name: 'PENDING',
+      },
+      {
+        id: 4,
+        name: 'CANCEL',
+      },
+      {
+        id: 5,
+        name: 'DONE',
+      },
+      {
+        id: 6,
+        name: 'DELETED',
       },
     ],
   });
