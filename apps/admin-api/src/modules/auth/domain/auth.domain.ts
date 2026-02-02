@@ -30,6 +30,7 @@ export class AuthDomain implements AuthRepository {
     return token;
   }
   async loginUser(email: string, password: string) {
+    email = email.toLocaleLowerCase()
     const existUser = await findUserByEmail(email);
     if (!existUser) {
       throw new AppError(HttpCode.NOT_FOUND, 'No se pudo encontrar el usuario');
@@ -49,6 +50,7 @@ export class AuthDomain implements AuthRepository {
   }
 
   async forgotPasswordUser(email: string) {
+    email = email.toLocaleLowerCase()
     const existUser = await findUserByEmail(email);
     if (!existUser) {
       throw new AppError(HttpCode.NOT_FOUND, 'No se pudo encontrar el usuario');
@@ -65,6 +67,7 @@ export class AuthDomain implements AuthRepository {
   }
 
   async verifyOtpCodeUser(email: string, otpCode: string) {
+    email = email.toLocaleLowerCase()
     const existUser = await findUserByEmail(email);
     if (!existUser) {
       throw new AppError(HttpCode.NOT_FOUND, 'No se pudo encontrar el usuario');
@@ -75,6 +78,7 @@ export class AuthDomain implements AuthRepository {
   }
 
   async changePasswordUser(email: string, password: string, otpCode: string) {
+    email = email.toLocaleLowerCase()
     const existUser = await findUserByEmail(email);
     if (!existUser) {
       throw new AppError(HttpCode.NOT_FOUND, 'No se pudo encontrar el usuario');
