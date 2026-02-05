@@ -3,12 +3,11 @@ import { handleError, handleSuccess } from '@shared/helpers/response/response';
 
 import { SaleDomain } from '../domain/sale.domain';
 import { validatorCreateSale } from '../validator/sale.validator';
-import { verifyStore } from '~middlewares/verifyStore';
 import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const SalesController = Router();
 
-SalesController.post('/', [verifyStore, ...validatorCreateSale], async (req: Request, res: Response) => {
+SalesController.post('/', [...validatorCreateSale], async (req: Request, res: Response) => {
   try {
     const saleDomain = new SaleDomain();
     const body = req.body;
