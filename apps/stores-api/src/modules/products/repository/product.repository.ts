@@ -1,5 +1,6 @@
 import { SaleItem } from '@shared/types/sale.types';
 import { prisma } from '@stores-api/db';
+import {shuffle} from '~utils/fn'
 
 const getProductsByPage = async (page: number, limit: number, storeId: number, q: string, categoryIds: number[]) => {
   const [products, total] = await prisma.$transaction([
@@ -153,24 +154,54 @@ const getProductsRandomByStore = async (storeId: number, limit: number) => {
   return products;
 };
 
-const getRelatedProducts = async (storeId: number, productId: number, categoryId: number, limit: number) => {
-  const products = await prisma.products.findMany({
+const getRelatedProducts = async (
+  storeId: number,
+  productId: number,
+  categoryId: number,
+  limit: number
+) => {
+  let products = await prisma.products.findMany({
     where: {
       storeId,
       statusId: 1,
       categoryId,
-      id: {
-        not: productId,
-      },
+      id: { not: productId },
     },
     include: {
       images: true,
       variantTypes: true,
-      variantCombinations: true
+      variantCombinations: true,
     },
-    orderBy: { id: 'desc' },
     take: limit,
   });
+
+  products = shuffle(products);
+
+  if (products.length < limit) {
+    const remaining = limit - products.length;
+
+    const randomProducts = await prisma.products.findMany({
+      where: {
+        storeId,
+        statusId: 1,
+        id: {
+          notIn: [
+            productId,
+            ...products.map(p => p.id),
+          ],
+        },
+      },
+      include: {
+        images: true,
+        variantTypes: true,
+        variantCombinations: true,
+      },
+      take: remaining,
+    });
+
+    products = [...products, ...shuffle(randomProducts)];
+  }
+
   return products;
 };
 

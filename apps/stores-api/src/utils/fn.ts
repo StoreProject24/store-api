@@ -6,6 +6,9 @@ function omit<T extends object, K extends keyof T>(
     keys.forEach(key => delete copy[key]);
     return copy;
 }
+const shuffle = <T>(arr: T[]) =>
+    arr.sort(() => Math.random() - 0.5);
 export {
-    omit
+    omit,
+    shuffle
 }
