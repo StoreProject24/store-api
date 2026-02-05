@@ -43,6 +43,9 @@ export const getProductsByStore = async (body: ProductsGet) => {
           mode: 'insensitive',
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       select: {
         name: true,
         brands: true,
