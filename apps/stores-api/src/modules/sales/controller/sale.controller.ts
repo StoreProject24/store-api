@@ -16,7 +16,7 @@ SalesController.post('/', [verifyStore, ...validatorCreateSale], async (req: Req
       ...body,
       storeId: req.store.id,
     });
-    handleSuccess(res, HttpCode.CREATED, { sale });
+    handleSuccess(res, HttpCode.CREATED, { ...sale });
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }

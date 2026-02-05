@@ -18,6 +18,7 @@ import { brandsRouter } from '~modules/brands/router';
 import { connectMongoDb } from './mongo/mongo';
 import redis from './redis/redis';
 import { errorMiddleware } from '@shared/helpers/response/response';
+import { verifyStore } from '~middlewares/verifyStore';
 
 app.set("trust proxy", 1)
 
@@ -55,10 +56,10 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // ROUTES
 const apiPrefix = '/api';
 app.use('/healthCheck', healthCheck);
-app.use(`${apiPrefix}/categories`, categoriesRouter);
-app.use(`${apiPrefix}/sales`, salesRouter);
-app.use(`${apiPrefix}/brands`, brandsRouter);
-app.use(`${apiPrefix}/stores`, storesRouter);
-app.use(`${apiPrefix}/products`, productsRouter);
+app.use(`${apiPrefix}/categories`, verifyStore, categoriesRouter);
+app.use(`${apiPrefix}/sales`, verifyStore, salesRouter);
+app.use(`${apiPrefix}/brands`, verifyStore, brandsRouter);
+app.use(`${apiPrefix}/stores`, verifyStore, storesRouter);
+app.use(`${apiPrefix}/products`, verifyStore, productsRouter);
 
 export default app;

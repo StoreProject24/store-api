@@ -16,16 +16,23 @@ export function extractSubdomain(domain: string) {
 
 export const verifyStore = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const domain =
+    const isDev = process.env.NODE_ENV === 'development';
+    console.log("isDev ", isDev)
+    let domain =
     req.headers["x-store-domain"] ||
     req.headers["x-forwarded-host"] ||
     req.headers.host;
+    if (isDev){
+      domain = "https://users.yito.dev"
+    }
+  console.log("domain ", domain)
   // @ts-ignore
   const subdomain = extractSubdomain(domain)
+  console.log("subdomain ", subdomain)
   const store = await getStoreByDomain(subdomain);
   console.log("store >>> ", store)
   if (!store) {
-    handleError(res, HttpCode.NOT_FOUND, "Tienda no encontrada");
+    return handleError(res, HttpCode.NOT_FOUND, "Tienda no encontrada");
   }
   req.store = store;
   next();

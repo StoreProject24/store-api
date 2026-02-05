@@ -86,6 +86,9 @@ export const getProducts = async (body: ProductsGet) => {
           mode: 'insensitive',
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         images: true,
         categories: true,
@@ -129,6 +132,9 @@ export const getProductsByCategoryId = async (body: ProductsGetByCategoryId) => 
       statusId: 1,
       categoryId: body.categoryId,
       storeId: body.storeId,
+    },
+    orderBy: {
+      createdAt: 'desc',
     },
     select: {
       id: true,

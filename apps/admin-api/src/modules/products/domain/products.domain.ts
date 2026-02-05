@@ -99,7 +99,6 @@ export class ProductsDomain implements ProductsRepository {
 
   async getProductsByStore(body: ProductsGet) {
     const { products, total } = await getProducts(body);
-
     return { products, total };
   }
 
