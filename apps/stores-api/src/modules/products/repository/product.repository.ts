@@ -140,7 +140,12 @@ const getProductsRandomByStore = async (storeId: number, limit: number) => {
     where: { storeId, statusId: 1 },
     include:{
       images: true,
-      variantTypes: true
+      variantTypes: true,
+      variantCombinations:{ 
+        include: {
+          values: true
+        }
+      },
     },
     orderBy: { id: 'desc' },
     take: limit,
