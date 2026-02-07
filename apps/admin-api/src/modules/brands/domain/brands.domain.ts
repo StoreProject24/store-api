@@ -7,9 +7,9 @@ import {
   updateImage,
   updateName,
 } from '../repository/brands.repository';
-import { CreateBrand, GetBrands, UpdateBrandImage, UpdateBrand } from '@shared/types/brand.types';
+import { CreateBrand, GetBrands, UpdateBrandImage, UpdateBrand, Brand } from '@shared/types/brand.types';
 import { BrandRepository } from './brands.interface';
-import { deleteImages, uploadImages } from '~services/image/image.service';
+import { deleteImages, getSignedImageUrls, uploadImages } from '~services/image/image.service';
 import { Request } from 'express';
 import { HttpCode } from '@shared/helpers/response/response.type';
 
@@ -51,8 +51,22 @@ export class BrandsDomain implements BrandRepository {
   }
 
   async getBrands(data: GetBrands) {
-    return await getBrands(data);
+    const brands = await getBrands(data);
+    const brandsWithImage: Brand[] = []
+    for (const brand of brands) {
+      if (brand.urlImage) {
+        const urlImage = await getSignedImageUrls([brand.urlImage])
+        brandsWithImage.push({
+          ...brand,
+          urlImage: urlImage[0]
+        })
+      } else {
+        brandsWithImage.push(brand)
+      }
+    }
+    return brandsWithImage
   }
+
   async uploadImageBrand(storeId: number, req: Request) {
     const images = await uploadImages(req, storeId, 'brands');
     return images;
