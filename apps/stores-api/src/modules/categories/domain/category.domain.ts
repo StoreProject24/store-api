@@ -8,11 +8,15 @@ export class CategoryDomain implements CategoryRepository {
     const categories = await getCategories(storeId);
     const categoriesWithImage: CategoriesPublic[] = []
     for (const category of categories) {
-      const url = await getSignedImageUrls([category.urlImage])
-      categoriesWithImage.push({
-        ...category,
-        urlImage: url[0]
-      })
+      if (category.urlImage){
+        const url = await getSignedImageUrls([category.urlImage])
+        categoriesWithImage.push({
+          ...category,
+          urlImage: url[0]
+        })
+      }else {
+        categoriesWithImage.push(category)
+      }
     }
     return categoriesWithImage;
   }
