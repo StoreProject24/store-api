@@ -16,6 +16,11 @@ export function extractSubdomain(domain: string) {
 
 export const verifyStore = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const apiKey = req.headers["x-api-stores"];
+    if (!apiKey || apiKey !== process.env.API_INTERNAL_KEY) {
+      console.warn("Invalid API key from IP:", req.ip);
+      return handleError(res, HttpCode.UNAUTHORIZED, "No autorizado");
+    }
     const isDev = process.env.NODE_ENV === 'development';
     console.log("isDev ", isDev)
     let domain =
