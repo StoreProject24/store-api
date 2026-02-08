@@ -8,7 +8,7 @@ import {
   validateResetPassword,
   validateVerifyOtp,
 } from '../validator/auth.validator';
-import { verifyToken } from '~middlewares/verifyToken.middleware';
+import { verifyRefreshToken, verifyToken } from '~middlewares/verifyToken.middleware';
 import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const AuthController = Router();
@@ -16,8 +16,8 @@ export const AuthController = Router();
 AuthController.post('/register', validateRegister, async (req: Request, res: Response) => {
   try {
     const authDomain = new AuthDomain();
-    const token = await authDomain.createUser(req.body);
-    handleSuccess(res, HttpCode.CREATED, { token });
+    const accessTokens = await authDomain.createUser(req.body);
+    handleSuccess(res, HttpCode.CREATED, accessTokens);
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }
@@ -26,8 +26,8 @@ AuthController.post('/register', validateRegister, async (req: Request, res: Res
 AuthController.post('/login', validateLogin, async (req: Request, res: Response) => {
   try {
     const authDomain = new AuthDomain();
-    const token = await authDomain.loginUser(req.body.email, req.body.password);
-    handleSuccess(res, HttpCode.OK, { token });
+    const accessTokens = await authDomain.loginUser(req.body.email, req.body.password);
+    handleSuccess(res, HttpCode.OK, accessTokens);
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }
@@ -66,11 +66,11 @@ AuthController.patch('/reset-password', validateResetPassword, async (req: Reque
   }
 });
 
-AuthController.post('/refresh-token', verifyToken, async (req: Request, res: Response) => {
+AuthController.post('/refresh-token', verifyRefreshToken, async (req: Request, res: Response) => {
   try {
     const authDomain = new AuthDomain();
-    const token = await authDomain.refreshToken(req.user);
-    handleSuccess(res, HttpCode.OK, { token });
+    const accessTokens = await authDomain.refreshToken(req.user);
+    handleSuccess(res, HttpCode.OK, accessTokens);
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }
@@ -80,8 +80,8 @@ AuthController.post('/pick-store', verifyToken, async (req: Request, res: Respon
   try {
     const authDomain = new AuthDomain();
     const storeId = Number(req.body.storeId);
-    const token = await authDomain.pickStore(storeId, req.user.id);
-    handleSuccess(res, HttpCode.OK, { token });
+    const accessTokens = await authDomain.pickStore(storeId, req.user.id);
+    handleSuccess(res, HttpCode.OK, accessTokens);
   } catch (error: any) {
     handleError(res, error.status, error.message);
   }

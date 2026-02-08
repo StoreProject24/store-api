@@ -20,9 +20,16 @@ import { categoriesRouter } from '~modules/categories/router';
 import { connectMongoDb } from './mongo/mongo';
 // import redis from './redis/redis';
 
-const limiter = rateLimit({
+const authLimiter = rateLimit({
   windowMs: 15 * 50 * 1000,
   limit: 100,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+});
+
+const appLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 500,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
 });
@@ -37,27 +44,27 @@ connectMongoDb();
 // redis();
 
 // @ts-ignore
-app.use(limiter);
+// app.use(limiter);
 app.use(helmet());
 app.use(cors());
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'DELETE, PUT, GET, POST');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Methods', 'DELETE, PUT, GET, POST');
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// });
 app.use(express.json({ limit: '50mb', type: 'application/json' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // ROUTES
 const apiPrefix = '/api';
 app.use('/healthCheck', healthCheck);
-app.use(`${apiPrefix}/auth`, authRouter);
-app.use(`${apiPrefix}/categories`, categoriesRouter);
-app.use(`${apiPrefix}/user`, userRouter);
-app.use(`${apiPrefix}/brands`, brandsRouter);
-app.use(`${apiPrefix}/stores`, storesRouter);
-app.use(`${apiPrefix}/products`, productsRouter);
-app.use(`${apiPrefix}/sales`, salesRouter);
+app.use(`${apiPrefix}/auth`, authLimiter, authRouter);
+app.use(`${apiPrefix}/categories`, appLimiter, categoriesRouter);
+app.use(`${apiPrefix}/user`, appLimiter, userRouter);
+app.use(`${apiPrefix}/brands`, appLimiter, brandsRouter);
+app.use(`${apiPrefix}/stores`, appLimiter, storesRouter);
+app.use(`${apiPrefix}/products`, appLimiter, productsRouter);
+app.use(`${apiPrefix}/sales`, appLimiter, salesRouter);
 
 export default app;

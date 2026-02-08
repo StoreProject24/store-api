@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { createToken } from '~config/helpers';
+import { createAccessToken, createRefreshToken } from '~config/helpers';
 import { AppError } from '@shared/helpers/response/response';
 import { changePassword, create, findUserByEmail, getById, saveOtpCode } from '../repository/auth.repository';
 import { UserCreate, UserRefreshToken } from '../types/auth.types';
@@ -20,14 +20,15 @@ export class AuthDomain implements AuthRepository {
       ...body,
       password: newPassword,
     });
-    const token = createToken(user);
-    await sendEmail(body.email, 'Bienvenido a Store', 'welcome', {
-      communityName: 'Store Admin',
-      name: body.name,
-      url: 'www.google.com',
-      year: new Date().getFullYear(),
-    });
-    return token;
+    const token = createAccessToken(user);
+    const refreshToken = createRefreshToken(user)
+    // await sendEmail(body.email, 'Bienvenido a Store', 'welcome', {
+    //   communityName: 'Store Admin',
+    //   name: body.name,
+    //   url: 'www.google.com',
+    //   year: new Date().getFullYear(),
+    // });
+    return { refreshToken, token };
   }
   async loginUser(email: string, password: string) {
     email = email.toLocaleLowerCase()
@@ -39,14 +40,16 @@ export class AuthDomain implements AuthRepository {
     if (!comparePassword) {
       throw new AppError(HttpCode.CONFLICT, 'Usuario o contraseña son incorrectos');
     }
-    const token = createToken({
+    const userData = {
       id: existUser.id,
       email: existUser.email,
       name: existUser.name,
       rol: existUser.role,
       statusId: existUser.statusId,
-    });
-    return token;
+    }
+    const token = createAccessToken(userData);
+    const refreshToken = createRefreshToken(userData)
+    return { token, refreshToken };
   }
 
   async forgotPasswordUser(email: string) {
@@ -95,15 +98,17 @@ export class AuthDomain implements AuthRepository {
     if (!store.length) {
       throw new AppError(HttpCode.NOT_FOUND, 'Tienda no encontrada');
     }
-    const token = createToken({
+    const userData = {
       id: data.id,
       email: data.email,
       name: data.name,
       rol: data.rol,
       statusId: data.statusId,
       storeId: store[0].id,
-    });
-    return token;
+    }
+    const token = createAccessToken(userData);
+    const refreshToken = createRefreshToken(userData)
+    return { token, refreshToken };
   }
 
   async pickStore(storeId: number, userId: number) {
@@ -115,14 +120,18 @@ export class AuthDomain implements AuthRepository {
     if (!user) {
       throw new AppError(HttpCode.NOT_FOUND, 'No se pudo encontrar el usuario');
     }
-    const token = createToken({
+    const userData = {
       id: user.id,
       email: user.email,
       name: user.name,
       rol: user.role,
       statusId: user.statusId,
       storeId: store.id,
-    });
-    return token;
+    }
+    const token = createAccessToken(userData);
+    const refreshToken = createRefreshToken(userData)
+    return {
+      token, refreshToken
+    };
   }
 }

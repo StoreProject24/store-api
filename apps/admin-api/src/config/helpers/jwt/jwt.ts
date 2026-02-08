@@ -1,25 +1,21 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
-const { JWT_SECRET }: any = process.env;
+const { JWT_SECRET, JWT_REFRESH_SECRET }: any = process.env;
 
-/**
- * Crea un token con llave jwt
- * @param data información contenida en el token jwt
- * @return string con token generado
- * */
-export const createToken = (data: any): string => {
-  const token = jwt.sign({ user: data }, JWT_SECRET, {
-    expiresIn: '12h',
+export const createAccessToken = (data: any): string => {
+  return jwt.sign({ user: data }, JWT_SECRET, {
+    expiresIn: "2h",
   });
-  return token;
 };
 
-/**
- * Desencripta la información de un token
- * @param token string con el token encriptado
- * @return información decodificada del token
- * */
-export const decodeToken = (token: string) => {
-  const decoded = jwt.verify(token, JWT_SECRET);
-  return decoded;
+export const createRefreshToken = (data: any): string => {
+  return jwt.sign({ user: data }, JWT_REFRESH_SECRET, {
+    expiresIn: "1d",
+  });
 };
+
+export const decodeAccessToken = (token: string) =>
+  jwt.verify(token, JWT_SECRET);
+
+export const decodeRefreshToken = (token: string) =>
+  jwt.verify(token, JWT_REFRESH_SECRET);
