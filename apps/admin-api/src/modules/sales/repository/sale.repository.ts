@@ -78,7 +78,7 @@ const getSalesByStore = async (
   limit: number,
   q: string,
   statusesId: number[],
-  date?: string
+  dates: {start: string, end: string}
 ) => {
   const filter: any = { storeId }
 
@@ -94,12 +94,10 @@ const getSalesByStore = async (
       },
     };
   }
-  if (date) {
-    const startOfDay = new Date(`${date}T00:00:00.000Z`)
-    const endOfDay = new Date(`${date}T23:59:59.999Z`)
+  if (dates.start && dates.end) {
     filter.createdAt = {
-      $gte: startOfDay,
-      $lte: endOfDay,
+      $gte: dates.start,
+      $lte: dates.end,
     }
   }
 

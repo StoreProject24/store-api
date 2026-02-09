@@ -4,6 +4,7 @@ import { handleError, handleSuccess } from '@shared/helpers/response/response';
 import { SaleDomain } from '../domain/sale.domain';
 import {
   validatorCreateSale,
+  validatorDeleteSale,
   validatorGetSaleProducts,
   validatorGetSales,
   validatorUpdateStatusSale,
@@ -67,7 +68,7 @@ SalesController.patch(
 
 SalesController.delete(
   '/:storeId/:saleId',
-  [verifyTokenAdminStore, ...validatorUpdateStatusSale],
+  [verifyTokenAdminStore, ...validatorDeleteSale],
   async (req: Request, res: Response) => {
     try {
       const saleDomain = new SaleDomain();
@@ -85,7 +86,7 @@ SalesController.get('/:storeId', [verifyTokenAdminStore, ...validatorGetSales], 
   try {
     const saleDomain = new SaleDomain();
     const storeId = parseInt(req.params.storeId);
-    const { limit, page, date, q } = req.query;
+    const { limit, page, dateStart, dateEnd, q } = req.query;
     const statusIds = req.query.statusesId
       ? String(req.query.statusesId).split(',').map(Number)
       : []
@@ -96,7 +97,10 @@ SalesController.get('/:storeId', [verifyTokenAdminStore, ...validatorGetSales], 
       Number(page),
       query,
       statusIds,
-      typeof date === 'string' ? date : undefined
+      {
+        start: dateStart?.toString() || '',
+        end: dateEnd?.toString() || ''
+      }
     );
     handleSuccess(res, HttpCode.OK, { sales });
   } catch (error: any) {

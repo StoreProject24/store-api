@@ -41,8 +41,8 @@ export class SaleDomain implements SaleRepository {
     return {} as Sale
   }
 
-  async getSalesByPage(storeId: number, limit: number, page: number, q: string, statuses: number [], date?: string) {
-    return await getSalesByStore(storeId, page, limit, q, statuses, date);
+  async getSalesByPage(storeId: number, limit: number, page: number, q: string, statuses: number [], dates: {start: string, end: string}) {
+    return await getSalesByStore(storeId, page, limit, q, statuses, dates);
   }
 
   async changeSaleStatus(storeId: number, saleId: string, newStatusId: number) {
@@ -77,7 +77,10 @@ export class SaleDomain implements SaleRepository {
   }
 
   async deleteSaleByStore(storeId: number, saleId: string) {
+    console.log("storeId ", storeId)
+    console.log("saleID ", saleId)
     const existSale = await getSaleById(storeId, convertToObjectId(saleId));
+    console.log("existSale ", existSale)
     if (!existSale) {
       throw new AppError(HttpCode.NOT_FOUND, 'Venta no encontrada');
     }
