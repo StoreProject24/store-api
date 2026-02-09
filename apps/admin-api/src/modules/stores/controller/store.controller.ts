@@ -14,7 +14,7 @@ import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const StoreController = Router();
 
-StoreController.get('/', verifyToken, async (req: Request, res: Response) => {
+StoreController.get('/', verifyTokenAdminStore, async (req: Request, res: Response) => {
   try {
     const storeDomain = new StoreDomain();
     const stores = await storeDomain.getStoreByIdUser(req.user.id);
@@ -35,7 +35,7 @@ StoreController.get('/:idStore', verifyTokenAdminStore, async (req: Request, res
   }
 });
 
-StoreController.post('/', [verifyToken, ...validationCreateStore], async (req: Request, res: Response) => {
+StoreController.post('/', [verifyTokenAdminStore, ...validationCreateStore], async (req: Request, res: Response) => {
   try {
     const storeDomain = new StoreDomain();
     const userId = req.user.id;
@@ -46,7 +46,7 @@ StoreController.post('/', [verifyToken, ...validationCreateStore], async (req: R
   }
 });
 
-StoreController.put('/', [verifyToken, ...validationUpdateStore], async (req: Request, res: Response) => {
+StoreController.put('/', [verifyTokenAdminStore, ...validationUpdateStore], async (req: Request, res: Response) => {
   try {
     const storeDomain = new StoreDomain();
     const store = await storeDomain.createStore(req.body);
@@ -72,13 +72,13 @@ StoreController.patch(
 );
 
 StoreController.post(
-  '/:storeId/image',
+  '/image',
   [verifyTokenAdminStore, ...validationUploadImageStore],
   async (req: Request, res: Response) => {
     try {
       const storeDomain = new StoreDomain();
       const field = req.query.field as FieldStore['field'];
-      const storeId = parseInt(req.params.storeId);
+      const storeId =  req.user.storeId;
       const store = await storeDomain.uploadImage(req.user.id, storeId, field, req);
       handleSuccess(res, HttpCode.CREATED, { store });
     } catch (error: any) {

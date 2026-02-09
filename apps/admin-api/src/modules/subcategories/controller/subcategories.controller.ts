@@ -40,12 +40,12 @@ SubcategoriesController.put(
 );
 
 SubcategoriesController.delete(
-  '/:storeId/:id',
+  '/:id',
   [verifyTokenAdminStore, ...validationDeleteSubcategory],
   async (req: Request, res: Response) => {
     try {
       const subcategoriesDomain = new SubcategoriesDomain();
-      await subcategoriesDomain.deleteSubcategory(Number(req.params.storeId), Number(req.params.id));
+      await subcategoriesDomain.deleteSubcategory( req.user.storeId, Number(req.params.id));
       handleSuccess(res, 200, { message: 'Subcategory deleted successfully' });
     } catch (error: any) {
       handleError(res, 404, error);

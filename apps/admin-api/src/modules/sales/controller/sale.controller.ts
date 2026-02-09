@@ -15,12 +15,12 @@ import { HttpCode } from '@shared/helpers/response/response.type';
 export const SalesController = Router();
 
 SalesController.post(
-  '/:storeId',
+  '/',
   [verifyTokenAdminStore, ...validatorCreateSale],
   async (req: Request, res: Response) => {
     try {
       const saleDomain = new SaleDomain();
-      const storeId = parseInt(req.params.storeId);
+      const storeId = req.user.storeId;
       const body = req.body;
       const sale = await saleDomain.createSale({
         ...body,
@@ -34,12 +34,12 @@ SalesController.post(
 );
 
 SalesController.get(
-  '/:storeId/:saleId',
+  '/:saleId',
   [verifyTokenAdminStore, ...validatorGetSaleProducts],
   async (req: Request, res: Response) => {
     try {
       const saleDomain = new SaleDomain();
-      const storeId = parseInt(req.params.storeId);
+      const storeId = req.user.storeId;
       const saleId = req.params.saleId;
       const sale = await saleDomain.getSaleProducts(storeId, saleId);
       handleSuccess(res, HttpCode.OK, { sale });
@@ -50,12 +50,12 @@ SalesController.get(
 );
 
 SalesController.patch(
-  '/:storeId/:saleId',
+  '/:saleId',
   [verifyTokenAdminStore, ...validatorUpdateStatusSale],
   async (req: Request, res: Response) => {
     try {
       const saleDomain = new SaleDomain();
-      const storeId = parseInt(req.params.storeId);
+      const storeId = req.user.storeId;
       const saleId = req.params.saleId;
       const body = req.body;
       const sale = await saleDomain.changeSaleStatus(storeId, saleId, body.statusId);
@@ -67,12 +67,12 @@ SalesController.patch(
 );
 
 SalesController.delete(
-  '/:storeId/:saleId',
+  '/:saleId',
   [verifyTokenAdminStore, ...validatorDeleteSale],
   async (req: Request, res: Response) => {
     try {
       const saleDomain = new SaleDomain();
-      const storeId = parseInt(req.params.storeId);
+      const storeId = req.user.storeId;
       const saleId = req.params.saleId;
       await saleDomain.deleteSaleByStore(storeId, saleId);
       handleSuccess(res, HttpCode.OK, {});
@@ -82,10 +82,10 @@ SalesController.delete(
   }
 );
 
-SalesController.get('/:storeId', [verifyTokenAdminStore, ...validatorGetSales], async (req: Request, res: Response) => {
+SalesController.get('/', [verifyTokenAdminStore, ...validatorGetSales], async (req: Request, res: Response) => {
   try {
     const saleDomain = new SaleDomain();
-    const storeId = parseInt(req.params.storeId);
+    const storeId = req.user.storeId;
     const { limit, page, dateStart, dateEnd, q } = req.query;
     const statusIds = req.query.statusesId
       ? String(req.query.statusesId).split(',').map(Number)

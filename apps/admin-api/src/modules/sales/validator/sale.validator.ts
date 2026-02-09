@@ -7,7 +7,6 @@ export const validatorCreateSale = [
   check('userId').isNumeric().withMessage('User ID must be a number'),
   check('discount').isNumeric().withMessage('Discount must be a number'),
   check('statusId').isNumeric().withMessage('Status must be a valid status'),
-  param('storeId').isNumeric().withMessage('Store ID must be a number'),
   handleValidator,
 ];
 
@@ -15,7 +14,6 @@ export const validatorGetSales = [
   query('limit').isNumeric().withMessage('Limit must be a number'),
   query('page').isNumeric().withMessage('Page must be a number'),
   query('statusesId').isString().withMessage('Status must be a valid status'),
-  check('storeId').isNumeric().withMessage('Store ID must be a number'),
   check('q').isString().withMessage('Query must be a string'),
   query('dateStart').optional().isString().withMessage('Date must be a String'),
   query('dateEnd').optional().isString().withMessage('Date must be a String'),
@@ -23,17 +21,14 @@ export const validatorGetSales = [
 ];
 
 export const validatorGetSaleProducts = [
-  check('storeId').isNumeric().withMessage('Store ID must be a number'),
   check('saleId').isString().withMessage('Sale ID must be a string'),
 ];
 
 export const validatorDeleteSale = [
-  param('storeId').isNumeric().withMessage('Store ID must be a number'),
   param('saleId').isString().withMessage('Sale ID must be a string'),
 ]
 
 export const validatorUpdateStatusSale = [
-  param('storeId').isNumeric().withMessage('Store ID must be a number'),
   param('saleId').isString().withMessage('Sale ID must be a string'),
   check('statusId').isNumeric().withMessage('Status must be a valid status'),
   handleValidator,

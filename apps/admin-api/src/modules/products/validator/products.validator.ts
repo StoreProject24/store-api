@@ -18,19 +18,16 @@ export const validationCreateProduct = [
 export const validatorGetProducts = [
   query('limit').isNumeric().withMessage('limit is required'),
   query('page').isNumeric().withMessage('page is required'),
-  check('storeId').isNumeric().withMessage('storeId is required'),
   query('q').optional({ nullable: true }).isString().withMessage('name is required'),
   handleValidator,
 ];
 
 export const validatorGetProductById = [
-  check('storeId').isNumeric().withMessage('storeId is required'),
   param('productId').isNumeric().withMessage('productId is required'),
   handleValidator,
 ];
 
 export const validatorUpdateProduct = [
-  param('storeId').isNumeric().withMessage('storeId is required'),
   param('productId').isNumeric().withMessage('productId is required'),
   check('name').isString().withMessage('name is required'),
   check('description').isString().withMessage('description is required'),
@@ -62,7 +59,6 @@ export const validatorUploadImagesProduct = [
 ];
 
 export const validatorDeleteProduct = [
-  param('storeId').isNumeric().withMessage('storeId is required'),
   param('productId').isNumeric().withMessage('productId is required'),
   handleValidator,
 ];

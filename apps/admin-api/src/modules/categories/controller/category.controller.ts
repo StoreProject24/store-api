@@ -14,10 +14,10 @@ import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const CategoriesController = Router();
 
-CategoriesController.get('/:storeId', validatorGetCategories, async (req: Request, res: Response) => {
+CategoriesController.get('/', verifyTokenAdminStore, async (req: Request, res: Response) => {
   try {
     const categoriesDomain = new CategoryDomain();
-    const storeId = parseInt(req.params.storeId);
+    const storeId = req.user.storeId;
     const categories = await categoriesDomain.getAllCategories(storeId);
     handleSuccess(res, HttpCode.OK, { categories });
   } catch (error: any) {
@@ -26,12 +26,12 @@ CategoriesController.get('/:storeId', validatorGetCategories, async (req: Reques
 });
 
 CategoriesController.post(
-  '/:storeId',
+  '/',
   [verifyTokenAdminStore, ...validatorCreateCategory],
   async (req: Request, res: Response) => {
     try {
       const categoriesDomain = new CategoryDomain();
-      const storeId = parseInt(req.params.storeId);
+      const storeId = req.user.storeId;
       const category = await categoriesDomain.createCategory(storeId, req.body);
       handleSuccess(res, HttpCode.CREATED, { category });
     } catch (error: any) {
@@ -41,13 +41,13 @@ CategoriesController.post(
 );
 
 CategoriesController.patch(
-  '/:storeId/:id',
+  '/:id',
   [verifyTokenAdminStore, ...validatorUpdateCategory],
   async (req: Request, res: Response) => {
     try {
       const categoriesDomain = new CategoryDomain();
       const id = parseInt(req.params.id);
-      const storeId = parseInt(req.params.storeId);
+      const storeId = req.user.storeId;
       const category = await categoriesDomain.updateCategory(storeId, { id, ...req.body });
       handleSuccess(res, HttpCode.OK, { category });
     } catch (error: any) {
@@ -56,10 +56,10 @@ CategoriesController.patch(
   }
 );
 
-CategoriesController.post('/images/:storeId', verifyTokenAdminStore, async (req: Request, res: Response) => {
+CategoriesController.post('/images', verifyTokenAdminStore, async (req: Request, res: Response) => {
   try {
     const categoriesDomain = new CategoryDomain();
-    const storeId = parseInt(req.params.storeId);
+    const storeId = req.user.storeId;
     const images = await categoriesDomain.uploadImageCategory(storeId, req);
     handleSuccess(res, HttpCode.CREATED, { images });
   } catch (error: any) {
@@ -68,13 +68,13 @@ CategoriesController.post('/images/:storeId', verifyTokenAdminStore, async (req:
 });
 
 CategoriesController.patch(
-  '/images/:storeId/:id',
+  '/images/:id',
   [verifyTokenAdminStore, ...validatorImageCategory],
   async (req: Request, res: Response) => {
     try {
       const categoriesDomain = new CategoryDomain();
       const id = parseInt(req.params.id);
-      const storeId = parseInt(req.params.storeId);
+      const storeId = req.user.storeId;
       const category = await categoriesDomain.updateImageCategory({
         categoryId: id,
         storeId,
@@ -88,13 +88,13 @@ CategoriesController.patch(
 );
 
 CategoriesController.delete(
-  '/:storeId/:id',
+  '/:id',
   [verifyTokenAdminStore, ...validatorDeleteCategory],
   async (req: Request, res: Response) => {
     try {
       const categoriesDomain = new CategoryDomain();
       const id = parseInt(req.params.id);
-      const storeId = parseInt(req.params.storeId);
+      const storeId = req.user.storeId;
       await categoriesDomain.deleteCategory(storeId, id);
       handleSuccess(res, HttpCode.OK, {});
     } catch (error: any) {

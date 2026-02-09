@@ -38,12 +38,13 @@ import { HttpCode } from '@shared/helpers/response/response.type';
 export class ProductsDomain implements ProductsRepository {
   // @ts-ignore
   async createProduct(product: ProductCreate) {
-    if (product.sku){
-      const exist = await validateExistSku(product.storeId, product.sku)
-      if (exist){
-        throw new AppError(HttpCode.CONFLICT, 'Ya existe un producto con ese sku')
-      }
-    }
+    // TODO: Working on that
+    // if (product.sku){
+    //   const exist = await validateExistSku(product.storeId, product.sku)
+    //   if (exist){
+    //     throw new AppError(HttpCode.CONFLICT, 'Ya existe un producto con ese sku')
+    //   }
+    // }
     const newProduct = await create(product);
     const types = await createVariantTypes(newProduct.id, product.variantTypes);
     const optionMap = new Map<string, number>();
