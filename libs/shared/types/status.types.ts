@@ -4,7 +4,7 @@ enum STATUS {
     inactive = 2,
     pending = 3,
     cancel = 4,
-    done = 5,
+    paid = 5,
     deleted = 6
 }
 

@@ -53,7 +53,7 @@ export class SaleDomain implements SaleRepository {
     if (existSale.statusId === STATUS.deleted) {
       throw new AppError(HttpCode.BAD_REQUEST, 'La venta no puede ser cancelada porque ya fue eliminada');
     }
-    if (existSale.statusId === STATUS.done) {
+    if (existSale.statusId === STATUS.paid) {
       throw new AppError(HttpCode.BAD_REQUEST, 'La venta no puede ser cancelada porque ya fue pagada');
     }
     if (newStatusId === STATUS.cancel) {

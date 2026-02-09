@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@aws-sdk/s3-request-presigner": "^3.980.0",
-    "@stores-api/db": "workspace:^"
+    "@stores-api/db": "workspace:^",
+    "node-cron": "^4.2.1"
   },
   "_moduleAliases": {
     "@stores-api/db": "../../libs/db/dist"
