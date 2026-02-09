@@ -133,7 +133,6 @@ const updateProductsQuantity = async (items: SaleItem[]) => {
       }
     }
   })
-  
 };
 
 const getProductsRandomByStore = async (storeId: number, limit: number) => {

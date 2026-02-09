@@ -8,6 +8,7 @@ import {
   VariantOption,
   VariantType,
 } from '@shared/types/product.types';
+import { SaleItem } from '@shared/types/sale.types';
 
 export const create = async (body: ProductCreate) => {
   const product = await prisma.products.create({
@@ -716,3 +717,32 @@ export const validateExistSku = async (storeId: number, sku: string, productId?:
   }
   return exists
 }
+
+export const restoreProductsQuantity = async (items: SaleItem[]) => {
+  await prisma.$transaction(async (tx) => {
+    for (const item of items) {
+      if (item.combinationId) {
+        await tx.variantCombination.update({
+          where: {
+            id: item.combinationId,
+            productId: item.productId,
+          },
+          data: {
+            quantity: {
+              increment: item.quantity,
+            },
+          },
+        });
+      } else {
+        await tx.products.update({
+          where: { id: item.productId },
+          data: {
+            quantity: {
+              increment: item.quantity,
+            },
+          },
+        });
+      }
+    }
+  });
+};

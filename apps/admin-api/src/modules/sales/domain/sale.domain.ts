@@ -12,7 +12,7 @@ import { CreateSaleBody, Sale } from '@shared/types/sale.types';
 import { compareSaleWithProducts, getProductsToUpdate } from '@shared/utils/functions/saleWithProducts';
 import { convertToObjectId } from '../utils/convetObjetId';
 import { ProductsDomain } from '~modules/products/domain/products.domain';
-import { getProductsByIds, updateProductsQuantity } from '~modules/products/repository/products.repository';
+import { getProductsByIds, restoreProductsQuantity, updateProductsQuantity } from '~modules/products/repository/products.repository';
 import { HttpCode } from '@shared/helpers/response/response.type';
 import { STATUS } from '@shared/types/status.types';
 
@@ -77,13 +77,11 @@ export class SaleDomain implements SaleRepository {
   }
 
   async deleteSaleByStore(storeId: number, saleId: string) {
-    console.log("storeId ", storeId)
-    console.log("saleID ", saleId)
     const existSale = await getSaleById(storeId, convertToObjectId(saleId));
-    console.log("existSale ", existSale)
     if (!existSale) {
       throw new AppError(HttpCode.NOT_FOUND, 'Venta no encontrada');
     }
+    await restoreProductsQuantity(existSale?.items.toObject())
     return await deleteSale(storeId, convertToObjectId(saleId));
   }
 
