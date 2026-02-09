@@ -18,9 +18,6 @@ export class SaleDomain implements SaleRepository {
       body.storeId,
       body.items.map((item) => item?.productId)
     );
-    if (products.length !== body.items.length) {
-      throw new AppError(HttpCode.NOT_FOUND, "Productos no encontrados");
-    }
     // @ts-ignore
     compareSaleWithProducts(body.items, products, body.total)
     const saleSequence = await getLastSaleSequential(store.id)
