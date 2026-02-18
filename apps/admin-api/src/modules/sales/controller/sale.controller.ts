@@ -42,7 +42,7 @@ SalesController.get(
       const storeId = req.user.storeId;
       const saleId = req.params.saleId;
       const sale = await saleDomain.getSaleProducts(storeId, saleId);
-      handleSuccess(res, HttpCode.OK, { sale });
+      handleSuccess(res, HttpCode.OK, sale);
     } catch (error: any) {
       handleError(res, error.status, error.message);
     }
