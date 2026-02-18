@@ -1,6 +1,6 @@
-import {dailyCron} from './sales/daily.cron'
-import {monthlyCron} from './sales/montly.cron'
-import {yearlyCron} from './sales/yearly.cron'
+import {dailyCron} from './stats/daily.cron'
+import {monthlyCron} from './stats/montly.cron'
+import {yearlyCron} from './stats/yearly.cron'
 
 export const initCrons = () => {
     dailyCron()

@@ -48,9 +48,9 @@ export class StatsService {
                 },
             },
         ]);
-
         return result[0] ?? { totalSales: 0, revenue: 0, discount: 0 };
     }
+
 
     static async recalculateDaily(start: Date, end: Date) {
         const date = start.toISOString().slice(0, 10);

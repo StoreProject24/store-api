@@ -252,7 +252,6 @@ export const getProductById = async (storeId: number, id: number) => {
   return product;
 };
 
-
 export const createVariantTypes = async (productId: number, types: ProductCreate["variantTypes"]) => {
   const response = Promise.all(
     types.map(type =>{
@@ -279,7 +278,6 @@ export const createVariantTypes = async (productId: number, types: ProductCreate
   await prisma.$disconnect()
   return response;
 };
-
 
 export const createVariantCombinations = async (
   productId: number,
@@ -671,36 +669,36 @@ export const getProductByIdAndCombinationId = async (storeId: number, productId:
       storeId
     },
     include: {
-      // variantCombinations: {
-      //   where: {
-      //     id: combinationId
-      //   },
-      //   include: {
-      //     values: true,
-      //   }
-      // },
-      // variantTypes: {
-      //   include: {
-      //     options: true,
-      //   }
-      // },
       images: true
     }
   })
   return product
 }
 
-export const updateProductsQuantity = async (products: { id: number; quantity: number }[]) => {
-  await prisma.products.updateMany({
-    where: {
-      id: { in: products.map((product) => product.id) },
-    },
-    data: {
-      ...products.map((product) => ({
-        quantity: product.quantity,
-      })),
-    },
-  });
+export const updateProductsQuantity = async (items: SaleItem[]) => {
+  await prisma.$transaction(async (tx) => {
+    for (const item of items) {
+      if (item.combinationId) {
+        await tx.variantCombination.update({
+          where: {id: item.combinationId, productId: item.productId},
+          data: {
+            quantity: {
+              decrement: item.quantity
+            }
+          }
+        })
+      }else {
+        await tx.products.update({
+          where: {id: item.productId},
+          data: {
+            quantity: {
+              decrement: item.quantity
+            }
+          }
+        })
+      }
+    }
+  })
 };
 
 

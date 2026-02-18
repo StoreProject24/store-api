@@ -6,7 +6,6 @@ import { SaleRepository } from './sale.interface';
 import { getStoreById } from '~modules/stores/repository/store.repository';
 import { getProductsByIds, updateProductsQuantity } from '~modules/products/repository/product.repository';
 import { HttpCode } from '@shared/helpers/response/response.type';
-
 export class SaleDomain implements SaleRepository {
   // @ts-ignore
   async createSale(body: CreateSaleBody) {
