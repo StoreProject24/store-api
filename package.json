@@ -20,8 +20,8 @@
     "seed": "ts-node -r tsconfig-paths/register prisma/seed.ts"
   },
   "engines": {
-    "node": "20.5.1",
-    "npm": "10.5.1"
+    "node": ">=22.13.0",
+    "pnpm": ">=10.17.1"
   },
   "keywords": [],
   "author": "",

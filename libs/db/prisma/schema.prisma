@@ -49,6 +49,9 @@ model Stores {
   zip           String
   phone         String
   email         String          @unique
+  whatsapp      String          @default("")
+  tiktok        String          @default("")
+  facebook      String          @default("")
   User          Users?          @relation(fields: [userId], references: [id])
   userId        Int
   status        Status          @relation(fields: [statusId], references: [id])

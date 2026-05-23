@@ -4,6 +4,7 @@ import { getAllStats, getDailyStats, getMonthlyStats, getYearlyStats } from "../
 import { StatsType } from '../types/stats.type'
 import { StatsRepository } from "./stats.interface";
 import { isStatsType } from "../utils/fn";
+import { AnalyticsService } from "~services/analitics";
 
 
 export class StatsDomain implements StatsRepository {
@@ -19,5 +20,11 @@ export class StatsDomain implements StatsRepository {
         };
 
         return strategies[type]();
+    }
+
+    async getAnalytics(storeId: number) {
+        const analytics = new AnalyticsService();
+        const data = await analytics.getAnalytics(storeId);
+        return data;
     }
 }

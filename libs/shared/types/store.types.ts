@@ -12,6 +12,9 @@ export interface Store {
   bannerUrl: string;
   logoUrl: string;
   userId: number;
+  whatsapp: string;
+  facebook: string;
+  tiktok: string;
 }
 
 export interface StoreCreate {
@@ -26,6 +29,9 @@ export interface StoreCreate {
   bannerUrl: string;
   logoUrl: string;
   userId: number;
+  whatsapp: string;
+  facebook: string;
+  tiktok: string;
 }
 
 export interface FieldStore {
@@ -44,4 +50,7 @@ export interface StoreUpdate {
   userId?: number;
   domain?: string;
   statusId?: number;
+  whatsapp?: string;
+  facebook?: string;
+  tiktok?: string;
 }

@@ -6,6 +6,10 @@
     "build": "rm -f tsconfig.tsbuildinfo && tsc && tsc-alias -p tsconfig.json && cp -r src/templates dist/apps/admin-api/src/templates",
     "start": "node ./dist/apps/admin-api/src/index.js"
   },
+  "engines": {
+    "node": ">=22.13.0",
+    "pnpm": ">=10.17.1"
+  },
   "dependencies": {
     "@aws-sdk/s3-request-presigner": "^3.980.0",
     "@stores-api/db": "workspace:^",

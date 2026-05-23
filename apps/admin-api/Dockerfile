@@ -1,8 +1,9 @@
-FROM node:20.5.1-alpine AS builder
-
-RUN npm install -g pnpm
+FROM node:22-alpine AS builder
 
 WORKDIR /app
+
+# Instalar pnpm
+RUN npm install -g pnpm@10.17.1
 
 COPY . .
 
@@ -15,7 +16,7 @@ RUN pnpm --filter @stores-api/db generate
 RUN pnpm --filter admin-api build
 
 # ---------- RUN ----------
-FROM node:20.5.1-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 

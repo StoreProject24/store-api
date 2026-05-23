@@ -99,7 +99,7 @@ export class SaleDomain implements SaleRepository {
       if (!product) {
         throw new AppError(HttpCode.NOT_FOUND, "Producto no encontrado");
       }
-      const urls = await getSignedImageUrls(product.images.map((item) => item.urlImage))
+      const urls = await getSignedImageUrls(product.images.map((product) => product.urlImage))
       const images = product.images.map((img, index) => ({
         id: img.id,
         productId: img.productId,

@@ -36,3 +36,18 @@ StatsController.get(
         }
     }
 );
+
+StatsController.get(
+    '/analitics',
+    [verifyTokenAdminStore],
+    async (req: Request, res: Response) => {
+        try {
+            const statsDomain = new StatsDomain();
+            const storeId = req.user.storeId;
+            const data = await statsDomain.getAnalytics(storeId);
+            handleSuccess(res, HttpCode.OK, data);
+        } catch (error: any) {
+            handleError(res, error.status, error.message);
+        }
+    }
+);
