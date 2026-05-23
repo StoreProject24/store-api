@@ -15,8 +15,8 @@ RUN pnpm --filter @stores-api/db generate
 # Build de la API
 RUN pnpm --filter stores-api build
 
-# Ejecuta las migraciones de Prisma
-RUN npx prisma migrate deploy
+# Si el schema está en apps/stores-api/prisma/schema.prisma
+RUN npx prisma migrate deploy --schema=./apps/stores-api/prisma/schema.prisma
 
 # ---------- RUN ----------
 FROM node:22
