@@ -15,7 +15,6 @@ RUN pnpm --filter @stores-api/db generate
 # Build de la API
 RUN pnpm --filter admin-api build
 
-
 # ---------- RUN ----------
 FROM node:22
 
@@ -29,8 +28,5 @@ COPY --from=builder /app/apps/admin-api ./apps/admin-api
 
 ENV PORT=8080
 EXPOSE 8080
-
-CMD ["./start.sh"]
-
 # Usar la ruta del script start
 CMD ["node", "apps/admin-api/dist/apps/admin-api/src/index.js"]

@@ -29,7 +29,5 @@ COPY --from=builder /app/apps/stores-api ./apps/stores-api
 ENV PORT=8080
 EXPOSE 8080
 
-CMD ["./start.sh"]
-
 # Usar la ruta del script start
 CMD ["node", "apps/stores-api/dist/apps/stores-api/src/index.js"]
