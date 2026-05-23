@@ -15,20 +15,19 @@ RUN pnpm --filter @stores-api/db generate
 # Build de la API
 RUN pnpm --filter admin-api build
 
-# Ejecuta las migraciones de Prisma
-# Si el schema está en apps/stores-api/prisma/schema.prisma
-RUN npx prisma migrate deploy --schema=./apps/stores-api/prisma/schema.prisma
 
 # ---------- RUN ----------
-FROM node:22
-
-WORKDIR /app
-
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
-COPY --from=builder /app/libs ./libs
-COPY --from=builder /app/apps/admin-api ./apps/admin-api
+    FROM node:22
+    
+    WORKDIR /app
+    
+    COPY --from=builder /app/node_modules ./node_modules
+    COPY --from=builder /app/package.json ./package.json
+    COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+    COPY --from=builder /app/libs ./libs
+    COPY --from=builder /app/apps/admin-api ./apps/admin-api
+    # Ejecuta las migraciones de Prisma
+    RUN npx prisma migrate deploy --schema=./libs/db/prisma/schema.prisma
 
 ENV PORT=8080
 EXPOSE 8080
