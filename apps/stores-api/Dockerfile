@@ -27,6 +27,8 @@ COPY --from=builder /app/libs ./libs
 COPY --from=builder /app/apps/stores-api ./apps/stores-api
 
 # Ejecuta las migraciones de Prisma
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 RUN npx prisma migrate deploy --schema=./libs/db/prisma/schema.prisma
 
 ENV PORT=8080
