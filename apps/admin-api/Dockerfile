@@ -17,22 +17,20 @@ RUN pnpm --filter admin-api build
 
 
 # ---------- RUN ----------
-    FROM node:22
-    
-    WORKDIR /app
-    
-    COPY --from=builder /app/node_modules ./node_modules
-    COPY --from=builder /app/package.json ./package.json
-    COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
-    COPY --from=builder /app/libs ./libs
-    COPY --from=builder /app/apps/admin-api ./apps/admin-api
-    # Ejecuta las migraciones de Prisma
-    ARG DATABASE_URL
-    ENV DATABASE_URL=$DATABASE_URL
-    RUN npx prisma migrate deploy --schema=./libs/db/prisma/schema.prisma
+FROM node:22
+
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=builder /app/libs ./libs
+COPY --from=builder /app/apps/admin-api ./apps/admin-api
 
 ENV PORT=8080
 EXPOSE 8080
+
+CMD ["./start.sh"]
 
 # Usar la ruta del script start
 CMD ["node", "apps/admin-api/dist/apps/admin-api/src/index.js"]

@@ -26,13 +26,10 @@ COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /app/libs ./libs
 COPY --from=builder /app/apps/stores-api ./apps/stores-api
 
-# Ejecuta las migraciones de Prisma
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
-RUN npx prisma migrate deploy --schema=./libs/db/prisma/schema.prisma
-
 ENV PORT=8080
 EXPOSE 8080
+
+CMD ["./start.sh"]
 
 # Usar la ruta del script start
 CMD ["node", "apps/stores-api/dist/apps/stores-api/src/index.js"]
