@@ -15,6 +15,9 @@ RUN pnpm --filter @stores-api/db generate
 # Build de la API
 RUN pnpm --filter stores-api build
 
+# Ejecuta las migraciones de Prisma
+RUN npx prisma migrate deploy
+
 # ---------- RUN ----------
 FROM node:22
 
