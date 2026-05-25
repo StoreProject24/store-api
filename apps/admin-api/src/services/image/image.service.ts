@@ -42,6 +42,7 @@ const uploadImages = async (req: Request, storeId: number, dirname: string) => {
 
 const getSignedImageUrls = async (keys: string[]) => {
   const images: string[] = []
+  console.log("images ", images)
   for (const key of keys) {
     const command = new GetObjectCommand({
       Bucket: bucketName,
@@ -51,6 +52,7 @@ const getSignedImageUrls = async (keys: string[]) => {
     const url = await getSignedUrl(s3 as any, command, {
       expiresIn: 60 * 60, // 1 hora
     })
+    console.log("url ", url)
     images.push(url)
   }
   return images

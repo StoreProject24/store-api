@@ -52,6 +52,7 @@ model Stores {
   whatsapp      String          @default("")
   tiktok        String          @default("")
   facebook      String          @default("")
+  instagram     String          @default("")
   User          Users?          @relation(fields: [userId], references: [id])
   userId        Int
   status        Status          @relation(fields: [statusId], references: [id])
@@ -62,6 +63,18 @@ model Stores {
   Brands        Brands[]
   Categories    Categories[]
   SubCategories SubCategories[]
+  settings      Settings[]
+}
+
+model Settings {
+  id                     Int      @id @default(autoincrement())
+  primaryColor           String   @default("#000000")
+  secondaryColor         String   @default("#FFFFFF")
+  show_when_out_of_stock Boolean  @default(true)
+  store                  Stores   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  storeId                Int
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @default(now())
 }
 
 model Brands {
@@ -121,12 +134,12 @@ model Products {
   status              Status               @relation(fields: [statusId], references: [id])
   statusId            Int                  @default(1)
   categories          Categories?          @relation(fields: [categoryId], references: [id])
-  variantTypes        VariantType[]        
-  variantCombinations VariantCombination[] 
+  variantTypes        VariantType[]
+  variantCombinations VariantCombination[]
   categoryId          Int?
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @default(now())
-  images              ProductImages[]      
+  images              ProductImages[]
   video               String               @default("")
 }
 
@@ -148,15 +161,16 @@ model VariantType {
 }
 
 model VariantOption {
-  id     Int         @id @default(autoincrement())
-  name   String
-  value  String
-  status Boolean     @default(true)
-  type   VariantType @relation(fields: [typeId], references: [id], onDelete: Cascade)
-  typeId Int
+  id                Int                       @id @default(autoincrement())
+  name              String
+  value             String
+  status            Boolean                   @default(true)
+  type              VariantType               @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  typeId            Int
   combinationValues VariantCombinationValue[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
   @@unique([typeId, name])
 }
 

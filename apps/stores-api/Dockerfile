@@ -29,5 +29,5 @@ COPY --from=builder /app/apps/stores-api ./apps/stores-api
 ENV PORT=8080
 EXPOSE 8080
 
-# Usar la ruta del script start
-CMD ["node", "apps/stores-api/dist/apps/stores-api/src/index.js"]
+# Aplicar migraciones pendientes y luego arrancar la API
+CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy --schema=libs/db/prisma/schema.prisma && node apps/stores-api/dist/apps/stores-api/src/index.js"]

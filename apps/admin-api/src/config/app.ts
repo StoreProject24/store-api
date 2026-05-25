@@ -18,6 +18,7 @@ import { userRouter } from '~modules/user/router';
 import { salesRouter } from '~modules/sales/router';
 import { categoriesRouter } from '~modules/categories/router';
 import { statsRouter } from '~modules/stats/router';
+import { settingsRouter } from '~modules/settings/router';
 
 import { connectMongoDb } from './mongo/mongo';
 // import redis from './redis/redis';
@@ -61,5 +62,6 @@ app.use(`${apiPrefix}/stores`, appLimiter, storesRouter);
 app.use(`${apiPrefix}/products`, appLimiter, productsRouter);
 app.use(`${apiPrefix}/sales`, appLimiter, salesRouter);
 app.use(`${apiPrefix}/stats`, appLimiter, statsRouter)
+app.use(`${apiPrefix}/settings`, appLimiter, settingsRouter)
 
 export default app;

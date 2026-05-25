@@ -15,6 +15,7 @@ export interface Store {
   whatsapp: string;
   facebook: string;
   tiktok: string;
+  instagram: string;
 }
 
 export interface StoreCreate {
@@ -32,6 +33,7 @@ export interface StoreCreate {
   whatsapp: string;
   facebook: string;
   tiktok: string;
+  instagram: string;
 }
 
 export interface FieldStore {
@@ -53,4 +55,5 @@ export interface StoreUpdate {
   whatsapp?: string;
   facebook?: string;
   tiktok?: string;
+  instagram?: string;
 }

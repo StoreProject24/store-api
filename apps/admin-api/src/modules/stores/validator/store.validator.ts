@@ -21,10 +21,9 @@ export const validationUpdateStore = [
   check('phone').optional().isString().withMessage('phone is required'),
   check('email').optional().isEmail().withMessage('email is required'),
   check('city').optional().isString().withMessage('city is required'),
-  check('department').isString().withMessage('department is required'),
+  check('department').optional().isString().withMessage('department is required'),
   check('zip').optional().isString().withMessage('zip is required'),
-  check('userId').isNumeric().withMessage('userId is required'),
-  check('statusId').isNumeric().withMessage('statusId is required'),
+  check('statusId').optional().isNumeric().withMessage('statusId is required'),
   handleValidator,
 ];
 

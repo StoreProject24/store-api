@@ -49,7 +49,7 @@ StoreController.post('/', [verifyTokenAdminStore, ...validationCreateStore], asy
 StoreController.put('/', [verifyTokenAdminStore, ...validationUpdateStore], async (req: Request, res: Response) => {
   try {
     const storeDomain = new StoreDomain();
-    const store = await storeDomain.createStore(req.body);
+    const store = await storeDomain.updateStore(req.user.storeId, req.body);
     handleSuccess(res, HttpCode.OK, { store });
   } catch (error: any) {
     handleError(res, error.status, error);
@@ -78,7 +78,9 @@ StoreController.post(
     try {
       const storeDomain = new StoreDomain();
       const field = req.query.field as FieldStore['field'];
+      console.log("field ", field)
       const storeId =  req.user.storeId;
+      console.log("storeId ", storeId)
       const store = await storeDomain.uploadImage(req.user.id, storeId, field, req);
       handleSuccess(res, HttpCode.CREATED, { store });
     } catch (error: any) {

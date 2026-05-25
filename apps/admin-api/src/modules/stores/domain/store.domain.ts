@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import { Request } from 'express';
 // import { setKeyRedis, deleteKeyRedis } from '~config/redis/redis';
-import { deleteImages, uploadImages } from '~services/image/image.service';
+import { deleteImages, getSignedImageUrls, uploadImages } from '~services/image/image.service';
 import { AppError } from '@shared/helpers/response/response';
 import { create, getById, getByUserId, update } from '../repository/store.repository';
-import { FieldStore, StoreCreate, StoreUpdate } from '@shared/types/store.types';
+import { FieldStore, Store, StoreCreate, StoreUpdate } from '@shared/types/store.types';
 import { StoreRepository } from './store.interface';
 import { existStoreRedis, getStoresRedis } from '../utils/storeRedis';
 import { HttpCode } from '@shared/helpers/response/response.type';
@@ -43,22 +43,39 @@ export class StoreDomain implements StoreRepository {
     // if (existStores.length) {
     //   return existStores;
     // }
+
     const stores = await getByUserId(userId);
+    const storesImagesSigned: Store [] = []
+    for (const store of stores) {
+      const signedImageUrls = await getSignedImageUrls([store.bannerUrl, store.logoUrl])
+      store.bannerUrl = signedImageUrls[0]
+      store.logoUrl = signedImageUrls[1]
+      storesImagesSigned.push(store)
+    }
+    console.log("storesImagesSigned ", storesImagesSigned)
     // await setKeyRedis(`user-${userId}`, JSON.stringify(stores));
-    return stores;
+    return storesImagesSigned;
   }
 
   async uploadImage(userId: number, storeId: number, field: FieldStore['field'], req: Request) {
-    const store = await existStoreRedis(userId, storeId);
+    // const store = await existStoreRedis(userId, storeId);
+    const store = await getById(storeId)
     if (!store) {
       throw new AppError(HttpCode.NOT_FOUND, 'Tienda no encontrada');
     }
     const image = await uploadImages(req, store.id, 'store');
+    console.log("image ", image)
     const storeUpdate = await update(store.id, {
       [field]: image[0],
     });
     await deleteImages([store[field]]);
+    const signedImageUrl = await getSignedImageUrls(image)
+
+    console.log("signedImageUrl ", signedImageUrl)
     // await deleteKeyRedis(`user-${userId}`);
-    return storeUpdate;
+    return {
+      ...storeUpdate,
+      [field]: signedImageUrl[0]
+    };
   }
 }

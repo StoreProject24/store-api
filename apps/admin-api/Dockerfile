@@ -28,5 +28,5 @@ COPY --from=builder /app/apps/admin-api ./apps/admin-api
 
 ENV PORT=8080
 EXPOSE 8080
-# Usar la ruta del script start
-CMD ["node", "apps/admin-api/dist/apps/admin-api/src/index.js"]
+# Aplicar migraciones pendientes y luego arrancar la API
+CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy --schema=libs/db/prisma/schema.prisma && node apps/admin-api/dist/apps/admin-api/src/index.js"]

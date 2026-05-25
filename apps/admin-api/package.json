@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "nodemon",
     "build": "rm -f tsconfig.tsbuildinfo && tsc && tsc-alias -p tsconfig.json && cp -r src/templates dist/apps/admin-api/src/templates",
+    "migrate:deploy": "prisma migrate deploy --schema=./prisma/schema.prisma",
     "start": "node ./dist/apps/admin-api/src/index.js"
   },
   "engines": {

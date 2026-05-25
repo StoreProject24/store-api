@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "generate": "prisma generate --schema=./prisma/schema.prisma",
+    "migrate:deploy": "prisma migrate deploy --schema=./prisma/schema.prisma",
     "seed": "node --import tsx prisma/seed.ts"
   },
   "engines": {
