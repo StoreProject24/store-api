@@ -52,7 +52,6 @@ export class StoreDomain implements StoreRepository {
       store.logoUrl = signedImageUrls[1]
       storesImagesSigned.push(store)
     }
-    console.log("storesImagesSigned ", storesImagesSigned)
     // await setKeyRedis(`user-${userId}`, JSON.stringify(stores));
     return storesImagesSigned;
   }
@@ -63,15 +62,13 @@ export class StoreDomain implements StoreRepository {
     if (!store) {
       throw new AppError(HttpCode.NOT_FOUND, 'Tienda no encontrada');
     }
-    const image = await uploadImages(req, store.id, 'store');
-    console.log("image ", image)
+    const image = await uploadImages(req, store.id, 'store', false);
     const storeUpdate = await update(store.id, {
       [field]: image[0],
     });
     await deleteImages([store[field]]);
     const signedImageUrl = await getSignedImageUrls(image)
 
-    console.log("signedImageUrl ", signedImageUrl)
     // await deleteKeyRedis(`user-${userId}`);
     return {
       ...storeUpdate,

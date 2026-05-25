@@ -17,7 +17,7 @@ const s3 = new S3Client({
 
 const bucketName = process.env.AWS_BUCKET_NAME;
 
-const uploadImages = async (req: Request, storeId: number, dirname: string) => {
+const uploadImages = async (req: Request, storeId: number, dirname: string, flag: boolean = true) => {
   const form = formidable({});
   const images: string[] = [];
   const [_, files] = await form.parse(req);
@@ -25,7 +25,7 @@ const uploadImages = async (req: Request, storeId: number, dirname: string) => {
     const fileExt = file.originalFilename?.split('.').pop();
     const fileName = `${Date.now()}.${fileExt}`;
     const fileContent = await fs.readFile(file.filepath);
-    const fileContentLow = await lowWeightImage(fileContent);
+    const fileContentLow = flag ? await lowWeightImage(fileContent) : fileContent
     const key = `${storeId}/${dirname}/${fileName}`
     await s3.send(
       new PutObjectCommand({
@@ -42,17 +42,15 @@ const uploadImages = async (req: Request, storeId: number, dirname: string) => {
 
 const getSignedImageUrls = async (keys: string[]) => {
   const images: string[] = []
-  console.log("images ", images)
   for (const key of keys) {
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: key,
     });
-  
+
     const url = await getSignedUrl(s3 as any, command, {
       expiresIn: 60 * 60, // 1 hora
     })
-    console.log("url ", url)
     images.push(url)
   }
   return images
