@@ -6,7 +6,7 @@ export const lowWeightImage = async (image: Buffer) => {
     .sharpen({
       sigma: 1,
     })
-    .jpeg({ quality: 90 })
+    .jpeg({ quality: 95 })
     .toBuffer();
   return lowWeightImage;
 };
