@@ -1,0 +1,4 @@
+{"level":"info","message":"✅ Server running on port 3001","service":"admin-api","timestamp":"2026-06-18 20:17:57:605"}
+{"level":"info","message":"✅ Connected to MongoDB","service":"admin-api","timestamp":"2026-06-18 20:17:57:662"}
+{"level":"info","message":"✅ Server running on port 3001","service":"admin-api","timestamp":"2026-06-18 20:22:45:798"}
+{"level":"info","message":"✅ Connected to MongoDB","service":"admin-api","timestamp":"2026-06-18 20:22:45:880"}

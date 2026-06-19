@@ -1,13 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
-
-import { handleSuccess } from '@shared/helpers/response/response';
+import { handleSuccess, handleError } from '@shared/helpers/response/response';
 import { HttpCode } from '@shared/helpers/response/response.type';
+import { isMongoConnected } from '../mongo/mongo';
 
-export const healthCheck = (req: Request, res: Response, next: NextFunction) => {
-  const healthCheck = {
-    uptime: process.uptime(),
-    message: 'OK',
-    timestamp: Date.now(),
+interface HealthCheckResponse {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  uptime: number;
+  timestamp: string;
+  services: {
+    mongodb: boolean;
   };
-  handleSuccess(res, HttpCode.OK, healthCheck);
+}
+
+export const healthCheck = (req: Request, res: Response, next: NextFunction): void => {
+  const mongoConnected = isMongoConnected();
+
+  const healthCheck: HealthCheckResponse = {
+    status: mongoConnected ? 'healthy' : 'degraded',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    services: {
+      mongodb: mongoConnected,
+    },
+  };
+
+  const statusCode = mongoConnected ? HttpCode.OK : HttpCode.SERVICE_UNAVAILABLE;
+  handleSuccess(res, statusCode, healthCheck);
 };

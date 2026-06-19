@@ -1,16 +1,11 @@
+import type { AuthenticatedUser } from '../../libs/shared/types/auth.types';
+
 export {};
 
 declare global {
   namespace Express {
     interface Request {
-      user: {
-        id: number;
-        name: string;
-        email: string;
-        statusId: number;
-        rol: 'ADMINSTORE' | 'USER' | 'ADMIN';
-        storeId: number;
-      };
+      user: AuthenticatedUser;
       store: {
         id: number;
         name: string;

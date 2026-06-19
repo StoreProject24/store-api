@@ -13,76 +13,89 @@ import { HttpCode } from '@shared/helpers/response/response.type';
 
 export const AuthController = Router();
 
-AuthController.post('/register', validateRegister, async (req: Request, res: Response) => {
+const handleAuthError = (error: unknown, res: Response): void => {
+  if (error instanceof Error && 'status' in error) {
+    const typedError = error as Error & { status: number };
+    handleError(res, typedError.status, error.message);
+  } else {
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    handleError(res, 500, errorMsg);
+  }
+};
+
+AuthController.post('/register', validateRegister, async (req: Request, res: Response): Promise<void> => {
   try {
     const authDomain = new AuthDomain();
     const accessTokens = await authDomain.createUser(req.body);
     handleSuccess(res, HttpCode.CREATED, accessTokens);
-  } catch (error: any) {
-    handleError(res, error.status, error.message);
+  } catch (error: unknown) {
+    handleAuthError(error, res);
   }
 });
 
-AuthController.post('/login', validateLogin, async (req: Request, res: Response) => {
+AuthController.post('/login', validateLogin, async (req: Request, res: Response): Promise<void> => {
   try {
     const authDomain = new AuthDomain();
-    const accessTokens = await authDomain.loginUser(req.body.email, req.body.password);
+    const { email, password } = req.body as { email: string; password: string };
+    const accessTokens = await authDomain.loginUser(email, password);
     handleSuccess(res, HttpCode.OK, accessTokens);
-  } catch (error: any) {
-    handleError(res, error.status, error.message);
+  } catch (error: unknown) {
+    handleAuthError(error, res);
   }
 });
 
-AuthController.post('/forgot-password', validateForgotPassword, async (req: Request, res: Response) => {
+AuthController.post('/forgot-password', validateForgotPassword, async (req: Request, res: Response): Promise<void> => {
   try {
     const authDomain = new AuthDomain();
-    await authDomain.forgotPasswordUser(req.body.email);
+    const { email } = req.body as { email: string };
+    await authDomain.forgotPasswordUser(email);
     handleSuccess(res, HttpCode.OK, {
       message: 'Email sent',
     });
-  } catch (error: any) {
-    handleError(res, error.status, error.message);
+  } catch (error: unknown) {
+    handleAuthError(error, res);
   }
 });
 
-AuthController.post('/verify-otp', validateVerifyOtp, async (req: Request, res: Response) => {
+AuthController.post('/verify-otp', validateVerifyOtp, async (req: Request, res: Response): Promise<void> => {
   try {
     const authDomain = new AuthDomain();
-    await authDomain.verifyOtpCodeUser(req.body.email, req.body.otpCode);
+    const { email, otpCode } = req.body as { email: string; otpCode: string };
+    await authDomain.verifyOtpCodeUser(email, otpCode);
     handleSuccess(res, HttpCode.OK, { message: 'Otp code verified' });
-  } catch (error: any) {
-    handleError(res, error.status, error.message);
+  } catch (error: unknown) {
+    handleAuthError(error, res);
   }
 });
 
-AuthController.patch('/reset-password', validateResetPassword, async (req: Request, res: Response) => {
+AuthController.patch('/reset-password', validateResetPassword, async (req: Request, res: Response): Promise<void> => {
   try {
     const authDomain = new AuthDomain();
-    const { email, password, otpCode } = req.body;
+    const { email, password, otpCode } = req.body as { email: string; password: string; otpCode: string };
     await authDomain.changePasswordUser(email, password, otpCode);
-    handleSuccess(res, HttpCode.OK, { message: 'Otp code verified' });
-  } catch (error: any) {
-    handleError(res, error.status, error.message);
+    handleSuccess(res, HttpCode.OK, { message: 'Password reset successfully' });
+  } catch (error: unknown) {
+    handleAuthError(error, res);
   }
 });
 
-AuthController.post('/refresh-token', verifyRefreshToken, async (req: Request, res: Response) => {
+AuthController.post('/refresh-token', verifyRefreshToken, async (req: Request, res: Response): Promise<void> => {
   try {
     const authDomain = new AuthDomain();
     const accessTokens = await authDomain.refreshToken(req.user);
     handleSuccess(res, HttpCode.OK, accessTokens);
-  } catch (error: any) {
-    handleError(res, error.status, error.message);
+  } catch (error: unknown) {
+    handleAuthError(error, res);
   }
 });
 
-AuthController.post('/pick-store', verifyToken, async (req: Request, res: Response) => {
+AuthController.post('/pick-store', verifyToken, async (req: Request, res: Response): Promise<void> => {
   try {
     const authDomain = new AuthDomain();
-    const storeId = Number(req.body.storeId);
+    const storeId = Number((req.body as { storeId?: string }).storeId);
     const accessTokens = await authDomain.pickStore(storeId, req.user.id);
     handleSuccess(res, HttpCode.OK, accessTokens);
-  } catch (error: any) {
-    handleError(res, error.status, error.message);
+  } catch (error: unknown) {
+    handleAuthError(error, res);
   }
 });

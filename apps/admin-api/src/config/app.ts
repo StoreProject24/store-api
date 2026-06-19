@@ -21,25 +21,37 @@ import { statsRouter } from '~modules/stats/router';
 import { settingsRouter } from '~modules/settings/router';
 
 import { connectMongoDb } from './mongo/mongo';
+import { errorHandler } from '~middlewares/errorHandler.middleware';
 // import redis from './redis/redis';
 
+// Rate limiting for authentication endpoints (stricter)
 const authLimiter = rateLimit({
-  windowMs: 15 * 50 * 1000,
-  limit: 100,
+  windowMs: 15 * 60 * 1000, // 15 minutes (fixed: was 15 * 50 * 1000 = 12.5 min)
+  limit: 50, // 50 requests per 15 minutes for auth
   standardHeaders: 'draft-8',
   legacyHeaders: false,
+  message: 'Too many login attempts, please try again later',
 });
 
+// Rate limiting for general app endpoints
 const appLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 500,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 500, // 500 requests per 15 minutes
   standardHeaders: 'draft-8',
   legacyHeaders: false,
 });
 
+// HTTP request logging - log all requests in dev, only errors in prod
+const morganFormat = process.env.NODE_ENV === 'production' ? 'short' : 'dev';
 app.use(
-  morgan('dev', {
-    skip: (req, res) => res.statusCode < 400,
+  morgan(morganFormat, {
+    skip: (req, res) => {
+      // Skip health checks and low-level logs in production
+      if (process.env.NODE_ENV === 'production') {
+        return req.path === '/healthCheck' || res.statusCode < 400;
+      }
+      return false;
+    },
   })
 );
 
@@ -63,5 +75,8 @@ app.use(`${apiPrefix}/products`, appLimiter, productsRouter);
 app.use(`${apiPrefix}/sales`, appLimiter, salesRouter);
 app.use(`${apiPrefix}/stats`, appLimiter, statsRouter)
 app.use(`${apiPrefix}/settings`, appLimiter, settingsRouter)
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
 
 export default app;

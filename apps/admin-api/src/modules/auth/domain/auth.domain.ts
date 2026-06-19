@@ -7,6 +7,7 @@ import { AuthRepository } from './auth.interface';
 import { getByUserId, getStoreByIdAndUserId } from '~modules/stores/repository/store.repository';
 import { sendEmail } from '~services/email/email.service';
 import { HttpCode } from '@shared/helpers/response/response.type';
+import { AuthenticatedUser, UserRole } from '@shared/types/auth.types';
 
 const STORE_APP_NAME = process.env.STORE_APP_NAME;
 export class AuthDomain implements AuthRepository {
@@ -20,8 +21,8 @@ export class AuthDomain implements AuthRepository {
       ...body,
       password: newPassword,
     });
-    const token = createAccessToken(user);
-    const refreshToken = createRefreshToken(user)
+    const token = createAccessToken(user as unknown as AuthenticatedUser);
+    const refreshToken = createRefreshToken(user as unknown as AuthenticatedUser)
     // await sendEmail(body.email, 'Bienvenido a Store', 'welcome', {
     //   communityName: 'Store Admin',
     //   name: body.name,
@@ -98,11 +99,11 @@ export class AuthDomain implements AuthRepository {
     if (!store.length) {
       throw new AppError(HttpCode.NOT_FOUND, 'Tienda no encontrada');
     }
-    const userData = {
+    const userData: AuthenticatedUser = {
       id: data.id,
       email: data.email,
       name: data.name,
-      rol: data.rol,
+      rol: data.rol as UserRole,
       statusId: data.statusId,
       storeId: store[0].id,
     }
