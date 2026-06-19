@@ -22,6 +22,8 @@ import { settingsRouter } from '~modules/settings/router';
 
 import { connectMongoDb } from './mongo/mongo';
 import { errorHandler } from '~middlewares/errorHandler.middleware';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './swagger/swagger';
 // import redis from './redis/redis';
 
 // Rate limiting for authentication endpoints (stricter)
@@ -62,6 +64,15 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: '50mb', type: 'application/json' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Swagger documentation
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
+  swaggerOptions: {
+    persistAuthorization: true,
+    displayOperationId: true,
+  }
+}));
 
 // ROUTES
 const apiPrefix = '/api';
