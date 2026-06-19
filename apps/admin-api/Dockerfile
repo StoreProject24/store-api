@@ -27,6 +27,7 @@ COPY --from=builder /app/libs ./libs
 COPY --from=builder /app/apps/admin-api ./apps/admin-api
 
 ENV PORT=8080
+ENV NODE_ENV=production
 EXPOSE 8080
 # Aplicar migraciones pendientes y luego arrancar la API
 CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy --schema=libs/db/prisma/schema.prisma && node apps/admin-api/dist/apps/admin-api/src/index.js"]
