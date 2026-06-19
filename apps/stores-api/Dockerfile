@@ -27,6 +27,7 @@ COPY --from=builder /app/libs ./libs
 COPY --from=builder /app/apps/stores-api ./apps/stores-api
 
 ENV PORT=8080
+ENV NODE_ENV=production
 EXPOSE 8080
 
 # Aplicar migraciones pendientes y luego arrancar la API
