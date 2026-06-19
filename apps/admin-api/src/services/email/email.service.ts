@@ -3,9 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import handlebars from 'handlebars';
 
-const basePath = process.env.NODE_ENV === 'production'
-  ? path.join(process.cwd(), 'dist', 'apps', 'admin-api', 'templates')
-  : path.join(__dirname, '../../templates');
+const basePath = path.join(__dirname, '../../templates');
 
 const templates = {
   welcome: fs.readFileSync(path.join(basePath, 'welcome.hbs'), 'utf-8'),
