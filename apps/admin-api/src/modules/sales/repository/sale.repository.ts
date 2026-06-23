@@ -103,6 +103,7 @@ const getSalesByStore = async (
 
   const sales = await salesModel
     .find(filter)
+    .sort({ sequential: -1 })
     .skip((page - 1) * limit)
     .limit(limit)
     .lean()
