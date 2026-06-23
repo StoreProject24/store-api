@@ -91,7 +91,7 @@ SalesController.get('/', [verifyTokenAdminStore, ...validatorGetSales], async (r
       ? String(req.query.statusesId).split(',').map(Number)
       : []
     const query = q.toString()
-    const sales = await saleDomain.getSalesByPage(
+    const { sales, total } = await saleDomain.getSalesByPage(
       storeId,
       Number(limit),
       Number(page),
@@ -102,7 +102,7 @@ SalesController.get('/', [verifyTokenAdminStore, ...validatorGetSales], async (r
         end: dateEnd?.toString() || ''
       }
     );
-    handleSuccess(res, HttpCode.OK, { sales });
+    handleSuccess(res, HttpCode.OK, { sales, total });
   } catch (error: any) {
     handleError(res, error?.status || 500, error?.message || 'Internal server error');
   }

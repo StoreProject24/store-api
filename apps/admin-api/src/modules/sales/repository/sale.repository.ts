@@ -101,13 +101,20 @@ const getSalesByStore = async (
     }
   }
 
-  const sales = await salesModel
-    .find(filter)
-    .sort({ sequential: -1 })
-    .skip((page - 1) * limit)
-    .limit(limit)
-    .lean()
-  return sales as unknown as Sale[];
+  const [sales, total] = await Promise.all([
+    salesModel
+      .find(filter)
+      .sort({ sequential: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(),
+    salesModel.countDocuments(filter)
+  ])
+
+  return {
+    sales: sales as unknown as Sale[],
+    total
+  };
 };
 
 export {
