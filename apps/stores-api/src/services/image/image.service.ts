@@ -22,7 +22,7 @@ const getSignedImageUrls = async (keys: string[]) => {
     });
   
     const url = await getSignedUrl(s3 as any, command, {
-      expiresIn: 60 * 60, // 1 hora
+      expiresIn: 60 * 60 * 24 * 7, // 7 días (máximo SigV4)
     })
     images.push(url)
   }
